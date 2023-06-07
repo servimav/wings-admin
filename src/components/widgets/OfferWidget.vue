@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShopOffer } from '@servimav/wings-client'
+import type { ShopOffer } from '@servimav/wings-services'
 
 export interface Props {
   data: ShopOffer

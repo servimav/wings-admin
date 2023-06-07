@@ -48,7 +48,7 @@ onMounted(() => {
             />
             <span
               class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"
-              >Flowbite</span
+              >Wings Admin</span
             >
           </a>
         </div>
@@ -88,7 +88,7 @@ onMounted(() => {
                     href="#"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
-                    >Dashboard</a
+                    >Inicio</a
                   >
                 </li>
                 <li>
@@ -96,7 +96,7 @@ onMounted(() => {
                     href="#"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
-                    >Settings</a
+                    >Ajustes</a
                   >
                 </li>
                 <li>
@@ -104,7 +104,7 @@ onMounted(() => {
                     href="#"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
-                    >Earnings</a
+                    >Ganancias</a
                   >
                 </li>
                 <li>
@@ -112,7 +112,7 @@ onMounted(() => {
                     href="#"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
-                    >Sign out</a
+                    >Salir</a
                   >
                 </li>
               </ul>

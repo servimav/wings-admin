@@ -1,0 +1,4 @@
+export enum ROUTE_NAME {
+	AUTH_LOGIN = 'AUTH.LOGIN',
+	HOME = 'DASHBOARD_HOME'
+}

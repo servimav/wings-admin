@@ -5,9 +5,11 @@ import NavTop from '@/components/menus/NavTop.vue'
 </script>
 
 <template>
-  <div>
+  <div class="relative min-h-screen">
     <NavTop />
     <DrawerLeft />
-    <RouterView />
+    <div class="p-2">
+      <RouterView />
+    </div>
   </div>
 </template>

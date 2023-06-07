@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
 import { type RouteLocationRaw, useRouter } from 'vue-router'
 import { ELEMENT_ID } from '@/helpers'
-import { defineAsyncComponent } from 'vue'
+import { ROUTE_NAME } from '@/router'
 // Components
 const ChartBarIcon = defineAsyncComponent(() => import('@/components/icons/ChartBarIcon.vue'))
 const ChatIcon = defineAsyncComponent(() => import('@/components/icons/ChatIcon.vue'))
@@ -33,25 +34,30 @@ const $router = useRouter()
 const drawerItems: MenuItem[] = [
   {
     icon: HomeIcon,
-    label: 'Inicio'
+    label: 'Inicio',
+    to: { name: ROUTE_NAME.HOME }
   },
   {
     icon: SquaresIcon,
     label: 'Pedidos',
-    badge: '5'
+    badge: '5',
+    to: { name: ROUTE_NAME.ORDERS }
   },
   {
     icon: StoreIcon,
-    label: 'Mi Tienda'
+    label: 'Mi Tienda',
+    to: { name: ROUTE_NAME.STORE }
   },
   {
     icon: OfferIcon,
-    label: 'Mis Productos'
+    label: 'Mis Productos',
+    to: { name: ROUTE_NAME.OFFERS }
   },
   {
     icon: ChatIcon,
     label: 'Mensajes',
-    badge: '10'
+    badge: '10',
+    to: { name: ROUTE_NAME.MESSAGES }
   },
   {
     icon: SettingIcon,
@@ -85,6 +91,8 @@ function goTo(to?: RouteLocationRaw) {
           v-for="(item, itemKey) in drawerItems"
           :key="`draweri-item-${itemKey}`"
           @click="() => goTo(item.to)"
+          :data-drawer-target="elementId"
+          :data-drawer-toggle="elementId"
           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <component :is="item.icon" class="w-6 h-6 flex-shrink-0" />

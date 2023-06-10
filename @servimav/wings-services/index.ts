@@ -1,5 +1,5 @@
 import axios, { AxiosRequestHeaders } from 'axios';
-import type { TokenHandler } from './tokenHandler'
+import { type TokenHandler, defaultTokenHandler } from './tokenHandler'
 import shopOffer, { ShopCategory, ShopOffer, ShopOfferCreate } from './services/shopOffer'
 import shopStore, { ShopStore, ShopStoreCreate } from './services/shopStore'
 import user, { User, UserAuthResponse, UserLogin, UserRegister, UserRole } from './services/user'
@@ -8,7 +8,7 @@ import user, { User, UserAuthResponse, UserLogin, UserRegister, UserRole } from 
  * setupWings
  * @param props WingsProps
  */
-function setupWings({ apiUrl, tokenHandler }: WingsProps) {
+function setupWings({ apiUrl, tokenHandler, appSecretKey }: WingsProps) {
 
     const api = axios.create({
         baseURL: apiUrl,
@@ -23,6 +23,11 @@ function setupWings({ apiUrl, tokenHandler }: WingsProps) {
         if (!(_request.headers as AxiosRequestHeaders)['Content-Type']) {
             (_request.headers as AxiosRequestHeaders)['Content-Type'] =
                 'application/json';
+        }
+        /* Append content type header if its not present */
+        if (!(_request.headers as AxiosRequestHeaders)['App-Token']) {
+            (_request.headers as AxiosRequestHeaders)['App-Token'] =
+                appSecretKey;
         }
         if (getToken) {
             const token = getToken();
@@ -50,6 +55,10 @@ function setupWings({ apiUrl, tokenHandler }: WingsProps) {
 
 export default setupWings
 
+export {
+    defaultTokenHandler
+}
+
 export type {
     // Shop Offer
     ShopCategory,
@@ -72,4 +81,5 @@ export type {
 interface WingsProps {
     apiUrl: string
     tokenHandler: TokenHandler
+    appSecretKey: string
 }

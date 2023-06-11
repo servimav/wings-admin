@@ -1,5 +1,6 @@
 import axios, { AxiosRequestHeaders } from 'axios';
 import { type TokenHandler, defaultTokenHandler } from './tokenHandler'
+import config from './services/config'
 import shopOffer, { ShopCategory, ShopOffer, ShopOfferCreate } from './services/shopOffer'
 import shopStore, { ShopStore, ShopStoreCreate } from './services/shopStore'
 import user, { User, UserAuthResponse, UserLogin, UserRegister, UserRole } from './services/user'
@@ -45,6 +46,7 @@ function setupWings({ apiUrl, tokenHandler, appSecretKey }: WingsProps) {
 
     return {
         api,
+        config: config(api),
         user: user({ api, tokenHandler }),
         shop: {
             offer: shopOffer(api),
@@ -54,10 +56,6 @@ function setupWings({ apiUrl, tokenHandler, appSecretKey }: WingsProps) {
 }
 
 export default setupWings
-
-export {
-    defaultTokenHandler
-}
 
 export type {
     // Shop Offer

@@ -38,7 +38,7 @@ export interface UserRole {
 }
 
 export interface UserLogin {
-    email: string
+    phone: string
     password: string
 }
 

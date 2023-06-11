@@ -32,5 +32,5 @@ export interface ShopStore {
 
 
 export interface ShopStoreCreate extends Omit<ShopStore, 'id' | 'owner' | 'location'> {
-    location_id: string
+    location_id: number
 }

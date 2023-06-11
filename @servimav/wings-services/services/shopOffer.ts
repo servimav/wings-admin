@@ -46,7 +46,7 @@ export interface ShopCategory {
 }
 
 export interface ShopOfferCreate
-    extends Omit<ShopOffer, 'id' | 'category' | 'store'> {
+    extends Omit<ShopOffer, 'id' | 'category' | 'store' | 'production_price'> {
     category_id: number
     store_id: number
 }

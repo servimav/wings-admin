@@ -4,20 +4,20 @@ import { RouterView } from 'vue-router'
 import { useUserStore } from '@/stores'
 // Components
 const NotificationContainer = defineAsyncComponent(
-	() => import('@/components/NotificationContainer.vue')
+  () => import('@/components/NotificationContainer.vue')
 )
 
 const $user = useUserStore()
 
 onBeforeMount(() => {
-	$user.loadData()
+  $user.loadData()
 })
 </script>
 
 <template>
-	<Suspense>
-		<RouterView />
-	</Suspense>
+  <Suspense>
+    <RouterView />
+  </Suspense>
 
-	<NotificationContainer class="fixed z-50 bottom-0 right-0" />
+  <NotificationContainer class="fixed z-50 bottom-0 right-0" />
 </template>

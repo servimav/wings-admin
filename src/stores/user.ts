@@ -31,6 +31,15 @@ export const useUserStore = defineStore(STORE_NAME, () => {
   }
 
   /**
+   * logout
+   */
+  async function logout() {
+    user.value = undefined
+    auth_token.value = undefined
+    saveData()
+  }
+
+  /**
    * -----------------------------------------
    *	Methods
    * -----------------------------------------
@@ -62,6 +71,7 @@ export const useUserStore = defineStore(STORE_NAME, () => {
     user,
     // Actions
     login,
+    logout,
     // Methods
     loadData,
     saveData

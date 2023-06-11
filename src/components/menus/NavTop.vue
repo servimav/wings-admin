@@ -1,9 +1,24 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRouter, RouterLink } from 'vue-router'
 import { initDrawers, initDropdowns } from 'flowbite'
 import { ELEMENT_ID } from '@/helpers'
+import { useUserStore } from '@/stores'
+import { ROUTE_NAME } from '@/router'
 
 const elementId = ELEMENT_ID.DRAWER_LEFT
+const $router = useRouter()
+const $user = useUserStore()
+
+const user = computed(() => $user.user)
+
+/**
+ * logout
+ */
+function logout() {
+  $user.logout()
+  $router.push({ name: ROUTE_NAME.AUTH_LOGIN })
+}
 
 onMounted(() => {
   initDrawers()
@@ -52,7 +67,7 @@ onMounted(() => {
             >
           </a>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" v-if="user">
           <div class="flex items-center ml-3">
             <div>
               <button
@@ -74,42 +89,43 @@ onMounted(() => {
               id="dropdown-user"
             >
               <div class="px-4 py-3" role="none">
-                <p class="text-sm text-gray-900 dark:text-white" role="none">Neil Sims</p>
+                <p class="text-sm text-gray-900 dark:text-white" role="none">{{ user.name }}</p>
                 <p
                   class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
                   role="none"
                 >
-                  neil.sims@flowbite.com
+                  {{ user.email }}
                 </p>
               </div>
               <ul class="py-1" role="none">
                 <li>
-                  <a
-                    href="#"
+                  <RouterLink
+                    :to="{ name: ROUTE_NAME.HOME }"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
-                    >Inicio</a
+                    >Inicio</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    :to="{ name: ROUTE_NAME.MESSAGES }"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                    role="menuitem"
+                    >Ajustes</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    :to="{ name: ROUTE_NAME.MESSAGES }"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                    role="menuitem"
+                    >Ganancias</RouterLink
                   >
                 </li>
                 <li>
                   <a
                     href="#"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                    >Ajustes</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                    >Ganancias</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
+                    @click="logout"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
                     >Salir</a

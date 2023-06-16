@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import type { ShopOffer } from '@servimav/wings-services'
+import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
 import { useServices } from '@/services'
+import { useShopStore } from '@/stores'
 // Components
 const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
 const OfferForm = defineAsyncComponent(() => import('@/components/forms/OfferForm.vue'))
@@ -12,12 +12,13 @@ const OfferWidget = defineAsyncComponent(() => import('@/components/widgets/Offe
  * -----------------------------------------
  */
 const $services = useServices()
+const $shop = useShopStore()
 /**
  * -----------------------------------------
  *	data
  * -----------------------------------------
  */
-const offers = ref<ShopOffer[]>([])
+const offers = computed(() => $shop.offers)
 const showForm = ref(false)
 /**
  * -----------------------------------------
@@ -32,7 +33,7 @@ function onClickFloatButton() {
 onBeforeMount(async () => {
   try {
     const resp = await $services.shop.offer.list()
-    offers.value = resp.data.data
+    $shop.offers = resp.data.data
   } catch (error) {
     console.log({ error })
   }
@@ -42,7 +43,7 @@ onBeforeMount(async () => {
 <template>
   <div>
     <div v-if="showForm" class="p-4 border rounded-md">
-      <OfferForm />
+      <OfferForm @completed="(status) => (showForm = false)" />
     </div>
 
     <div class="grid grid-cols-2 gap-2" v-else>

@@ -18,15 +18,16 @@ function onChange(event: Event) {
 
 <template>
   <div>
-    <label :for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-      >Select an option</label
-    >
+    <label :for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+      label
+    }}</label>
     <select
       :id="id"
       @change="onChange"
       :value="modelValue"
       :name="id"
-      class="bg-gray-50 border border-primary-300 text-primary-700 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+      :required="required"
+      class="bg-gray-50 border border-primary-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
     >
       <option v-for="(option, key) in options" :key="`option-${key}`" :value="option.value">
         {{ option.label }}

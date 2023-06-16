@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 const STORE_NAME = 'application'
 
 export const useAppStore = defineStore(STORE_NAME, () => {
+  const loading = ref(false)
   const notifications = ref<Notification[]>([])
 
   /**
@@ -49,13 +50,24 @@ export const useAppStore = defineStore(STORE_NAME, () => {
     notify({ message, type: 'positive' })
   }
 
+  /**
+   * toggleLoading
+   * @param force
+   */
+  function toggleLoading(force?: boolean) {
+    if (force) loading.value = force
+    else loading.value = !loading.value
+  }
+
   return {
+    loading,
     notifications,
     // Methods
     axiosError,
     error,
     notify,
-    success
+    success,
+    toggleLoading
   }
 })
 

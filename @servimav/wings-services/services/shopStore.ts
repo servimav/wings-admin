@@ -22,8 +22,9 @@ export interface ShopStore {
   location: GeoLocation
   name: string
   description?: string
-  phone?: string
-  email?: string
+  contact_phone?: string
+  contact_email?: string
+  contact_url: string
   image?: string
   address?: string
   coords?: GeoCoords

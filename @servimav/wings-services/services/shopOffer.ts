@@ -31,9 +31,11 @@ export interface ShopOffer {
   name: string
   description?: string
   image?: string
+  gallery?: string[]
   available: boolean
   // price
   currency: CurrencyCode
+  discount_price?: number
   production_price?: number
   sell_price: number
   // stock

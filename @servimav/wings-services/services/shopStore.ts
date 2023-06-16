@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios'
 import type { User } from './user'
 import { generateCrud } from '../crud'
-import type { GeoCoords, GeoLocation } from '../types'
+import type { GeoCoords, GeoLocation, PaginatedData } from '../types'
 
 export default function init(api: AxiosInstance) {
   const baseUrl = '/shop/stores'
@@ -12,7 +12,8 @@ export default function init(api: AxiosInstance) {
   })
 
   return {
-    ...crud
+    ...crud,
+    mine: () => api.get<PaginatedData<ShopStore>>(`${baseUrl}/mine`)
   }
 }
 

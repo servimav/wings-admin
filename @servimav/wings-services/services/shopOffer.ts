@@ -2,6 +2,7 @@ import type { AxiosInstance } from 'axios'
 import { generateCrud } from '../crud'
 import type { ShopStore } from './shopStore'
 import type { ShopCategory } from './shopCategory'
+import type { STOCK_TYPE } from '../const'
 
 export default function init(api: AxiosInstance) {
   const baseUrl = '/shop/offers'
@@ -39,7 +40,7 @@ export interface ShopOffer {
   production_price?: number
   sell_price: number
   // stock
-  stock_type: string
+  stock_type: STOCK_TYPE
   stock_qty: number
 }
 

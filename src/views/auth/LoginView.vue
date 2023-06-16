@@ -38,6 +38,7 @@ const user = computed(() => $user.user)
  */
 async function onSubmit() {
   try {
+    console.log({ form: form.value })
     await $user.login(form.value)
     $app.success(`Bienvenido ${user.value?.name}`)
     $router.push({ name: ROUTE_NAME.HOME })

@@ -8,7 +8,7 @@
   }
 
   .btn-primary {
-    @apply focus:outline-none text-black bg-primary-500 hover:bg-primary-700 hover:text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg px-5 py-2.5 mr-2 mb-2 dark:bg-primary-700 dark:hover:bg-green-900 dark:focus:ring-green-900;
+    @apply focus:outline-none text-black bg-primary-300 hover:bg-primary-700 hover:text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg px-5 py-2.5 mr-2 mb-2 dark:bg-primary-700 dark:hover:bg-green-900 dark:focus:ring-green-900;
   }
 
   .btn-positive {

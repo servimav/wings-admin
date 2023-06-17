@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
+import { computed, defineAsyncComponent, onBeforeMount, onMounted, ref } from 'vue'
+import { initModals } from 'flowbite'
 import { useAppStore, useShopStore } from '@/stores'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { ShopOffer } from '@servimav/wings-services'
+import { useServices } from '@/services'
+import { ROUTE_NAME } from '@/router'
 // Components
+const DeleteModal = defineAsyncComponent(() => import('@/components/modals/DeleteModal.vue'))
 const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
 const OfferForm = defineAsyncComponent(() => import('@/components/forms/OfferForm.vue'))
 const OfferSkeleton = defineAsyncComponent(() => import('@/components/skeleton/OfferSkeleton.vue'))
@@ -15,12 +19,15 @@ const OfferWidget = defineAsyncComponent(() => import('@/components/widgets/Offe
  */
 const $app = useAppStore()
 const $route = useRoute()
+const $router = useRouter()
+const $service = useServices()
 const $shop = useShopStore()
 /**
  * -----------------------------------------
  *	data
  * -----------------------------------------
  */
+const deleteModalId = 'store-delete-modal'
 const loading = computed(() => $app.loading)
 const offers = computed<ShopOffer[] | undefined>(() => {
   if (storeId.value) {
@@ -79,8 +86,36 @@ function onClickFloatButton() {
   showForm.value = true
 }
 
+/**
+ * onStoreDelete
+ */
+async function onStoreDelete() {
+  $app.toggleLoading(false)
+  try {
+    const resp = await $service.shop.store.remove(storeId.value as number)
+    console.log({ deleteStore: resp.data })
+    $app.success('Tienda eliminada')
+    $router.push({ name: ROUTE_NAME.STORES })
+  } catch (error) {
+    $app.axiosError(error)
+  }
+  $app.toggleLoading(true)
+}
+
+/**
+ * -----------------------------------------
+ *	Lifecycle
+ * -----------------------------------------
+ */
+
 onBeforeMount(async () => {
   await getOffers()
+})
+
+onMounted(() => {
+  setTimeout(() => {
+    initModals()
+  }, 1000)
 })
 </script>
 
@@ -104,7 +139,13 @@ onBeforeMount(async () => {
         </div>
         <div class="mt-4">
           <button class="btn-primary py-1 px-2">Editar</button>
-          <button class="btn-negative py-1 px-2">Eliminar</button>
+          <button
+            class="btn-negative py-1 px-2"
+            :data-modal-target="deleteModalId"
+            :data-modal-toggle="deleteModalId"
+          >
+            Eliminar
+          </button>
         </div>
       </div>
 
@@ -123,11 +164,12 @@ onBeforeMount(async () => {
 
     <div v-else-if="loading">
       <div class="grid grid-cols-2 gap-2">
-        <OfferSkeleton :repeat="8" />
+        <OfferSkeleton :repeat="4" />
       </div>
     </div>
 
     <div v-else>Sin Datos que mostrar</div>
   </div>
   <FloatButton @click="onClickFloatButton" />
+  <DeleteModal :id="deleteModalId" :store="store" @delete="onStoreDelete" />
 </template>

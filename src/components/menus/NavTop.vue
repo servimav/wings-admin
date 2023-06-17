@@ -28,7 +28,7 @@ onMounted(() => {
 
 <template>
   <nav
-    class="sticky top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+    class="sticky top-0 z-20 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
@@ -55,17 +55,12 @@ onMounted(() => {
               ></path>
             </svg>
           </button>
-          <a href="https://flowbite.com" class="flex ml-2 md:mr-24">
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              class="h-8 mr-3"
-              alt="FlowBite Logo"
-            />
+          <div class="flex ml-2 md:mr-24">
             <span
-              class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"
+              class="self-center text-xl font-semibold text-slate-700 whitespace-nowrap dark:text-white"
               >Wings Admin</span
             >
-          </a>
+          </div>
         </div>
         <div class="flex items-center" v-if="user">
           <div class="flex items-center ml-3">
@@ -77,11 +72,7 @@ onMounted(() => {
                 data-dropdown-toggle="dropdown-user"
               >
                 <span class="sr-only">Open user menu</span>
-                <img
-                  class="w-8 h-8 rounded-full"
-                  src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                  alt="user photo"
-                />
+                <img class="w-8 h-8 rounded-full" src="../../assets/logo.svg" alt="user photo" />
               </button>
             </div>
             <div

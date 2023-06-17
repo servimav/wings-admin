@@ -13,9 +13,8 @@ const $service = useServices()
 
 export const useShopStore = defineStore(STORE_NAME, () => {
   const categories = ref<ShopCategory[]>([])
-  const offers = ref<ShopOffer[]>([])
   const stockType: STOCK_TYPE[] = [STOCK_TYPE.INFINITY, STOCK_TYPE.LIMITED, STOCK_TYPE.OUT]
-  const stores = ref<ShopStore[]>([])
+  const stores = ref<ShopStoreExtended[]>([])
 
   /**
    * -----------------------------------------
@@ -38,14 +37,32 @@ export const useShopStore = defineStore(STORE_NAME, () => {
     stores.value = (await $service.shop.store.mine()).data.data
   }
 
+  /**
+   * getStoreOffers
+   * @param storeId
+   * @param page
+   */
+  async function getStoreOffers(storeId: number, page = 1) {
+    const resp = await $service.shop.store.offers(storeId)
+    // search store
+    const storeIndex = stores.value.findIndex((store) => store.id === storeId)
+    if (storeIndex >= 0) {
+      stores.value[storeIndex].offers = resp.data
+    }
+  }
+
   return {
     // data
     categories,
-    offers,
     stockType,
     stores,
     // Methods
     getCategories,
-    getMyStores
+    getMyStores,
+    getStoreOffers
   }
 })
+
+export interface ShopStoreExtended extends ShopStore {
+  offers?: ShopOffer[]
+}

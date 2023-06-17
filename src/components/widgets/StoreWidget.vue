@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { toCurrency } from '@/helpers'
-import type { ShopOffer } from '@servimav/wings-services'
+import type { ShopStore } from '@servimav/wings-services'
 
 export interface Props {
-  data: ShopOffer
+  data: ShopStore
 }
 
 defineProps<Props>()
@@ -18,15 +17,6 @@ defineProps<Props>()
     </div>
     <div class="p-2">
       <h5 class="text-sm text-gray-900 dark:text-white">{{ data.name }}</h5>
-      <p class="font-bold text-gray-900 dark:text-white">{{ toCurrency(data.sell_price) }}</p>
     </div>
   </div>
 </template>
-
-<style scoped>
-.trim {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-</style>

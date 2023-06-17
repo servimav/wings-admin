@@ -17,6 +17,7 @@ const ToggleInput = defineAsyncComponent(() => import('@/components/forms/inputs
 
 const $app = useAppStore()
 const $emit = defineEmits<{ (e: 'completed', status: boolean): void }>()
+const $props = defineProps<{ storeId?: number }>()
 const $service = useServices()
 const $shop = useShopStore()
 /**
@@ -61,8 +62,7 @@ const stores = computed(() => $shop.stores)
 async function onSubmit() {
   $app.toggleLoading(true)
   try {
-    const resp = await $service.shop.offer.create(form.value)
-    $shop.offers = [resp.data, ...$shop.offers]
+    await $service.shop.offer.create(form.value)
     $app.success('Producto guardado')
     $emit('completed', true)
   } catch (error) {
@@ -79,6 +79,10 @@ async function onSubmit() {
  */
 
 onBeforeMount(async () => {
+  // Set store from props
+  if ($props.storeId) form.value.store_id = $props.storeId
+
+  // List categories
   try {
     await $shop.getCategories()
   } catch (error) {
@@ -187,8 +191,8 @@ onBeforeMount(async () => {
       />
     </div>
     <div class="mt-4">
-      <button class="btn-primary">Guardar</button>
-      <button class="btn">Cancelar</button>
+      <button class="btn-primary" type="submit">Guardar</button>
+      <button class="btn" type="reset" @click="() => $emit('completed', true)">Cancelar</button>
     </div>
   </form>
 </template>

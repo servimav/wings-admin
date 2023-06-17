@@ -32,6 +32,12 @@ const offers = computed<ShopOffer[] | undefined>(() => {
 })
 
 const showForm = ref(false)
+const store = computed(() => {
+  if (storeId.value) {
+    return $shop.stores.find((s) => s.id === storeId.value)
+  }
+  return undefined
+})
 const storeId = ref<number>()
 /**
  * -----------------------------------------
@@ -84,13 +90,36 @@ onBeforeMount(async () => {
       <OfferForm @completed="onFormCompleted" :store-id="storeId" />
     </div>
 
-    <div class="grid grid-cols-2 gap-2" v-else-if="offers && offers.length">
-      <OfferWidget
-        v-for="(offer, offerKey) in offers"
-        :key="`offer-${offer.id}-${offerKey}`"
-        :data="offer"
-      />
-    </div>
+    <template v-else-if="store">
+      <div class="border rounded-md p-2">
+        <div class="space-y-1">
+          <h2 class="text-xl text-center font-bold">{{ store.name }}</h2>
+          <p class="font-semibold" :class="store.available ? 'text-green-700' : 'text-slate-600'">
+            {{ store.available ? 'Abierta' : 'Cerrada' }}
+          </p>
+          <p class="font-semibold">Descripcion</p>
+          <p class="text-sm text-justify">{{ store.description }}</p>
+          <p class="font-semibold">Dirección</p>
+          <p class="text-sm text-justify">{{ store.address }}</p>
+        </div>
+        <div class="mt-4">
+          <button class="btn-primary py-1 px-2">Editar</button>
+          <button class="btn-negative py-1 px-2">Eliminar</button>
+        </div>
+      </div>
+
+      <div v-if="offers && offers.length" class="mt-4">
+        <h3 class="text-xl text-center">Productos</h3>
+
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          <OfferWidget
+            v-for="(offer, offerKey) in offers"
+            :key="`offer-${offer.id}-${offerKey}`"
+            :data="offer"
+          />
+        </div>
+      </div>
+    </template>
 
     <div v-else-if="loading">
       <div class="grid grid-cols-2 gap-2">

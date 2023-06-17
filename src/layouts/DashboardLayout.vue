@@ -28,7 +28,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="relative min-h-screen">
+  <div class="relative min-h-screen text-slate-700">
     <NavTop />
     <DrawerLeft />
     <div class="p-2">

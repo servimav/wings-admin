@@ -3,7 +3,7 @@ import { computed, defineAsyncComponent, onBeforeMount, onMounted, ref } from 'v
 import { initModals } from 'flowbite'
 import { useAppStore, useShopStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
-import type { ShopOffer } from '@servimav/wings-services'
+import type { ShopOffer, ShopStore } from '@servimav/wings-services'
 import { useServices } from '@/services'
 import { ROUTE_NAME } from '@/router'
 // Components
@@ -12,6 +12,8 @@ const FloatButton = defineAsyncComponent(() => import('@/components/buttons/Floa
 const OfferForm = defineAsyncComponent(() => import('@/components/forms/OfferForm.vue'))
 const OfferSkeleton = defineAsyncComponent(() => import('@/components/skeleton/OfferSkeleton.vue'))
 const OfferWidget = defineAsyncComponent(() => import('@/components/widgets/OfferWidget.vue'))
+const StoreForm = defineAsyncComponent(() => import('@/components/forms/StoreForm.vue'))
+
 /**
  * -----------------------------------------
  *	composables
@@ -38,7 +40,9 @@ const offers = computed<ShopOffer[] | undefined>(() => {
   return []
 })
 
-const showForm = ref(false)
+const showOfferForm = ref(false)
+const showStoreForm = ref(false)
+
 const store = computed(() => {
   if (storeId.value) {
     return $shop.stores.find((s) => s.id === storeId.value)
@@ -51,6 +55,13 @@ const storeId = ref<number>()
  *	Methods
  * -----------------------------------------
  */
+
+/**
+ * Handle on edit store button click
+ */
+function onEditStoreClick() {
+  showStoreForm.value = true
+}
 
 /**
  * getOffers
@@ -69,21 +80,18 @@ async function getOffers() {
 }
 
 /**
- * onFormCompleted
- * @param status
+ * Handle on OfferForm created event
  */
-function onFormCompleted(status: boolean) {
-  if (status) {
-    showForm.value = false
-    getOffers()
-  }
+function onOfferCreated() {
+  showOfferForm.value = false
+  getOffers()
 }
 
 /**
  * onClickFloatButton
  */
 function onClickFloatButton() {
-  showForm.value = true
+  showOfferForm.value = true
 }
 
 /**
@@ -100,6 +108,26 @@ async function onStoreDelete() {
     $app.axiosError(error)
   }
   $app.toggleLoading(true)
+}
+
+/**
+ * Handle when store form updated event is triggered
+ * @param store
+ */
+function onStoreUpdated(store: ShopStore) {
+  // Update store data in local stores
+  const storeIndex = $shop.stores.findIndex((s) => s.id === store.id)
+
+  if (storeIndex >= 0) {
+    // create a copy of store offers
+    const storeOffers = $shop.stores[storeIndex].offers
+    // update store value
+    $shop.stores[storeIndex] = store
+    // Restore store offers
+    $shop.stores[storeIndex].offers = storeOffers
+  }
+  // hide form
+  showStoreForm.value = false
 }
 
 /**
@@ -121,8 +149,12 @@ onMounted(() => {
 
 <template>
   <div>
-    <div v-if="showForm" class="p-4 border rounded-md">
-      <OfferForm @completed="onFormCompleted" :store-id="storeId" />
+    <div v-if="showOfferForm && store" class="p-4 border rounded-md">
+      <OfferForm :store-id="store.id" @created="onOfferCreated" />
+    </div>
+
+    <div v-else-if="showStoreForm" class="p-4 border rounded-md">
+      <StoreForm :update="store" @updated="onStoreUpdated" />
     </div>
 
     <template v-else-if="store">
@@ -138,7 +170,7 @@ onMounted(() => {
           <p class="text-sm text-justify">{{ store.address }}</p>
         </div>
         <div class="mt-4">
-          <button class="btn-primary py-1 px-2">Editar</button>
+          <button class="btn-primary py-1 px-2" @click="onEditStoreClick">Editar</button>
           <button
             class="btn-negative py-1 px-2"
             :data-modal-target="deleteModalId"

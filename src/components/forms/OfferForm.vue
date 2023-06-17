@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import { type ShopOfferCreate, STOCK_TYPE } from '@servimav/wings-services'
+import { type ShopOfferCreate, STOCK_TYPE, type ShopOffer } from '@servimav/wings-services'
 import { useShopStore } from '@/stores'
 import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
+// Types
+export interface Emits {
+  (e: 'created', store: ShopOffer): void
+  (e: 'updated', store: ShopOffer): void
+}
+export interface Props {
+  storeId: number
+  update?: ShopOffer
+}
 // Components
 const SelectInput = defineAsyncComponent(() => import('@/components/forms/inputs/SelectInput.vue'))
 const TextInput = defineAsyncComponent(() => import('@/components/forms/inputs/TextInput.vue'))
@@ -16,8 +25,8 @@ const ToggleInput = defineAsyncComponent(() => import('@/components/forms/inputs
  */
 
 const $app = useAppStore()
-const $emit = defineEmits<{ (e: 'completed', status: boolean): void }>()
-const $props = defineProps<{ storeId?: number }>()
+const $emit = defineEmits<Emits>()
+const $props = defineProps<Props>()
 const $service = useServices()
 const $shop = useShopStore()
 /**
@@ -49,6 +58,7 @@ const form = ref<ShopOfferCreate>({
   gallery: undefined
 })
 const stores = computed(() => $shop.stores)
+const updateId = ref<number>()
 
 /**
  * -----------------------------------------
@@ -62,12 +72,17 @@ const stores = computed(() => $shop.stores)
 async function onSubmit() {
   $app.toggleLoading(true)
   try {
-    await $service.shop.offer.create(form.value)
+    // Check if update
+    if (updateId.value) {
+      const updateResp = await $service.shop.offer.update(updateId.value, form.value)
+      $emit('updated', updateResp.data)
+    } else {
+      const createResp = await $service.shop.offer.create(form.value)
+      $emit('created', createResp.data)
+    }
     $app.success('Producto guardado')
-    $emit('completed', true)
   } catch (error) {
     $app.axiosError(error)
-    $emit('completed', false)
   }
   $app.toggleLoading(false)
 }
@@ -87,6 +102,28 @@ onBeforeMount(async () => {
     await $shop.getCategories()
   } catch (error) {
     $app.axiosError(error)
+  }
+
+  // Fill data if update props exists
+  if ($props.update) {
+    updateId.value = $props.update.id
+
+    form.value = {
+      available: $props.update.available,
+      category_id: $props.update.category.id,
+      currency: $props.update.currency,
+      name: $props.update.name,
+      sell_price: $props.update.sell_price,
+      stock_qty: $props.update.stock_qty,
+      stock_type: $props.update.stock_type,
+      store_id: $props.storeId,
+      description: $props.update.description,
+      discount_price: $props.update.discount_price,
+      gallery: $props.update.gallery,
+      image: $props.update.image,
+      production_price: $props.update.production_price,
+      remote_url: $props.update.remote_url
+    }
   }
 })
 </script>

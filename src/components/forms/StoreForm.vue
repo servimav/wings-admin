@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import { type ShopStoreCreate } from '@servimav/wings-services'
+import type { ShopStore, ShopStoreCreate } from '@servimav/wings-services'
 import { useShopStore } from '@/stores'
 import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
+// Types
+export interface Emits {
+  (e: 'created', store: ShopStore): void
+  (e: 'updated', store: ShopStore): void
+}
+export interface Props {
+  update?: ShopStore
+}
 // Components
-// const SelectInput = defineAsyncComponent(() => import('@/components/forms/inputs/SelectInput.vue'))
 const TextInput = defineAsyncComponent(() => import('@/components/forms/inputs/TextInput.vue'))
 const ToggleInput = defineAsyncComponent(() => import('@/components/forms/inputs/ToggleInput.vue'))
 
@@ -16,9 +23,11 @@ const ToggleInput = defineAsyncComponent(() => import('@/components/forms/inputs
  */
 
 const $app = useAppStore()
-const $emit = defineEmits<{ (e: 'completed', status: boolean): void }>()
+const $emit = defineEmits<Emits>()
+const $props = defineProps<Props>()
 const $service = useServices()
 const $shop = useShopStore()
+
 /**
  * -----------------------------------------
  *	Data
@@ -41,6 +50,8 @@ const form = ref<ShopStoreCreate>({
   }
 })
 
+const updateId = ref<number>()
+
 /**
  * -----------------------------------------
  *	Methods
@@ -53,13 +64,20 @@ const form = ref<ShopStoreCreate>({
 async function onSubmit() {
   $app.toggleLoading(true)
   try {
-    const resp = await $service.shop.store.create(form.value)
-    $shop.stores = [resp.data, ...$shop.stores]
+    // Check if is update
+    if (updateId.value) {
+      const updateResp = await $service.shop.store.update(updateId.value, form.value)
+      $emit('updated', updateResp.data)
+    }
+    // Create new store
+    else {
+      const createResp = await $service.shop.store.create(form.value)
+      $shop.stores = [createResp.data, ...$shop.stores]
+      $emit('created', createResp.data)
+    }
     $app.success('Tienda guardada')
-    $emit('completed', true)
   } catch (error) {
     $app.axiosError(error)
-    $emit('completed', false)
   }
   $app.toggleLoading(false)
 }
@@ -75,6 +93,23 @@ onBeforeMount(async () => {
     await $shop.getCategories()
   } catch (error) {
     $app.axiosError(error)
+  }
+
+  // preload if update  props
+  if ($props.update) {
+    updateId.value = $props.update.id
+    form.value = {
+      available: $props.update.available,
+      location_id: $props.update.location.id,
+      name: $props.update.name,
+      address: $props.update.address,
+      contact_email: $props.update.contact_email,
+      contact_phone: $props.update.contact_phone,
+      contact_url: $props.update.contact_url,
+      coords: $props.update.coords,
+      description: $props.update.description,
+      image: $props.update.image
+    }
   }
 })
 </script>

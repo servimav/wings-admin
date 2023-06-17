@@ -19,8 +19,8 @@ export interface PaginatedData<T> {
 }
 
 export interface GeoCoords {
-  lat: number
-  lng: number
+  latitude: number
+  longitude: number
 }
 
 export interface GeoLocation {

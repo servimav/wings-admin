@@ -1,6 +1,7 @@
 import type { AxiosInstance } from 'axios'
-import type { User } from './user'
 import { generateCrud } from '../crud'
+import type { ShopOffer } from './shopOffer'
+import type { User } from './user'
 import type { GeoCoords, GeoLocation, PaginatedData } from '../types'
 
 export default function init(api: AxiosInstance) {
@@ -13,7 +14,9 @@ export default function init(api: AxiosInstance) {
 
   return {
     ...crud,
-    mine: () => api.get<PaginatedData<ShopStore>>(`${baseUrl}/mine`)
+    mine: () => api.get<PaginatedData<ShopStore>>(`${baseUrl}/mine`),
+    offers: (storeId: number) => api.get<ShopOffer[]>(`${baseUrl}/${storeId}/offers`),
+    orders: (storeId: number) => api.get<PaginatedData<ShopStore>>(`${baseUrl}/${storeId}/orders`)
   }
 }
 
@@ -25,7 +28,7 @@ export interface ShopStore {
   description?: string
   contact_phone?: string
   contact_email?: string
-  contact_url: string
+  contact_url?: string
   image?: string
   address?: string
   coords?: GeoCoords
@@ -33,5 +36,5 @@ export interface ShopStore {
 }
 
 export interface ShopStoreCreate extends Omit<ShopStore, 'id' | 'owner' | 'location'> {
-  location_id: string
+  location_id: number
 }

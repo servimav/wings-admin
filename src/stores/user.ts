@@ -19,6 +19,13 @@ export const useUserStore = defineStore(STORE_NAME, () => {
    */
 
   /**
+   * geMe
+   */
+  async function geMe() {
+    user.value = (await $service.user.me()).data
+  }
+
+  /**
    * login
    * @param params
    */
@@ -36,7 +43,7 @@ export const useUserStore = defineStore(STORE_NAME, () => {
   async function logout() {
     user.value = undefined
     auth_token.value = undefined
-    saveData()
+    $storage.remove()
   }
 
   /**
@@ -70,6 +77,7 @@ export const useUserStore = defineStore(STORE_NAME, () => {
     auth_token,
     user,
     // Actions
+    geMe,
     login,
     logout,
     // Methods

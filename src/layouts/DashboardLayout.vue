@@ -2,7 +2,8 @@
 import { defineAsyncComponent, onBeforeMount } from 'vue'
 import { RouterView } from 'vue-router'
 import DrawerLeft from '@/components/menus/DrawerLeft.vue'
-import { useAppStore, useShopStore } from '@/stores'
+import { useAppStore, useShopStore, useUserStore } from '@/stores'
+import { initDropdowns } from 'flowbite'
 // Components
 const NavTop = defineAsyncComponent(() => import('@/components/menus/NavTop.vue'))
 /**
@@ -12,6 +13,7 @@ const NavTop = defineAsyncComponent(() => import('@/components/menus/NavTop.vue'
  */
 const $app = useAppStore()
 const $shop = useShopStore()
+const $user = useUserStore()
 
 /**
  * -----------------------------------------
@@ -21,6 +23,13 @@ const $shop = useShopStore()
 onBeforeMount(async () => {
   try {
     await $shop.getMyStores()
+    if ($user.auth_token) {
+      await $user.geMe()
+      // Init nav top dropdown
+      setTimeout(() => {
+        initDropdowns()
+      }, 500)
+    }
   } catch (error) {
     $app.axiosError(error)
   }

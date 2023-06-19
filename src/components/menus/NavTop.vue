@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
-import { initDrawers, initDropdowns } from 'flowbite'
+import { initDrawers } from 'flowbite'
 import { ELEMENT_ID } from '@/helpers'
 import { useUserStore } from '@/stores'
 import { ROUTE_NAME } from '@/router'
@@ -22,7 +22,6 @@ function logout() {
 
 onMounted(() => {
   initDrawers()
-  initDropdowns()
 })
 </script>
 

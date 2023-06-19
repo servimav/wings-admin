@@ -9,8 +9,11 @@ function tokenHandler(): TokenHandler {
       return user?.auth_token ?? null
     },
     setToken(token: null | string) {
+      const storage = _userStorage.get()
+
       _userStorage.set({
-        auth_token: token ?? undefined
+        auth_token: token ?? undefined,
+        user: storage && storage.user ? storage.user : undefined
       })
     }
   }

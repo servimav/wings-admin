@@ -80,6 +80,20 @@ async function getOffers() {
 }
 
 /**
+ * go to offer view
+ * @param offerId
+ */
+function goToOffer(offerId: number) {
+  $router.push({
+    name: ROUTE_NAME.OFFER,
+    params: {
+      storeId: storeId.value,
+      offerId
+    }
+  })
+}
+
+/**
  * Handle on OfferForm created event
  */
 function onOfferCreated() {
@@ -148,15 +162,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div v-if="showOfferForm && store" class="p-4 border rounded-md">
-      <OfferForm :store-id="store.id" @created="onOfferCreated" />
-    </div>
+  <div class="p-2">
+    <!-- Offer Form -->
+    <template v-if="showOfferForm && store">
+      <OfferForm :store-id="store.id" @created="onOfferCreated" @canceled="onOfferCreated" />
+    </template>
+    <!-- / Offer Form -->
 
+    <!-- Store Form -->
     <div v-else-if="showStoreForm" class="p-4 border rounded-md">
       <StoreForm :update="store" @updated="onStoreUpdated" />
     </div>
+    <!-- / Store Form -->
 
+    <!-- Store Data -->
     <template v-else-if="store">
       <div class="border rounded-md p-2">
         <div class="space-y-1">
@@ -189,19 +208,24 @@ onMounted(() => {
             v-for="(offer, offerKey) in offers"
             :key="`offer-${offer.id}-${offerKey}`"
             :data="offer"
+            @click="() => goToOffer(offer.id)"
           />
         </div>
       </div>
     </template>
+    <!-- / Store Form -->
 
+    <!-- Loading -->
     <div v-else-if="loading">
       <div class="grid grid-cols-2 gap-2">
         <OfferSkeleton :repeat="4" />
       </div>
     </div>
+    <!-- / Loading -->
 
     <div v-else>Sin Datos que mostrar</div>
   </div>
+
   <FloatButton @click="onClickFloatButton" />
   <DeleteModal :id="deleteModalId" :store="store" @delete="onStoreDelete" />
 </template>

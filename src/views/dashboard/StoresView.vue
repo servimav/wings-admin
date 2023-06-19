@@ -48,6 +48,13 @@ function onClickFloatButton() {
   showForm.value = true
 }
 
+/**
+ * handle Store Form created event
+ */
+function onStoreCreated() {
+  showForm.value = false
+}
+
 onBeforeMount(async () => {
   $app.toggleLoading(true)
   try {
@@ -60,9 +67,9 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="p-2">
     <div v-if="showForm" class="p-4 border rounded-md">
-      <StoreForm @completed="(status) => (showForm = !status)" />
+      <StoreForm @created="onStoreCreated" />
     </div>
 
     <div class="grid grid-cols-2 gap-2" v-else-if="stores && stores.length > 0">

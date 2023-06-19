@@ -77,3 +77,5 @@ export const useUserStore = defineStore(STORE_NAME, () => {
     saveData
   }
 })
+
+export const _userStorage = $storage

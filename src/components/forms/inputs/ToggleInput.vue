@@ -1,6 +1,6 @@
 <script setup lang="ts">
 export interface Props {
-  modelValue?: boolean
+  modelValue: boolean
   color: string
   label: string
   id: string
@@ -10,13 +10,20 @@ const $props = defineProps<Props>()
 const $emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
 
 function onClick() {
-  if ($props.modelValue) $emit('update:modelValue', !$props.modelValue)
+  $emit('update:modelValue', !$props.modelValue)
 }
 </script>
 
 <template>
-  <label :for="id" class="relative inline-flex items-center cursor-pointer" @click="onClick">
-    <input :id="id" type="checkbox" value="" class="sr-only peer" :checked="modelValue" />
+  <label :for="id" class="relative inline-flex items-center cursor-pointer">
+    <input
+      :id="id"
+      type="checkbox"
+      value=""
+      class="sr-only peer"
+      @click="onClick"
+      :checked="modelValue"
+    />
     <div
       class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-700 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-500"
     ></div>

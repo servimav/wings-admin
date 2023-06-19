@@ -6,6 +6,7 @@ import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
 // Types
 export interface Emits {
+  (e: 'canceled'): void
   (e: 'created', store: ShopOffer): void
   (e: 'updated', store: ShopOffer): void
 }
@@ -35,16 +36,17 @@ const $shop = useShopStore()
  * -----------------------------------------
  */
 
-const categories = computed(() => $shop.categories)
-const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => ({
-  label: type,
-  value: type
-}))
+const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
+  if (type === STOCK_TYPE.INFINITY) return { label: 'Infinito', value: type }
+  else if (type === STOCK_TYPE.LIMITED) return { label: 'Limitado', value: type }
+  return {
+    label: 'Sin Inventario',
+    value: STOCK_TYPE.OUT
+  }
+})
 
 const form = ref<ShopOfferCreate>({
   available: true,
-  category_id: 0,
-  currency: 'CUP',
   name: '',
   discount_price: undefined,
   sell_price: 0,
@@ -55,7 +57,9 @@ const form = ref<ShopOfferCreate>({
   description: '',
   image: '',
   remote_url: '',
-  gallery: undefined
+  gallery: undefined,
+  attributes: [],
+  min_delivery_days: 7
 })
 const stores = computed(() => $shop.stores)
 const updateId = ref<number>()
@@ -110,8 +114,6 @@ onBeforeMount(async () => {
 
     form.value = {
       available: $props.update.available,
-      category_id: $props.update.category.id,
-      currency: $props.update.currency,
       name: $props.update.name,
       sell_price: $props.update.sell_price,
       stock_qty: $props.update.stock_qty,
@@ -122,7 +124,9 @@ onBeforeMount(async () => {
       gallery: $props.update.gallery,
       image: $props.update.image,
       production_price: $props.update.production_price,
-      remote_url: $props.update.remote_url
+      remote_url: $props.update.remote_url,
+      attributes: $props.update.attributes,
+      min_delivery_days: $props.update.min_delivery_days
     }
   }
 })
@@ -130,7 +134,10 @@ onBeforeMount(async () => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <div class="space-y-4">
+    <!-- Datos Generales -->
+    <div class="space-y-4 border rounded-md p-4">
+      <h4 class="text-center text-lg">Datos Generales</h4>
+
       <SelectInput
         id="offer_store_id"
         label="Tienda"
@@ -162,14 +169,6 @@ onBeforeMount(async () => {
         required
       />
 
-      <SelectInput
-        id="offer_category_id"
-        label="Categoria"
-        v-model="form.category_id"
-        :options="categories.map((cat) => ({ label: cat.name, value: cat.id }))"
-        required
-      />
-
       <TextInput
         id="offer_description"
         label="Descripcion"
@@ -187,6 +186,12 @@ onBeforeMount(async () => {
         v-model="form.image"
         type="text"
       />
+    </div>
+    <!-- / Datos Generales -->
+
+    <!-- Precios -->
+    <div class="space-y-4 border rounded-md p-4 mt-2">
+      <h4 class="text-center text-lg">Precios</h4>
 
       <TextInput
         id="offer_production_price"
@@ -210,6 +215,12 @@ onBeforeMount(async () => {
         v-model="form.discount_price"
         type="currency"
       />
+    </div>
+    <!-- / Precios -->
+
+    <!-- Inventario -->
+    <div class="space-y-4 border rounded-md p-4 mt-2">
+      <h4 class="text-center text-lg">Inventario</h4>
 
       <SelectInput
         id="offer_stock_type"
@@ -227,9 +238,26 @@ onBeforeMount(async () => {
         label="Cantidad de inventario"
       />
     </div>
+    <!-- / Inventario -->
+
+    <!-- Extra -->
+    <div class="space-y-4 border rounded-md p-4 mt-2">
+      <h4 class="text-center text-lg">Extra</h4>
+
+      <TextInput
+        id="offer_min_delivery_days"
+        label="Entrega Minima (Dias)"
+        v-model="form.min_delivery_days"
+        type="number"
+        :min="0"
+        required
+      />
+    </div>
+    <!-- / Extra -->
+
     <div class="mt-4">
       <button class="btn-primary" type="submit">Guardar</button>
-      <button class="btn" type="reset" @click="() => $emit('completed', true)">Cancelar</button>
+      <button class="btn" type="reset" @click="() => $emit('canceled')">Cancelar</button>
     </div>
   </form>
 </template>

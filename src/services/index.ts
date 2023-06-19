@@ -1,9 +1,41 @@
+import { _userStorage, useUserStore } from '@/stores'
 import initServimav from '@servimav/wings-services'
-import { defaultTokenHandler } from '@servimav/wings-services/tokenHandler'
+import type { TokenHandler } from '@servimav/wings-services'
 
-export const useServices = () =>
-  initServimav({
+function tokenHandler(): TokenHandler {
+  const handler: TokenHandler = {
+    getToken: () => {
+      const user = _userStorage.get()
+      return user?.auth_token ?? null
+    },
+    setToken(token: null | string) {
+      _userStorage.set({
+        auth_token: token ?? undefined
+      })
+    }
+  }
+
+  return handler
+}
+
+export function useServices() {
+  const services = initServimav({
     apiUrl: 'http://localhost:8000/api',
-    tokenHandler: defaultTokenHandler({}),
+    tokenHandler: tokenHandler(),
     appSecretKey: import.meta.env.VITE_APP_TOKEN
   })
+
+  services.api.interceptors.response.use(
+    (resp) => resp,
+    (error) => {
+      const $user = useUserStore()
+      if (error.response.status === 401) {
+        $user.logout()
+        window.location.assign('/auth')
+      }
+      return error
+    }
+  )
+
+  return services
+}

@@ -14,8 +14,9 @@ export function defaultTokenHandler(params: Partial<TokenHandler>): TokenHandler
 
   const setToken = params.setToken
     ? params.setToken
-    : (token: string) => {
-        localStorage.setItem(STORAGE, token)
+    : (token: string | null) => {
+        if (token) localStorage.setItem(STORAGE, token)
+        else localStorage.removeItem(STORAGE)
       }
 
   return {
@@ -25,6 +26,6 @@ export function defaultTokenHandler(params: Partial<TokenHandler>): TokenHandler
 }
 
 export interface TokenHandler {
-  setToken: (token: string) => void
+  setToken: (token: string | null) => void
   getToken: () => string | null
 }

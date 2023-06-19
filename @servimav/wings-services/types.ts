@@ -28,3 +28,8 @@ export interface GeoLocation {
   name: string
   coords: GeoCoords
 }
+
+export interface KeyValue {
+  key: string
+  value: string | number
+}

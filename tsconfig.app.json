@@ -4,7 +4,7 @@
 		"env.d.ts",
 		"src/**/*",
 		"src/**/*.vue",
-		"@servimav/**/*"
+		"@servimav/**/*.ts"
 	],
 	"exclude": [
 		"src/**/__tests__/*"

@@ -10,6 +10,7 @@ export default function init({ api, tokenHandler }: InitProps) {
       tokenHandler.setToken(resp.data.auth_token)
       return resp
     },
+    me: () => api.get<User>(`${baseUrl}/me`),
     register: async (params: UserRegister) => {
       const resp = await api.post<UserAuthResponse>(`${baseUrl}/register`, params)
       tokenHandler.setToken(resp.data.auth_token)

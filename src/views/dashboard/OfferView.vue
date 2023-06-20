@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
 import { STOCK_TYPE, type ShopOffer } from '@servimav/wings-services'
-import { toCurrency } from '@/helpers'
+import { scrollTop, toCurrency } from '@/helpers'
 import { initModals } from 'flowbite'
 import { ROUTE_NAME } from '@/router'
 /**
@@ -53,7 +53,9 @@ async function getOffer() {
   if (offerId > 0) {
     $app.toggleLoading(true)
     try {
-      const resp = await $service.shop.offer.show(offerId)
+      const resp = await $service.shop.offer.show(offerId, {
+        currency: 'USD'
+      })
       offer.value = resp.data
     } catch (error) {
       $app.axiosError(error)
@@ -104,6 +106,7 @@ function onEditButtonClick() {
 function onOfferUpdated(updatedOffer: ShopOffer) {
   offer.value = updatedOffer
   showOfferForm.value = false
+  scrollTop()
 }
 
 onBeforeMount(async () => {
@@ -111,11 +114,12 @@ onBeforeMount(async () => {
   if (offer.value) {
     setTimeout(() => {
       initModals()
-    }, 1000)
+    }, 500)
   } else {
     $app.error('No existe la oferta')
     goToParentStore()
   }
+  scrollTop()
 })
 </script>
 
@@ -154,7 +158,7 @@ onBeforeMount(async () => {
       <!-- / Actions -->
 
       <div class="p-4 rounded-md bg-slate-100 mt-2 relative">
-        <img src="../../assets/logo.svg" :alt="offer.name" :title="offer.name" />
+        <img :src="offer.image" :alt="offer.name" :title="offer.name" />
 
         <div class="absolute bottom-1 right-1 z-10">
           <div
@@ -172,6 +176,19 @@ onBeforeMount(async () => {
 
       <h2 class="text-center text-xl mt-4 py-2 font-bold">{{ offer.name }}</h2>
 
+      <div class="p-2 rounded-md border mt-4" v-if="offer.categories && offer.categories.length">
+        <h3 class="text-lg font-semibold text-center">Categorias</h3>
+        <div class="flex-wrap flex gap-2 mt-2">
+          <div
+            v-for="(category, catKey) in offer.categories"
+            :key="`category-${catKey}`"
+            class="px-2 py-1 text-sm rounded-full border bg-slate-100"
+          >
+            {{ category.name }}
+          </div>
+        </div>
+      </div>
+
       <div class="p-2 rounded-md border mt-2" v-if="offer.description">
         <h3 class="text-lg font-semibold text-center">Descripcion</h3>
         <p class="text-justify">
@@ -183,8 +200,8 @@ onBeforeMount(async () => {
         <h3 class="text-lg font-semibold text-center">Atributos</h3>
         <ul class="space-y-2">
           <li v-for="(attr, attrKey) in offer.attributes" :key="`attr-${attrKey}`">
-            {{ attr.key }}
-            <span class="font-semibold">{{ attr.value }}</span>
+            {{ attr.key }}:
+            <span class="font-semibold pl-2">{{ attr.value }}</span>
           </li>
         </ul>
       </div>
@@ -231,7 +248,7 @@ onBeforeMount(async () => {
         <ul class="space-y-2 mt-2">
           <li v-if="offer.remote_url">
             Url Remota:
-            <span class="font-semibold">{{ offer.remote_url }}</span>
+            <a class="font-semibold" :href="offer.remote_url" target="_blank">Acceder</a>
           </li>
           <li v-if="offer.min_delivery_days">
             Demora de envio minima:

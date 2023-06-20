@@ -14,7 +14,7 @@ defineProps<Props>()
     class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="p-2 bg-slate-100 relative">
-      <img class="rounded-t-lg" src="../../assets/logo.svg" alt="product image" />
+      <img class="rounded-t-lg" :src="data.image" :alt="data.name" :title="data.name" />
 
       <div class="absolute bottom-1 right-1 z-10">
         <div

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import { type ShopOfferCreate, STOCK_TYPE, type ShopOffer } from '@servimav/wings-services'
+import {
+  type ShopOfferCreate,
+  STOCK_TYPE,
+  type ShopOffer,
+  type KeyValue
+} from '@servimav/wings-services'
 import { useShopStore } from '@/stores'
 import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
@@ -16,6 +21,9 @@ export interface Props {
 }
 // Components
 const SelectInput = defineAsyncComponent(() => import('@/components/forms/inputs/SelectInput.vue'))
+const SelectMultiple = defineAsyncComponent(
+  () => import('@/components/forms/inputs/SelectMultiple.vue')
+)
 const TextInput = defineAsyncComponent(() => import('@/components/forms/inputs/TextInput.vue'))
 const ToggleInput = defineAsyncComponent(() => import('@/components/forms/inputs/ToggleInput.vue'))
 
@@ -36,14 +44,8 @@ const $shop = useShopStore()
  * -----------------------------------------
  */
 
-const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
-  if (type === STOCK_TYPE.INFINITY) return { label: 'Infinito', value: type }
-  else if (type === STOCK_TYPE.LIMITED) return { label: 'Limitado', value: type }
-  return {
-    label: 'Sin Inventario',
-    value: STOCK_TYPE.OUT
-  }
-})
+const attributes = ref<string>()
+const categories = computed(() => $shop.categories)
 
 const form = ref<ShopOfferCreate>({
   available: true,
@@ -59,8 +61,19 @@ const form = ref<ShopOfferCreate>({
   remote_url: '',
   gallery: undefined,
   attributes: [],
-  min_delivery_days: 7
+  min_delivery_days: 7,
+  categories: undefined
 })
+
+const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
+  if (type === STOCK_TYPE.INFINITY) return { label: 'Infinito', value: type }
+  else if (type === STOCK_TYPE.LIMITED) return { label: 'Limitado', value: type }
+  return {
+    label: 'Sin Inventario',
+    value: STOCK_TYPE.OUT
+  }
+})
+
 const stores = computed(() => $shop.stores)
 const updateId = ref<number>()
 
@@ -71,11 +84,50 @@ const updateId = ref<number>()
  */
 
 /**
+ * transformAttrs
+ * @param keyValues
+ */
+function transformAttrs(keyValues?: KeyValue[]): string | KeyValue[] {
+  let resp: string | KeyValue[] = ''
+  if (keyValues) {
+    resp = ''
+    keyValues.forEach((attr) => {
+      if (resp !== '') resp += '\n'
+      resp += `${attr.key}:\t${attr.value}`
+    })
+  } else if (attributes.value) {
+    resp = []
+
+    attributes.value.split('\n').forEach((line) => {
+      const formatedLine = line.replace(/\t/g, ' ')
+      const [key, value] = formatedLine.split(': ')
+      console.log({ key, value })
+      ;(resp as KeyValue[]).push({
+        key: key.trim(),
+        value: value.trim()
+      })
+    })
+  }
+  return resp
+}
+
+/**
+ * add fee to sellPrice
+ * @param productionPrice
+ */
+function onSetProductionPrice(productionPrice: number | string) {
+  form.value.production_price = productionPrice as number
+  form.value.sell_price = 1.1 * (productionPrice as number)
+}
+
+/**
  * onSubmit
  */
 async function onSubmit() {
   $app.toggleLoading(true)
   try {
+    // Transform attrs
+    if (attributes.value) form.value.attributes = transformAttrs() as KeyValue[]
     // Check if update
     if (updateId.value) {
       const updateResp = await $service.shop.offer.update(updateId.value, form.value)
@@ -111,6 +163,13 @@ onBeforeMount(async () => {
   // Fill data if update props exists
   if ($props.update) {
     updateId.value = $props.update.id
+    // fill categories
+    const updateCategories: number[] = []
+    $props.update.categories?.forEach((cat) => {
+      updateCategories.push(cat.id)
+    })
+    // fill attributes
+    attributes.value = transformAttrs($props.update.attributes) as string
 
     form.value = {
       available: $props.update.available,
@@ -126,7 +185,8 @@ onBeforeMount(async () => {
       production_price: $props.update.production_price,
       remote_url: $props.update.remote_url,
       attributes: $props.update.attributes,
-      min_delivery_days: $props.update.min_delivery_days
+      min_delivery_days: $props.update.min_delivery_days,
+      categories: updateCategories
     }
   }
 })
@@ -145,19 +205,18 @@ onBeforeMount(async () => {
         :options="stores.map((s) => ({ label: s.name, value: s.id }))"
       />
 
+      <SelectMultiple
+        id="offer_categories"
+        label="Categorias"
+        v-model="form.categories"
+        :options="categories.map((c) => ({ label: c.name, value: c.id }))"
+      />
+
       <ToggleInput
         id="offer_available"
         v-model="form.available"
         label="Disponible"
         color="primary"
-      />
-
-      <TextInput
-        id="offer-url"
-        label="URL Remota"
-        placeholder="https://shein.com/offer"
-        v-model="form.remote_url"
-        type="text"
       />
 
       <TextInput
@@ -196,7 +255,8 @@ onBeforeMount(async () => {
       <TextInput
         id="offer_production_price"
         label="Precio Produccion"
-        v-model="form.production_price"
+        :model-value="form.production_price"
+        @update:model-value="onSetProductionPrice"
         type="currency"
         required
       />
@@ -250,6 +310,23 @@ onBeforeMount(async () => {
         v-model="form.min_delivery_days"
         type="number"
         :min="0"
+        required
+      />
+
+      <TextInput
+        id="offer_url"
+        label="URL Remota"
+        placeholder="https://shein.com/offer"
+        v-model="form.remote_url"
+        type="text"
+      />
+
+      <TextInput
+        id="offer_attributes"
+        label="Atributos"
+        v-model="attributes"
+        type="textarea"
+        :rows="5"
         required
       />
     </div>

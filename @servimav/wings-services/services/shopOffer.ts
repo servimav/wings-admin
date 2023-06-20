@@ -2,6 +2,7 @@ import type { AxiosInstance } from 'axios'
 import { generateCrud } from '../crud'
 import type { STOCK_TYPE } from '../const'
 import type { KeyValue, PaginatedData } from '../types'
+import type { ShopCategory } from './shopCategory'
 
 export default function init(api: AxiosInstance) {
   const baseUrl = '/shop/offers'
@@ -13,6 +14,8 @@ export default function init(api: AxiosInstance) {
 
   return {
     ...crud,
+    show: (id: number, params: { currency: string }) =>
+      api.get<ShopOffer>(`${baseUrl}/${id}`, { params }),
     filter: (params: ShopOfferFilter) =>
       api.get<PaginatedData<ShopOffer>>(`${baseUrl}/filter`, { params })
   }
@@ -43,10 +46,12 @@ export interface ShopOffer {
   // stock
   stock_type: STOCK_TYPE
   stock_qty: number
+  categories?: ShopCategory[]
 }
 
-export interface ShopOfferCreate extends Omit<ShopOffer, 'id' | 'category' | 'store'> {
+export interface ShopOfferCreate extends Omit<ShopOffer, 'id' | 'categories' | 'store'> {
   store_id: number
+  categories?: number[]
 }
 
 export interface ShopOfferFilter {

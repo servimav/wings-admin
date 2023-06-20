@@ -5,6 +5,7 @@ export interface Props {
   id: string
   label?: string
   options: Array<{ label: string; value: string | number }>
+  placeholder?: string
 }
 
 defineProps<Props>()
@@ -27,6 +28,7 @@ function onChange(event: Event) {
       :value="modelValue"
       :name="id"
       :required="required"
+      :placeholder="placeholder"
       class="bg-gray-50 border border-primary-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
     >
       <option v-for="(option, key) in options" :key="`option-${key}`" :value="option.value">

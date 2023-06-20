@@ -70,7 +70,7 @@ function onChange(event: Event) {
       :required="required"
       :min="min"
       :max="max"
-      :step="step"
+      :step="type === 'currency' ? '0.01' : step"
     />
   </div>
 </template>

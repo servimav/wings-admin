@@ -27,3 +27,13 @@ export function toCurrency(val: number) {
 
   return formatter.format(val)
 }
+
+/**
+ * scrollTop
+ */
+export function scrollTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}

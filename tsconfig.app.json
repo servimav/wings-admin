@@ -4,7 +4,8 @@
 		"env.d.ts",
 		"src/**/*",
 		"src/**/*.vue",
-		"@servimav/**/*.ts"
+		"@servimav/**/*.ts",
+		"node_modules/vite-plugin-pwa/client.d.ts"
 	],
 	"exclude": [
 		"src/**/__tests__/*"

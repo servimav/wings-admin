@@ -1,8 +1,9 @@
 import type { AxiosInstance } from 'axios'
+import type { ShopCategory } from './shopCategory'
+import type { ShopStore } from './shopStore'
 import { generateCrud } from '../crud'
 import type { STOCK_TYPE } from '../const'
 import type { KeyValue, PaginatedData } from '../types'
-import type { ShopCategory } from './shopCategory'
 
 export default function init(api: AxiosInstance) {
   const baseUrl = '/shop/offers'
@@ -29,6 +30,9 @@ export default function init(api: AxiosInstance) {
 
 export interface ShopOffer {
   id: number
+  // Relations
+  categories?: ShopCategory[]
+  store?: ShopStore
   // Remotes
   remote_url?: string
   min_delivery_days?: number
@@ -46,7 +50,6 @@ export interface ShopOffer {
   // stock
   stock_type: STOCK_TYPE
   stock_qty: number
-  categories?: ShopCategory[]
 }
 
 export interface ShopOfferCreate extends Omit<ShopOffer, 'id' | 'categories' | 'store'> {

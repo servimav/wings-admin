@@ -89,7 +89,8 @@ const updateId = ref<number>()
  */
 function onSetProductionPrice(productionPrice: number | string) {
   form.value.production_price = productionPrice as number
-  form.value.sell_price = 1.1 * (productionPrice as number)
+  form.value.discount_price = 1.3 * (productionPrice as number)
+  form.value.sell_price = 1.5 * (productionPrice as number)
 }
 
 /**

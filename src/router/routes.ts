@@ -32,6 +32,11 @@ const dashboardRoutes: RouteRecordRaw = {
       component: () => import('@/views/dashboard/HomeView.vue')
     },
     {
+      path: 'cat',
+      name: ROUTE_NAME.CATEGORIES,
+      component: () => import('@/views/dashboard/CategoriesView.vue')
+    },
+    {
       path: 'messages',
       name: ROUTE_NAME.MESSAGES,
       component: () => import('@/views/dashboard/MessagesView.vue')

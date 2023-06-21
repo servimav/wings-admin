@@ -84,34 +84,6 @@ const updateId = ref<number>()
  */
 
 /**
- * transformAttrs
- * @param keyValues
- */
-function transformAttrs(keyValues?: KeyValue[]): string | KeyValue[] {
-  let resp: string | KeyValue[] = ''
-  if (keyValues) {
-    resp = ''
-    keyValues.forEach((attr) => {
-      if (resp !== '') resp += '\n'
-      resp += `${attr.key}:\t${attr.value}`
-    })
-  } else if (attributes.value) {
-    resp = []
-
-    attributes.value.split('\n').forEach((line) => {
-      const formatedLine = line.replace(/\t/g, ' ')
-      const [key, value] = formatedLine.split(': ')
-      console.log({ key, value })
-      ;(resp as KeyValue[]).push({
-        key: key.trim(),
-        value: value.trim()
-      })
-    })
-  }
-  return resp
-}
-
-/**
  * add fee to sellPrice
  * @param productionPrice
  */
@@ -143,6 +115,32 @@ async function onSubmit() {
   $app.toggleLoading(false)
 }
 
+/**
+ * transformAttrs
+ * @param keyValues
+ */
+function transformAttrs(keyValues?: KeyValue[]): string | KeyValue[] {
+  let resp: string | KeyValue[] = ''
+  if (keyValues) {
+    resp = ''
+    keyValues.forEach((attr) => {
+      if (resp !== '') resp += '\n'
+      resp += `${attr.key}:\t${attr.value}`
+    })
+  } else if (attributes.value) {
+    resp = []
+
+    attributes.value.split('\n').forEach((line) => {
+      const formatedLine = line.replace(/\t/g, ' ')
+      const [key, value] = formatedLine.split(': ')
+      ;(resp as KeyValue[]).push({
+        key: key.trim(),
+        value: value.trim()
+      })
+    })
+  }
+  return resp
+}
 /**
  * -----------------------------------------
  *	Lifecycle
@@ -207,7 +205,7 @@ onBeforeMount(async () => {
 
       <SelectMultiple
         id="offer_categories"
-        label="Categorias"
+        label="Categorías"
         v-model="form.categories"
         :options="categories.map((c) => ({ label: c.name, value: c.id }))"
       />
@@ -230,7 +228,7 @@ onBeforeMount(async () => {
 
       <TextInput
         id="offer_description"
-        label="Descripcion"
+        label="Descripción"
         placeholder="Mi Oferta es muy bonita..."
         v-model="form.description"
         type="textarea"
@@ -254,7 +252,7 @@ onBeforeMount(async () => {
 
       <TextInput
         id="offer_production_price"
-        label="Precio Produccion"
+        label="Precio Producción"
         :model-value="form.production_price"
         @update:model-value="onSetProductionPrice"
         type="currency"
@@ -306,7 +304,7 @@ onBeforeMount(async () => {
 
       <TextInput
         id="offer_min_delivery_days"
-        label="Entrega Minima (Dias)"
+        label="Entrega Mínima (Días)"
         v-model="form.min_delivery_days"
         type="number"
         :min="0"

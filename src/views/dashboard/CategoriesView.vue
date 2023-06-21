@@ -47,7 +47,7 @@ function onUpdatedCategory() {
 
 <template>
   <div class="p-2">
-    <h2 class="text-2xl text-center">Categorias</h2>
+    <h2 class="text-2xl text-center">Categorías</h2>
 
     <div class="mt-4 rounded-md border p-4" v-if="showForm">
       <CategoryForm

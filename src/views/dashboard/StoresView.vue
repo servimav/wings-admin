@@ -60,7 +60,7 @@ onBeforeMount(async () => {
   try {
     await $shop.getMyStores()
   } catch (error) {
-    console.log({ error })
+    $app.axiosError(error)
   }
   $app.toggleLoading(false)
 })

@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
 import { STOCK_TYPE, type ShopOffer } from '@servimav/wings-services'
-import { scrollTop, toCurrency, setDefaultImage } from '@/helpers'
+import { scrollTop, toCurrency, setDefaultImage, CUP_PRICE } from '@/helpers'
 import { initModals } from 'flowbite'
 import { ROUTE_NAME } from '@/router'
 /**
@@ -185,7 +185,7 @@ onBeforeMount(async () => {
         class="p-2 rounded-md border mt-4 shadow-sm"
         v-if="offer.categories && offer.categories.length"
       >
-        <h3 class="text-lg font-semibold text-center">Categorias</h3>
+        <h3 class="text-lg font-semibold text-center">Categorías</h3>
         <div class="flex-wrap flex gap-2 mt-2">
           <div
             v-for="(category, catKey) in offer.categories"
@@ -198,7 +198,7 @@ onBeforeMount(async () => {
       </div>
 
       <div class="p-2 rounded-md border mt-2 shadow-sm" v-if="offer.description">
-        <h3 class="text-lg font-semibold text-center">Descripcion</h3>
+        <h3 class="text-lg font-semibold text-center">Descripción</h3>
         <p class="text-justify">
           {{ offer.description }}
         </p>
@@ -223,15 +223,19 @@ onBeforeMount(async () => {
         <ul class="space-y-2 mt-2">
           <li>
             Precio Producción:
-            <span class="font-semibold">{{ toCurrency(offer.production_price ?? 0) }}</span>
+            <span class="font-semibold">{{
+              toCurrency((offer.production_price ?? 0) * CUP_PRICE)
+            }}</span>
           </li>
           <li>
             Precio venta:
-            <span class="font-semibold">{{ toCurrency(offer.sell_price) }}</span>
+            <span class="font-semibold">{{ toCurrency(offer.sell_price * CUP_PRICE) }}</span>
           </li>
           <li>
             Precio Descuento:
-            <span class="font-semibold">{{ toCurrency(offer.discount_price ?? 0) }}</span>
+            <span class="font-semibold">{{
+              toCurrency((offer.discount_price ?? 0) * CUP_PRICE)
+            }}</span>
           </li>
         </ul>
       </div>
@@ -262,8 +266,8 @@ onBeforeMount(async () => {
             <a class="font-semibold" :href="offer.remote_url" target="_blank">Acceder</a>
           </li>
           <li v-if="offer.min_delivery_days">
-            Demora de envio minima:
-            <span class="font-semibold">{{ offer.min_delivery_days }} dias</span>
+            Demora de Envío Mínima:
+            <span class="font-semibold">{{ offer.min_delivery_days }} días</span>
           </li>
         </ul>
       </div>

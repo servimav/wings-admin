@@ -43,6 +43,6 @@ export function scrollTop() {
  * @returns
  */
 export function setDefaultImage(event: Event) {
-  console.log({ event })
-  ;(event.target as HTMLImageElement).src = '/images/default.png'
+  const target = event.target as HTMLImageElement
+  target.src = '/images/default.png'
 }

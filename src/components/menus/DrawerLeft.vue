@@ -39,13 +39,13 @@ const drawerItems: MenuItem[] = [
   },
   {
     icon: SquaresIcon,
-    label: 'Pedidos',
-    badge: '5',
-    to: { name: ROUTE_NAME.ORDERS }
+    label: 'Categorías',
+    // badge: '5',
+    to: { name: ROUTE_NAME.CATEGORIES }
   },
   {
     icon: StoreIcon,
-    label: 'Mis Tiendas',
+    label: 'Tiendas',
     to: { name: ROUTE_NAME.STORES }
   },
   // {

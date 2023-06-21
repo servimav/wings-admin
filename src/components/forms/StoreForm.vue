@@ -120,7 +120,7 @@ onBeforeMount(async () => {
       <ToggleInput
         id="store_available"
         v-model="form.available"
-        label="Disponible"
+        :label="form.available ? 'Abierta' : 'Cerrada'"
         color="primary"
       />
 
@@ -135,7 +135,7 @@ onBeforeMount(async () => {
 
       <TextInput
         id="store_description"
-        label="Descripcion"
+        label="Descripción"
         placeholder="Tienda de ropas"
         v-model="form.description"
         type="textarea"
@@ -143,7 +143,7 @@ onBeforeMount(async () => {
         required
       />
 
-      <TextInput id="store_address" label="Direccion" v-model="form.address" type="text" required />
+      <TextInput id="store_address" label="Dirección" v-model="form.address" type="text" required />
 
       <TextInput
         id="store_image"
@@ -163,7 +163,7 @@ onBeforeMount(async () => {
 
       <TextInput
         id="store_contact_phone"
-        label="Telefono"
+        label="Teléfono"
         placeholder="53535353"
         v-model="form.contact_phone"
         type="tel"

@@ -114,8 +114,7 @@ function onClickFloatButton() {
 async function onStoreDelete() {
   $app.toggleLoading(false)
   try {
-    const resp = await $service.shop.store.remove(storeId.value as number)
-    console.log({ deleteStore: resp.data })
+    await $service.shop.store.remove(storeId.value as number)
     $app.success('Tienda eliminada')
     $router.push({ name: ROUTE_NAME.STORES })
   } catch (error) {
@@ -183,7 +182,7 @@ onMounted(() => {
           <p class="font-semibold" :class="store.available ? 'text-green-700' : 'text-slate-600'">
             {{ store.available ? 'Abierta' : 'Cerrada' }}
           </p>
-          <p class="font-semibold">Descripcion</p>
+          <p class="font-semibold">Descripción</p>
           <p class="text-sm text-justify">{{ store.description }}</p>
           <p class="font-semibold">Dirección</p>
           <p class="text-sm text-justify">{{ store.address }}</p>

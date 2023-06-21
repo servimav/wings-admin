@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toCurrency, setDefaultImage } from '@/helpers'
+import { toCurrency, setDefaultImage, CUP_PRICE } from '@/helpers'
 import type { ShopOffer } from '@servimav/wings-services'
 
 export interface Props {
@@ -35,7 +35,9 @@ defineProps<Props>()
     </div>
     <div class="p-2">
       <h5 class="text-sm text-gray-900 dark:text-white">{{ data.name }}</h5>
-      <p class="font-bold text-gray-900 dark:text-white">{{ toCurrency(data.sell_price) }}</p>
+      <p class="font-bold text-gray-900 dark:text-white">
+        {{ toCurrency(data.sell_price * CUP_PRICE) }}
+      </p>
     </div>
   </div>
 </template>

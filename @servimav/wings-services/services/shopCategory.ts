@@ -2,16 +2,16 @@ import type { AxiosInstance } from 'axios'
 import { generateCrudWithoutPaginate } from '../crud'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/shop/categories'
+	const baseUrl = '/shop/categories'
 
-  const crud = generateCrudWithoutPaginate<ShopCategory>({
-    api,
-    baseUrl
-  })
+	const crud = generateCrudWithoutPaginate<ShopCategory, ShopCategoryCreate>({
+		api,
+		baseUrl
+	})
 
-  return {
-    ...crud
-  }
+	return {
+		...crud
+	}
 }
 
 /**
@@ -21,6 +21,14 @@ export default function init(api: AxiosInstance) {
  */
 
 export interface ShopCategory {
-  id: number
-  name: string
+	id: number
+	name: string
+	image?: string
+	parent?: ShopCategory
+}
+
+export interface ShopCategoryCreate {
+	name: string
+	image?: string
+	parent_id?: number
 }

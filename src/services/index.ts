@@ -23,7 +23,7 @@ function tokenHandler(): TokenHandler {
 
 export function useServices() {
   const services = initServimav({
-    apiUrl: 'http://localhost:8000/api',
+    apiUrl: import.meta.env.VITE_API_URL,
     tokenHandler: tokenHandler(),
     appSecretKey: import.meta.env.VITE_APP_TOKEN
   })

@@ -23,7 +23,7 @@ const $user = useUserStore()
 onBeforeMount(async () => {
   try {
     // Parallel requests
-    Promise.all([$shop.getCategories(), $shop.getMyStores()])
+    Promise.all([$shop.getCategories(), $shop.getCurrencies(), $shop.getMyStores()])
 
     if ($user.auth_token) {
       await $user.geMe()

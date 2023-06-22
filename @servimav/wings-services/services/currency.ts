@@ -1,15 +1,14 @@
 import type { AxiosInstance } from 'axios'
-import { generateCrud } from '../crud'
+import { generateCrudWithoutPaginate } from '../crud'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/currency'
+	const baseUrl = '/currency'
 
-  const crud = generateCrud<Currency>({ api, baseUrl })
+	const crud = generateCrudWithoutPaginate<Currency>({ api, baseUrl })
 
-  return {
-    get: () => api.get<Currency>(baseUrl),
-    update: () => api.patch<Currency>(baseUrl)
-  }
+	return {
+		...crud
+	}
 }
 
 /**
@@ -19,8 +18,9 @@ export default function init(api: AxiosInstance) {
  */
 
 export interface Currency {
-  code: string
-  name: string
-  available: boolean
-  price: number
+	id: number
+	code: string
+	name: string
+	available: boolean
+	price: number
 }

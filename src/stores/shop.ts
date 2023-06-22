@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import {
   STOCK_TYPE,
+  type Currency,
   type ShopCategory,
   type ShopOffer,
   type ShopStore
@@ -13,6 +14,7 @@ const $service = useServices()
 
 export const useShopStore = defineStore(STORE_NAME, () => {
   const categories = ref<ShopCategory[]>([])
+  const currencies = ref<Currency[]>([])
   const stockType: STOCK_TYPE[] = [STOCK_TYPE.INFINITY, STOCK_TYPE.LIMITED, STOCK_TYPE.OUT]
   const stores = ref<ShopStoreExtended[]>([])
 
@@ -27,6 +29,13 @@ export const useShopStore = defineStore(STORE_NAME, () => {
    */
   async function getCategories() {
     categories.value = (await $service.shop.category.list()).data
+  }
+
+  /**
+   * getCurrencies
+   */
+  async function getCurrencies() {
+    currencies.value = (await $service.currency.list()).data
   }
 
   /**
@@ -54,10 +63,12 @@ export const useShopStore = defineStore(STORE_NAME, () => {
   return {
     // data
     categories,
+    currencies,
     stockType,
     stores,
     // Methods
     getCategories,
+    getCurrencies,
     getMyStores,
     getStoreOffers
   }

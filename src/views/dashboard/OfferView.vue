@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useServices } from '@/services'
-import { useAppStore } from '@/stores'
+import { useAppStore, useShopStore } from '@/stores'
 import { STOCK_TYPE, type ShopOffer } from '@servimav/wings-services'
 import { scrollTop, toCurrency, setDefaultImage, CUP_PRICE } from '@/helpers'
 import { initModals } from 'flowbite'
@@ -26,11 +26,17 @@ const $app = useAppStore()
 const $route = useRoute()
 const $router = useRouter()
 const $service = useServices()
+const $shop = useShopStore()
 /**
  * -----------------------------------------
  *	Data
  * -----------------------------------------
  */
+
+const cupPrice = computed(() => {
+  const cupCurrency = $shop.currencies.find((c) => c.code === 'CUP')
+  return cupCurrency ? cupCurrency.price : CUP_PRICE
+})
 const deleteModalId = 'offer-delete-modal'
 const loading = computed(() => $app.loading)
 const offer = ref<ShopOffer>()
@@ -224,17 +230,28 @@ onBeforeMount(async () => {
           <li>
             Precio Producción:
             <span class="font-semibold">{{
-              toCurrency((offer.production_price ?? 0) * CUP_PRICE)
+              toCurrency((offer.production_price ?? 0) * cupPrice)
             }}</span>
           </li>
-          <li>
-            Precio venta:
-            <span class="font-semibold">{{ toCurrency(offer.sell_price * CUP_PRICE) }}</span>
-          </li>
-          <li>
+
+          <li v-if="offer.discount_price">
             Precio Descuento:
+            <span class="font-semibold">{{ toCurrency(offer.discount_price * cupPrice) }}</span>
+          </li>
+
+          <li :class="{ 'line-through': offer.discount_price }">
+            Precio venta:
+            <span class="font-semibold">{{ toCurrency(offer.sell_price * cupPrice) }}</span>
+          </li>
+
+          <li>
+            Ganancia:
             <span class="font-semibold">{{
-              toCurrency((offer.discount_price ?? 0) * CUP_PRICE)
+              toCurrency(
+                (offer.discount_price
+                  ? offer.discount_price - Number(offer.production_price)
+                  : offer.sell_price - Number(offer.production_price)) * cupPrice
+              )
             }}</span>
           </li>
         </ul>

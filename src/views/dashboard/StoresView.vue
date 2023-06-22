@@ -78,6 +78,7 @@ onBeforeMount(async () => {
         :key="`store-${store.id}-${storekey}`"
         :data="store"
         @click="() => goToStoreOffers(store.id)"
+        class="cursor-pointer"
       />
     </div>
 
@@ -87,5 +88,5 @@ onBeforeMount(async () => {
 
     <div v-else>No Hay datos</div>
   </div>
-  <FloatButton @click="onClickFloatButton" />
+  <FloatButton @click="onClickFloatButton" v-if="!showForm" />
 </template>

@@ -12,6 +12,7 @@ export interface Props {
   min?: number
   max?: number
   step?: number
+  noAutocomplete?: boolean
 }
 
 const $props = defineProps<Props>()
@@ -66,6 +67,7 @@ function onChange(event: Event) {
       :name="id"
       :id="id"
       :placeholder="placeholder"
+      :autocomplete="noAutocomplete ? 'nofill' : undefined"
       class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       :required="required"
       :min="min"

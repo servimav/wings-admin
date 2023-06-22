@@ -9,6 +9,7 @@ import {
 import { useShopStore } from '@/stores'
 import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
+import { CUP_PRICE, toCurrency } from '@/helpers'
 // Types
 export interface Emits {
   (e: 'canceled'): void
@@ -46,6 +47,11 @@ const $shop = useShopStore()
 
 const attributes = ref<string>()
 const categories = computed(() => $shop.categories)
+
+const cupPrice = computed(() => {
+  const cupCurrency = $shop.currencies.find((c) => c.code === 'CUP')
+  return cupCurrency ? cupCurrency.price : CUP_PRICE
+})
 
 const form = ref<ShopOfferCreate>({
   available: true,
@@ -225,6 +231,7 @@ onBeforeMount(async () => {
         v-model="form.name"
         type="text"
         required
+        no-autocomplete
       />
 
       <TextInput
@@ -243,6 +250,7 @@ onBeforeMount(async () => {
         placeholder="https://image.url/image.png"
         v-model="form.image"
         type="text"
+        no-autocomplete
       />
     </div>
     <!-- / Datos Generales -->
@@ -259,6 +267,7 @@ onBeforeMount(async () => {
         type="currency"
         required
       />
+      {{ toCurrency((form.production_price ?? 0) * cupPrice) }} CUP
 
       <TextInput
         id="offer_sell_price"
@@ -267,6 +276,7 @@ onBeforeMount(async () => {
         type="currency"
         required
       />
+      {{ toCurrency((form.sell_price ?? 0) * cupPrice) }} CUP
 
       <TextInput
         id="offer_discount_price"
@@ -274,6 +284,7 @@ onBeforeMount(async () => {
         v-model="form.discount_price"
         type="currency"
       />
+      {{ toCurrency((form.discount_price ?? 0) * cupPrice) }} CUP
     </div>
     <!-- / Precios -->
 
@@ -318,6 +329,7 @@ onBeforeMount(async () => {
         placeholder="https://shein.com/offer"
         v-model="form.remote_url"
         type="text"
+        no-autocomplete
       />
 
       <TextInput
@@ -326,7 +338,6 @@ onBeforeMount(async () => {
         v-model="attributes"
         type="textarea"
         :rows="5"
-        required
       />
     </div>
     <!-- / Extra -->

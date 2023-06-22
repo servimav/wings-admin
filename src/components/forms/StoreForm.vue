@@ -131,6 +131,7 @@ onBeforeMount(async () => {
         v-model="form.name"
         type="text"
         required
+        no-autocomplete
       />
 
       <TextInput
@@ -151,6 +152,7 @@ onBeforeMount(async () => {
         placeholder="https://image.url/image.png"
         v-model="form.image"
         type="text"
+        no-autocomplete
       />
 
       <TextInput

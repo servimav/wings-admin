@@ -208,6 +208,7 @@ onMounted(() => {
             :key="`offer-${offer.id}-${offerKey}`"
             :data="offer"
             @click="() => goToOffer(offer.id)"
+            class="cursor-pointer"
           />
         </div>
       </div>
@@ -225,6 +226,6 @@ onMounted(() => {
     <div v-else>Sin Datos que mostrar</div>
   </div>
 
-  <FloatButton @click="onClickFloatButton" />
+  <FloatButton @click="onClickFloatButton" v-if="!showOfferForm" class="z-10" />
   <DeleteModal :id="deleteModalId" :store="store" @delete="onStoreDelete" />
 </template>

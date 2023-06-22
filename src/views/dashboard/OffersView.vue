@@ -112,15 +112,16 @@ function onClickFloatButton() {
  * onStoreDelete
  */
 async function onStoreDelete() {
-  $app.toggleLoading(false)
-  try {
-    await $service.shop.store.remove(storeId.value as number)
-    $app.success('Tienda eliminada')
-    $router.push({ name: ROUTE_NAME.STORES })
-  } catch (error) {
-    $app.axiosError(error)
-  }
-  $app.toggleLoading(true)
+  // $app.toggleLoading(false)
+  // try {
+  //   await $service.shop.store.remove(storeId.value as number)
+  //   $app.success('Tienda eliminada')
+  //   $router.push({ name: ROUTE_NAME.STORES })
+  // } catch (error) {
+  //   $app.axiosError(error)
+  // }
+  // $app.toggleLoading(true)
+  $app.error('No esta permitid eliminar la tienda')
 }
 
 /**

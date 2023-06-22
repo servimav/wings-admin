@@ -87,14 +87,15 @@ function goToParentStore() {
  */
 async function onConfirmDelete() {
   if (offer.value) {
-    $app.toggleLoading(true)
-    try {
-      await $service.shop.offer.remove(offer.value.id)
-      goToParentStore()
-    } catch (error) {
-      $app.axiosError(error)
-    }
-    $app.toggleLoading(false)
+    // $app.toggleLoading(true)
+    // try {
+    //   await $service.shop.offer.remove(offer.value.id)
+    //   goToParentStore()
+    // } catch (error) {
+    //   $app.axiosError(error)
+    // }
+    // $app.toggleLoading(false)
+    $app.error('No esta permitid eliminar la oferta')
   }
 }
 

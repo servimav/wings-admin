@@ -198,6 +198,7 @@ onBeforeMount(async () => {
             v-for="(category, catKey) in offer.categories"
             :key="`category-${catKey}`"
             class="px-2 py-1 text-sm rounded-full border bg-slate-100"
+            :class="{ 'border-primary-700': catKey == 0 }"
           >
             {{ category.name }}
           </div>

@@ -95,8 +95,8 @@ const updateId = ref<number>()
  */
 function onSetProductionPrice(productionPrice: number | string) {
   form.value.production_price = productionPrice as number
-  form.value.discount_price = 1.3 * (productionPrice as number)
-  form.value.sell_price = 1.5 * (productionPrice as number)
+  form.value.discount_price = 1.2 * (productionPrice as number)
+  form.value.sell_price = 1.3 * (productionPrice as number)
 }
 
 /**
@@ -342,7 +342,7 @@ onBeforeMount(async () => {
     </div>
     <!-- / Extra -->
 
-    <div class="mt-4">
+    <div class="mt-4 sticky bg-white p-2 bottom-0">
       <button class="btn-primary" type="submit">Guardar</button>
       <button class="btn" type="reset" @click="() => $emit('canceled')">Cancelar</button>
     </div>

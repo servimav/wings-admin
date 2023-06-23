@@ -15,10 +15,14 @@ export default function init(api: AxiosInstance) {
 
   return {
     ...crud,
+    filter: (params: ShopOfferFilter) =>
+      api.get<PaginatedData<ShopOffer>>(`${baseUrl}/filter`, { params }),
     show: (id: number, params: { currency: string }) =>
       api.get<ShopOffer>(`${baseUrl}/${id}`, { params }),
-    filter: (params: ShopOfferFilter) =>
-      api.get<PaginatedData<ShopOffer>>(`${baseUrl}/filter`, { params })
+    showClient: (id: number, params: { currency: string }) =>
+      api.get<ShopOffer>(`${baseUrl}/${id}/show-client`, { params }),
+    showSimilar: (id: number, params: { currency: string; sort?: SortFilterType }) =>
+      api.get<ShopOffer[]>(`${baseUrl}/${id}/similar`, { params })
   }
 }
 
@@ -50,9 +54,13 @@ export interface ShopOffer {
   // stock
   stock_type: STOCK_TYPE
   stock_qty: number
+  // Meta
+  rating: number
+  views: number
 }
 
-export interface ShopOfferCreate extends Omit<ShopOffer, 'id' | 'categories' | 'store'> {
+export interface ShopOfferCreate
+  extends Omit<ShopOffer, 'id' | 'categories' | 'store' | 'rating' | 'views'> {
   store_id: number
   categories?: number[]
 }
@@ -62,6 +70,8 @@ export interface ShopOfferFilter {
   store_id?: number
   currency?: CurrencyCode
   category_id?: number
+  sort?: SortFilterType
 }
 
 export type CurrencyCode = 'BTC' | 'CUP' | 'EUR' | 'MLC' | 'TRX' | 'USD' | 'USDT'
+export type SortFilterType = 'id' | 'price' | 'rating' | 'views'

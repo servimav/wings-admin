@@ -33,8 +33,10 @@ export interface ShopStore {
   address?: string
   coords?: GeoCoords
   available: boolean
+  // Meta
+  rating: number
 }
 
-export interface ShopStoreCreate extends Omit<ShopStore, 'id' | 'owner' | 'location'> {
+export interface ShopStoreCreate extends Omit<ShopStore, 'id' | 'owner' | 'location' | 'rating'> {
   location_id: number
 }

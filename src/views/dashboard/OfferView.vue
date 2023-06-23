@@ -186,6 +186,10 @@ onBeforeMount(async () => {
         </div>
       </div>
 
+      <div class="mt-4 py-2 font-bold flex justify-between gap-2">
+        <h2>#{{ offer.id }}</h2>
+        <h2 class="mr-4">{{ offer.views }} Vistas</h2>
+      </div>
       <h2 class="text-center text-xl mt-4 py-2 font-bold">{{ offer.name }}</h2>
 
       <div

@@ -12,6 +12,7 @@ const FloatButton = defineAsyncComponent(() => import('@/components/buttons/Floa
 const OfferForm = defineAsyncComponent(() => import('@/components/forms/OfferForm.vue'))
 const OfferSkeleton = defineAsyncComponent(() => import('@/components/skeleton/OfferSkeleton.vue'))
 const OfferWidget = defineAsyncComponent(() => import('@/components/widgets/OfferWidget.vue'))
+const SearchForm = defineAsyncComponent(() => import('@/components/forms/SearchForm.vue'))
 const StoreForm = defineAsyncComponent(() => import('@/components/forms/StoreForm.vue'))
 
 /**
@@ -32,6 +33,9 @@ const $shop = useShopStore()
 const deleteModalId = 'store-delete-modal'
 const loading = computed(() => $app.loading)
 const offers = computed<ShopOffer[] | undefined>(() => {
+  // First return search
+  if (searchResult.value) return searchResult.value
+
   if (storeId.value) {
     // Check if store exists
     const store = $shop.stores.find((s) => s.id === storeId.value)
@@ -39,7 +43,8 @@ const offers = computed<ShopOffer[] | undefined>(() => {
   }
   return []
 })
-
+const search = ref<string>()
+const searchResult = ref<ShopOffer[]>()
 const showOfferForm = ref(false)
 const showStoreForm = ref(false)
 
@@ -106,6 +111,25 @@ function onOfferCreated() {
  */
 function onClickFloatButton() {
   showOfferForm.value = true
+}
+
+/**
+ * onSearch
+ */
+async function onSearch() {
+  try {
+    const resp = (
+      await $service.shop.offer.filterAdvanced({
+        search: search.value,
+        store_id: (store.value as ShopStore).id,
+        currency: 'USD'
+      })
+    ).data
+
+    searchResult.value = resp.data
+  } catch (error) {
+    $app.axiosError(error)
+  }
 }
 
 /**
@@ -199,6 +223,14 @@ onMounted(() => {
           </button>
         </div>
       </section>
+      <!-- Search Form -->
+      <SearchForm
+        v-model="search"
+        class="sticky top-[4rem] z-20"
+        @search="onSearch"
+        @restart="() => (searchResult = undefined)"
+      />
+      <!-- / Search Form -->
 
       <div v-if="offers && offers.length" class="mt-4">
         <h3 class="text-xl text-center">Productos</h3>

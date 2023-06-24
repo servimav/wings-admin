@@ -17,6 +17,8 @@ export default function init(api: AxiosInstance) {
     ...crud,
     filter: (params: ShopOfferFilter) =>
       api.get<PaginatedData<ShopOffer>>(`${baseUrl}/filter`, { params }),
+    filterAdvanced: (params: ShopOfferFilter) =>
+      api.get<PaginatedData<ShopOffer>>(`${baseUrl}/filter-advanced`, { params }),
     show: (id: number, params: { currency: string }) =>
       api.get<ShopOffer>(`${baseUrl}/${id}`, { params }),
     showClient: (id: number, params: { currency: string }) =>

@@ -68,7 +68,7 @@ const form = ref<ShopOfferCreate>({
   gallery: undefined,
   attributes: [],
   min_delivery_days: 7,
-  categories: undefined
+  categories: []
 })
 
 const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {

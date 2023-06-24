@@ -23,7 +23,7 @@ export default function init(api: AxiosInstance) {
       api.get<ShopOffer>(`${baseUrl}/${id}`, { params }),
     showClient: (id: number, params: { currency: string }) =>
       api.get<ShopOffer>(`${baseUrl}/${id}/show-client`, { params }),
-    showSimilar: (id: number, params: { currency: string; sort?: SortFilterType }) =>
+    showSimilar: (id: number, params: ShopOfferSimilar) =>
       api.get<ShopOffer[]>(`${baseUrl}/${id}/similar`, { params })
   }
 }
@@ -73,6 +73,12 @@ export interface ShopOfferFilter {
   currency?: CurrencyCode
   category_id?: number
   sort?: SortFilterType
+}
+
+export interface ShopOfferSimilar {
+  currency: string
+  sort?: SortFilterType
+  level?: number
 }
 
 export type CurrencyCode = 'BTC' | 'CUP' | 'EUR' | 'MLC' | 'TRX' | 'USD' | 'USDT'

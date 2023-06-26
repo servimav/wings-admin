@@ -5,38 +5,41 @@ import type { User } from './user'
 import type { GeoCoords, GeoLocation, PaginatedData, PaginationParams } from '../types'
 
 export default function init(api: AxiosInstance) {
-	const baseUrl = '/shop/stores'
+  const baseUrl = '/shop/stores'
 
-	const crud = generateCrud<ShopStore, ShopStoreCreate>({
-		api,
-		baseUrl
-	})
+  const crud = generateCrud<ShopStore, ShopStoreCreate>({
+    api,
+    baseUrl
+  })
 
-	return {
-		...crud,
-		mine: (params?: PaginationParams) => api.get<PaginatedData<ShopStore>>(`${baseUrl}/mine`, { params }),
-		offers: (storeId: number, params?: PaginationParams) => api.get<PaginatedData<ShopOffer>>(`${baseUrl}/${storeId}/offers`, { params }),
-		orders: (storeId: number, params?: PaginationParams) => api.get<PaginatedData<ShopStore>>(`${baseUrl}/${storeId}/orders`, { params })
-	}
+  return {
+    ...crud,
+    mine: (params?: PaginationParams) =>
+      api.get<PaginatedData<ShopStore>>(`${baseUrl}/mine`, { params }),
+    offers: (storeId: number, params?: PaginationParams) =>
+      api.get<PaginatedData<ShopOffer>>(`${baseUrl}/${storeId}/offers`, { params }),
+    orders: (storeId: number, params?: PaginationParams) =>
+      api.get<PaginatedData<ShopStore>>(`${baseUrl}/${storeId}/orders`, { params })
+  }
 }
 
 export interface ShopStore {
-	id: number
-	owner: User
-	location: GeoLocation
-	name: string
-	description?: string
-	contact_phone?: string
-	contact_email?: string
-	contact_url?: string
-	image?: string
-	address?: string
-	coords?: GeoCoords
-	available: boolean
-	// Meta
-	rating: number
+  id: number
+  owner: User
+  location: GeoLocation
+  name: string
+  description?: string
+  contact_phone?: string
+  contact_email?: string
+  contact_url?: string
+  image?: string
+  address?: string
+  coords?: GeoCoords
+  available: boolean
+  // Meta
+  rating: number
 }
 
 export interface ShopStoreCreate extends Omit<ShopStore, 'id' | 'owner' | 'location' | 'rating'> {
-	location_id: number
+  location_id: number
 }

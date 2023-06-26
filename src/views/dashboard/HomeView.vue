@@ -1,80 +1,46 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref } from 'vue'
-import { useShopStore } from '@/stores'
-import type { ShopCategory } from '@servimav/wings-services'
-// Components
-const CategoryForm = defineAsyncComponent(() => import('@/components/forms/CategoryForm.vue'))
-/**
- * -----------------------------------------
- *	Composable
- * -----------------------------------------
- */
-const $shop = useShopStore()
-/**
- * -----------------------------------------
- *	Data
- * -----------------------------------------
- */
+import { toCurrency } from '@/helpers'
+import { useServices } from '@/services'
+import { onBeforeMount, ref } from 'vue'
 
-const categories = computed(() => $shop.categories)
-const selectedCategory = ref<ShopCategory>()
-const showForm = ref(false)
-/**
- * -----------------------------------------
- *	Methods
- * -----------------------------------------
- */
-
-function onClickCategory(category: ShopCategory) {
-  selectedCategory.value = category
-  showForm.value = true
-}
-function onClickNewCategory() {
-  selectedCategory.value = undefined
-  showForm.value = true
+interface Stats {
+  count_offers: number
+  qty_offers: number
+  count_available: number
+  inversion: number
+  sales: number
+  earn: number
 }
 
-function onCreatedCategory() {
-  showForm.value = false
-  selectedCategory.value = undefined
-}
+const { api } = useServices()
 
-function onUpdatedCategory() {
-  showForm.value = false
-  selectedCategory.value = undefined
-}
+const stats = ref<Stats>({
+  count_available: 0,
+  count_offers: 0,
+  earn: 0,
+  inversion: 0,
+  qty_offers: 0,
+  sales: 0
+})
+
+onBeforeMount(async () => {
+  stats.value = (await api.get<Stats>('/app/admin')).data
+})
 </script>
 
 <template>
-  <div class="p-2">
-    <h2 class="text-2xl text-center">Categorias</h2>
+  <main class="p-2">
+    <h2 class="text-center text-gray-700 text-2xl">Datos</h2>
 
-    <div class="mt-4 rounded-md border p-4" v-if="showForm">
-      <CategoryForm
-        :update="selectedCategory?.id"
-        @canceled="onCreatedCategory"
-        @created="onCreatedCategory"
-        @updated="onUpdatedCategory"
-      />
+    <div class="mt-2 p-2 border border-gray-200">
+      <ul class="list-none space-y-2">
+        <li>Ofertas: {{ stats.count_offers }}</li>
+        <li>Ofertas Disponibles: {{ stats.count_available }}</li>
+        <li>Inventario: {{ stats.qty_offers }}</li>
+        <li>Inversion: {{ toCurrency(stats.inversion) }}</li>
+        <li>Ventas: {{ toCurrency(stats.sales) }}</li>
+        <li>Ganancias: {{ toCurrency(stats.earn) }}</li>
+      </ul>
     </div>
-
-    <div class="mt-4 rounded border p-2" v-else>
-      <div class="flex flex-wrap gap-2">
-        <div
-          @click="onClickNewCategory"
-          class="py-1 px-2 text-sm rounded-full border bg-primary-100 cursor-pointer hover:bg-primary-300 hover:text-white focus:ring-4 focus:ring-primary-300"
-        >
-          Crear Nueva
-        </div>
-        <div
-          v-for="(category, categoryKey) in categories"
-          :key="`category-${categoryKey}-${category.id}`"
-          @click="() => onClickCategory(category)"
-          class="py-1 px-2 text-sm rounded-full border bg-slate-100 cursor-pointer hover:bg-primary-300 hover:text-white focus:ring-4 focus:ring-primary-300"
-        >
-          {{ category.name }}
-        </div>
-      </div>
-    </div>
-  </div>
+  </main>
 </template>

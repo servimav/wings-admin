@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onBeforeMount, onMounted, ref } from 'vue'
-import { initModals } from 'flowbite'
-import { useAppStore, useShopStore } from '@/stores'
+import { computed, defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { initModals } from 'flowbite'
 import type { ShopOffer, ShopStore } from '@servimav/wings-services'
-import { useServices } from '@/services'
+import { onScrollEvent } from '@/helpers'
 import { ROUTE_NAME } from '@/router'
+import { useServices } from '@/services'
+import { useAppStore, useShopStore } from '@/stores'
 // Components
 const DeleteModal = defineAsyncComponent(() => import('@/components/modals/DeleteModal.vue'))
 const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
@@ -30,6 +31,14 @@ const $shop = useShopStore()
  *	data
  * -----------------------------------------
  */
+const currentOfferPage = computed<number | undefined>(() => {
+  if (storeId.value) {
+    // Check if store exists
+    const store = $shop.stores.find((s) => s.id === storeId.value)
+    return store && store.offerPage ? store.offerPage : undefined
+  }
+  return undefined
+})
 const deleteModalId = 'store-delete-modal'
 const loading = computed(() => $app.loading)
 const offers = computed<ShopOffer[] | undefined>(() => {
@@ -72,11 +81,15 @@ function onEditStoreClick() {
  * getOffers
  */
 async function getOffers() {
+  if (search.value) return
+  if (loading.value) return
+
   if ($route.params.storeId) {
     storeId.value = Number($route.params.storeId)
     $app.toggleLoading(true)
     try {
-      await $shop.getStoreOffers(storeId.value)
+      const page = currentOfferPage.value ? currentOfferPage.value + 1 : undefined
+      await $shop.getStoreOffers(storeId.value, { page })
     } catch (error) {
       $app.axiosError(error)
     }
@@ -179,9 +192,26 @@ onBeforeMount(async () => {
 })
 
 onMounted(() => {
+  // Listen scrolling
+  onScrollEvent({
+    bottom: 0,
+    callback: getOffers,
+    element: window
+  })
+  // init flowbite
   setTimeout(() => {
     initModals()
-  }, 1000)
+  }, 500)
+})
+
+onBeforeUnmount(() => {
+  // Listen scrolling
+  onScrollEvent({
+    bottom: 0,
+    callback: getOffers,
+    element: window,
+    remove: true
+  })
 })
 </script>
 
@@ -232,7 +262,7 @@ onMounted(() => {
       />
       <!-- / Search Form -->
 
-      <div v-if="offers && offers.length" class="mt-4">
+      <div v-if="offers && offers.length" class="mt-4" id="products-list">
         <h3 class="text-xl text-center">Productos</h3>
 
         <div class="mt-2 grid grid-cols-2 gap-2">

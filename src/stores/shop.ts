@@ -5,7 +5,8 @@ import {
   type Currency,
   type ShopCategory,
   type ShopOffer,
-  type ShopStore
+  type ShopStore,
+  type PaginationParams
 } from '@servimav/wings-services'
 import { useServices } from '@/services'
 
@@ -29,6 +30,7 @@ export const useShopStore = defineStore(STORE_NAME, () => {
    */
   async function getCategories() {
     categories.value = (await $service.shop.category.list()).data
+    return categories.value
   }
 
   /**
@@ -42,22 +44,30 @@ export const useShopStore = defineStore(STORE_NAME, () => {
    * getMyStores
    * @param params
    */
-  async function getMyStores(page = 1) {
-    stores.value = (await $service.shop.store.mine()).data.data
+  async function getMyStores(params?: PaginationParams) {
+    stores.value = (await $service.shop.store.mine(params)).data.data
+    return stores.value
   }
 
   /**
    * getStoreOffers
    * @param storeId
-   * @param page
+   * @param params
    */
-  async function getStoreOffers(storeId: number, page = 1) {
-    const resp = await $service.shop.store.offers(storeId)
+  async function getStoreOffers(storeId: number, params?: PaginationParams) {
+    const resp = (await $service.shop.store.offers(storeId, params)).data
     // search store
     const storeIndex = stores.value.findIndex((store) => store.id === storeId)
     if (storeIndex >= 0) {
-      stores.value[storeIndex].offers = resp.data
+      // update pagination meta
+      stores.value[storeIndex].offerPage = resp.meta.current_page
+      // if store has offers push
+      if (stores.value[storeIndex].offers && stores.value[storeIndex].offers?.length)
+        stores.value[storeIndex].offers?.push(...resp.data)
+      // if store has not offers assign
+      else stores.value[storeIndex].offers = resp.data
     }
+    return resp
   }
 
   return {
@@ -76,4 +86,5 @@ export const useShopStore = defineStore(STORE_NAME, () => {
 
 export interface ShopStoreExtended extends ShopStore {
   offers?: ShopOffer[]
+  offerPage?: number
 }

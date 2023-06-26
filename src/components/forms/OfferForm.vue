@@ -68,7 +68,9 @@ const form = ref<ShopOfferCreate>({
   gallery: undefined,
   attributes: [],
   min_delivery_days: 7,
-  categories: []
+  categories: [],
+  rating: 0,
+  views: 0
 })
 
 const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
@@ -191,7 +193,9 @@ onBeforeMount(async () => {
       remote_url: $props.update.remote_url,
       attributes: $props.update.attributes,
       min_delivery_days: $props.update.min_delivery_days,
-      categories: updateCategories
+      categories: updateCategories,
+      rating: $props.update.rating,
+      views: $props.update.views
     }
   }
 })
@@ -321,6 +325,17 @@ onBeforeMount(async () => {
         type="number"
         :min="0"
         required
+      />
+
+      <TextInput id="offer_views" label="Vistas" v-model="form.views" type="number" :min="0" />
+
+      <TextInput
+        id="offer_rating"
+        label="Rating"
+        v-model="form.rating"
+        type="number"
+        :min="0"
+        :max="255"
       />
 
       <TextInput

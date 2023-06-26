@@ -39,6 +39,29 @@ export function scrollTop() {
 }
 
 /**
+ * onScrollEvent
+ * @param params
+ */
+export function onScrollEvent(params: {
+  element: HTMLElement | Window
+  callback: CallableFunction
+  bottom: number
+  remove?: boolean
+}) {
+  const { bottom, callback, element, remove } = params
+
+  const eventHandler = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight
+    const scrolled = window.scrollY
+    if (scrollable - scrolled === bottom) {
+      callback()
+    }
+  }
+
+  if (remove) element.removeEventListener('scroll', eventHandler)
+  else element.addEventListener('scroll', eventHandler)
+}
+/**
  * defaultImage
  * @returns
  */

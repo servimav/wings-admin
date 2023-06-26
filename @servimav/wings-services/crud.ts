@@ -1,5 +1,5 @@
 import type { AxiosInstance } from 'axios'
-import type { PaginatedData } from './types'
+import type { PaginatedData, PaginationParams } from './types'
 
 /**
  * generateCrud
@@ -7,13 +7,13 @@ import type { PaginatedData } from './types'
  * @returns
  */
 function generateCrud<T, C = Omit<T, 'id'>, U = Partial<C>>({ api, baseUrl }: GenerateCrudParams) {
-  return {
-    list: () => api.get<PaginatedData<T>>(baseUrl),
-    show: (id: number) => api.get<T>(`${baseUrl}/${id}`),
-    create: (params: C) => api.post<T>(`${baseUrl}`, params),
-    update: (id: number, params: U) => api.patch<T>(`${baseUrl}/${id}`, params),
-    remove: (id: number) => api.delete(`${baseUrl}/${id}`)
-  }
+	return {
+		list: (params?: PaginationParams) => api.get<PaginatedData<T>>(baseUrl, { params }),
+		show: (id: number) => api.get<T>(`${baseUrl}/${id}`),
+		create: (params: C) => api.post<T>(`${baseUrl}`, params),
+		update: (id: number, params: U) => api.patch<T>(`${baseUrl}/${id}`, params),
+		remove: (id: number) => api.delete(`${baseUrl}/${id}`)
+	}
 }
 
 /**
@@ -22,21 +22,21 @@ function generateCrud<T, C = Omit<T, 'id'>, U = Partial<C>>({ api, baseUrl }: Ge
  * @returns
  */
 function generateCrudWithoutPaginate<T, C = Omit<T, 'id'>, U = Partial<C>>({
-  api,
-  baseUrl
+	api,
+	baseUrl
 }: GenerateCrudParams) {
-  return {
-    list: () => api.get<T[]>(baseUrl),
-    show: (id: number) => api.get<T>(`${baseUrl}/${id}`),
-    create: (params: C) => api.post<T>(`${baseUrl}`, params),
-    update: (id: number, params: U) => api.patch<T>(`${baseUrl}/${id}`, params),
-    remove: (id: number) => api.delete(`${baseUrl}/${id}`)
-  }
+	return {
+		list: () => api.get<T[]>(baseUrl),
+		show: (id: number) => api.get<T>(`${baseUrl}/${id}`),
+		create: (params: C) => api.post<T>(`${baseUrl}`, params),
+		update: (id: number, params: U) => api.patch<T>(`${baseUrl}/${id}`, params),
+		remove: (id: number) => api.delete(`${baseUrl}/${id}`)
+	}
 }
 
 interface GenerateCrudParams {
-  api: AxiosInstance
-  baseUrl: string
+	api: AxiosInstance
+	baseUrl: string
 }
 
 export { generateCrud, generateCrudWithoutPaginate }

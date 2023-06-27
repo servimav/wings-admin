@@ -156,7 +156,7 @@ async function onSearchOffer(search: ShopOfferFilter) {
 /**
  * onBeforeMount
  */
-onBeforeMount(async () => {
+onBeforeMount(() => {
   // get query from route
   const filterQuery: ShopOfferFilter = $route.query
   // Check if route is STORE_OFFERS or OFFERS
@@ -170,15 +170,14 @@ onBeforeMount(async () => {
   filter.value = filterQuery
   offersCurrentPage.value = undefined
   offers.value = []
-
-  await Promise.all([getStore(filter.value?.store_id), filterOffers()])
 })
 
 /**
  * onMounted
  */
-onMounted(() => {
+onMounted(async () => {
   scrollTop()
+  await Promise.all([getStore(filter.value?.store_id), filterOffers()])
   // register scroll event listener
   window.addEventListener('scroll', scrollHandler)
 })

@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
+
 export interface Emit {
   (e: 'update:modelValue', v: boolean): void
 }
 export interface Prop {
   modelValue: boolean
 }
+const DotsIcon = defineAsyncComponent(() => import('@/components/icons/HorizontalDots.vue'))
 
 const $emit = defineEmits<Emit>()
 defineProps<Prop>()
@@ -24,22 +27,10 @@ defineProps<Prop>()
       @click.prevent="() => $emit('update:modelValue', !modelValue)"
       class="flex items-center justify-center text-white bg-primary-500 rounded-full w-14 h-14 hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 focus:outline-none"
     >
-      <svg
-        aria-hidden="true"
+      <DotsIcon
         class="w-8 h-8 transition-transform"
-        :class="{ 'group-hover:rotate-45': modelValue }"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-        ></path>
-      </svg>
+        :class="{ 'group-hover:rotate-90': modelValue }"
+      />
       <span class="sr-only">Open actions menu</span>
     </button>
   </div>

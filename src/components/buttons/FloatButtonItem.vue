@@ -30,7 +30,7 @@ const $emit = defineEmits<Emit>()
     @click.prevent="() => $emit('click')"
     :data-tooltip-target="`tooltip-${id}`"
     data-tooltip-placement="left"
-    class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400"
+    class="flex justify-center items-center w-[52px] h-[52px] text-primary-500 hover:text-white bg-white rounded-full border border-primary-300 shadow-sm hover:bg-primary-500 focus:ring-4 focus:ring-gray-700 focus:outline-none"
   >
     <component :is="icon" class="w-6 h-6" />
     <span class="sr-only">{{ label }}</span>

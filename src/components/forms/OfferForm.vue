@@ -17,7 +17,6 @@ export interface Emits {
   (e: 'updated', store: ShopOffer): void
 }
 export interface Props {
-  storeId: number
   update?: ShopOffer
 }
 // Components
@@ -55,22 +54,27 @@ const cupPrice = computed(() => {
 
 const form = ref<ShopOfferCreate>({
   available: true,
+  // data
   name: '',
-  discount_price: undefined,
+  description: '',
+  image: undefined,
+  // prices
   sell_price: 0,
-  production_price: 0,
-  stock_qty: 1,
+  discount_price: undefined,
+  provider_price: undefined,
+  inversion_price: undefined,
+  // inventary
+  stock_qty: undefined,
   stock_type: STOCK_TYPE.LIMITED,
   store_id: 0,
-  description: '',
-  image: '',
-  remote_url: '',
+  remote_url: undefined,
   gallery: undefined,
-  attributes: [],
-  min_delivery_days: 7,
-  categories: [],
-  rating: 0,
-  views: 0
+  attributes: undefined,
+  min_delivery_days: 14,
+  categories: undefined,
+  rating: undefined,
+  views: undefined,
+  weight: undefined
 })
 
 const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
@@ -90,16 +94,6 @@ const updateId = ref<number>()
  *	Methods
  * -----------------------------------------
  */
-
-/**
- * add fee to sellPrice
- * @param productionPrice
- */
-function onSetProductionPrice(productionPrice: number | string) {
-  form.value.production_price = productionPrice as number
-  form.value.discount_price = 1.2 * (productionPrice as number)
-  form.value.sell_price = 1.3 * (productionPrice as number)
-}
 
 /**
  * onSubmit
@@ -157,16 +151,6 @@ function transformAttrs(keyValues?: KeyValue[]): string | KeyValue[] {
  */
 
 onBeforeMount(async () => {
-  // Set store from props
-  if ($props.storeId) form.value.store_id = $props.storeId
-
-  // List categories
-  try {
-    await $shop.getCategories()
-  } catch (error) {
-    $app.axiosError(error)
-  }
-
   // Fill data if update props exists
   if ($props.update) {
     updateId.value = $props.update.id
@@ -179,23 +163,9 @@ onBeforeMount(async () => {
     attributes.value = transformAttrs($props.update.attributes) as string
 
     form.value = {
-      available: $props.update.available,
-      name: $props.update.name,
-      sell_price: $props.update.sell_price,
-      stock_qty: $props.update.stock_qty,
-      stock_type: $props.update.stock_type,
-      store_id: $props.storeId,
-      description: $props.update.description,
-      discount_price: $props.update.discount_price,
-      gallery: $props.update.gallery,
-      image: $props.update.image,
-      production_price: $props.update.production_price,
-      remote_url: $props.update.remote_url,
-      attributes: $props.update.attributes,
-      min_delivery_days: $props.update.min_delivery_days,
+      ...$props.update,
       categories: updateCategories,
-      rating: $props.update.rating,
-      views: $props.update.views
+      store_id: $props.update.store?.id as number
     }
   }
 })
@@ -265,13 +235,18 @@ onBeforeMount(async () => {
 
       <TextInput
         id="offer_production_price"
-        label="Precio Producción"
-        :model-value="form.production_price"
-        @update:model-value="onSetProductionPrice"
+        label="Precio Inversion"
+        v-model="form.inversion_price"
         type="currency"
-        required
       />
-      {{ toCurrency((form.production_price ?? 0) * cupPrice) }} CUP
+
+      <TextInput
+        id="offer_production_price"
+        label="Precio Proveedor"
+        v-model="form.provider_price"
+        type="currency"
+      />
+      {{ toCurrency((form.provider_price ?? 0) * cupPrice) }} CUP
 
       <TextInput
         id="offer_sell_price"
@@ -324,7 +299,6 @@ onBeforeMount(async () => {
         v-model="form.min_delivery_days"
         type="number"
         :min="0"
-        required
       />
 
       <TextInput id="offer_views" label="Vistas" v-model="form.views" type="number" :min="0" />
@@ -334,6 +308,16 @@ onBeforeMount(async () => {
         label="Rating"
         v-model="form.rating"
         type="number"
+        :min="0"
+        :max="255"
+      />
+
+      <TextInput
+        id="offer_wheight"
+        label="Peso (Lbs)"
+        v-model="form.weight"
+        type="number"
+        :step="0.01"
         :min="0"
         :max="255"
       />

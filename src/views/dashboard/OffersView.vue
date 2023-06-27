@@ -51,6 +51,7 @@ const scrollHandler = () => {
 }
 const showFloatMenu = ref(false)
 const showFilterModal = ref(false)
+const showNewOfferModal = ref(false)
 const store = ref<ShopStore>()
 
 /**
@@ -243,7 +244,17 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
 
   <div class="fixed bottom-6 left-6 z-10">
     <FloatButton v-model="showFloatMenu">
-      <FloatButtonItem label="Nuevo" :icon="IconPlus" id="plus-float" />
+      <FloatButtonItem
+        @click="
+          () => {
+            showFloatMenu = false
+            showNewOfferModal = true
+          }
+        "
+        label="Nuevo"
+        :icon="IconPlus"
+        id="plus-float"
+      />
       <FloatButtonItem
         @click="
           () => {
@@ -273,13 +284,12 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
   <!-- / Search Modal -->
 
   <!-- New offer Modal -->
-  <BaseModal v-if="showFilterModal" @close="() => (showFilterModal = false)">
+  <BaseModal v-if="showNewOfferModal" @close="() => (showNewOfferModal = false)">
     <div class="flex h-full w-full justify-center items-center">
       <div class="bg-white p-4 border rounded-xl overflow-y-auto z-30">
-        <SearchForm
-          :filter="filter"
-          @close="() => (showFilterModal = false)"
-          @search="onSearchOffer"
+        <OfferForm
+          @canceled="() => (showNewOfferModal = false)"
+          @created="() => (showNewOfferModal = false)"
         />
       </div>
     </div>

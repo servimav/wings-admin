@@ -12,7 +12,12 @@ import { ROUTE_NAME } from '@/router'
  *	Components
  * -----------------------------------------
  */
-const DeleteModal = defineAsyncComponent(() => import('@/components/modals/DeleteModal.vue'))
+const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
+const FloatButtonItem = defineAsyncComponent(
+  () => import('@/components/buttons/FloatButtonItem.vue')
+)
+const IconEdit = defineAsyncComponent(() => import('@/components/icons/EditPencilOutline.vue'))
+const IconDelete = defineAsyncComponent(() => import('@/components/icons/TrashOutline.vue'))
 const OfferForm = defineAsyncComponent(() => import('@/components/forms/OfferForm.vue'))
 const OfferSkeleton = defineAsyncComponent(() => import('@/components/skeleton/OfferSkeleton.vue'))
 
@@ -37,11 +42,10 @@ const cupPrice = computed(() => {
   const cupCurrency = $shop.currencies.find((c) => c.code === 'CUP')
   return cupCurrency ? cupCurrency.price : CUP_PRICE
 })
-const deleteModalId = 'offer-delete-modal'
 const loading = computed(() => $app.loading)
 const offer = ref<ShopOffer>()
-const showOfferForm = ref(false)
-const storeId = ref<number>()
+const shoForm = ref(false)
+const showFloatMenu = ref(false)
 
 /**
  * -----------------------------------------
@@ -52,22 +56,18 @@ const storeId = ref<number>()
 /**
  * load offer data from servers
  */
-async function getOffer() {
-  const offerId = Number($route.params.offerId)
-  storeId.value = Number($route.params.storeId)
-
-  if (offerId > 0) {
-    $app.toggleLoading(true)
-    try {
-      const resp = await $service.shop.offer.show(offerId, {
+async function getOffer(offerId: number) {
+  $app.toggleLoading(true)
+  try {
+    offer.value = (
+      await $service.shop.offer.show(offerId, {
         currency: 'USD'
       })
-      offer.value = resp.data
-    } catch (error) {
-      $app.axiosError(error)
-    }
-    $app.toggleLoading(false)
+    ).data
+  } catch (error) {
+    $app.axiosError(error)
   }
+  $app.toggleLoading(false)
 }
 
 /**
@@ -77,33 +77,25 @@ function goToParentStore() {
   $router.push({
     name: ROUTE_NAME.STORE,
     params: {
-      storeId: $route.params.storeId
+      storeId: offer.value?.store?.id
     }
   })
 }
 
 /**
- * Handle Delete modal event
+ * onClickDelete
  */
-async function onConfirmDelete() {
-  if (offer.value) {
-    // $app.toggleLoading(true)
-    // try {
-    //   await $service.shop.offer.remove(offer.value.id)
-    //   goToParentStore()
-    // } catch (error) {
-    //   $app.axiosError(error)
-    // }
-    // $app.toggleLoading(false)
-    $app.error('No esta permitid eliminar la oferta')
-  }
+async function onClickDelete() {
+  $app.error('No esta permitido eliminar la oferta')
+  showFloatMenu.value = false
 }
 
 /**
  * Handle edit button onClick event
  */
-function onEditButtonClick() {
-  showOfferForm.value = true
+function onClickEdit() {
+  shoForm.value = true
+  showFloatMenu.value = false
 }
 
 /**
@@ -112,12 +104,15 @@ function onEditButtonClick() {
  */
 function onOfferUpdated(updatedOffer: ShopOffer) {
   offer.value = updatedOffer
-  showOfferForm.value = false
+  shoForm.value = false
   scrollTop()
 }
 
 onBeforeMount(async () => {
-  await getOffer()
+  scrollTop()
+  const offerId = Number($route.params.offerId)
+  await getOffer(offerId)
+
   if (offer.value) {
     setTimeout(() => {
       initModals()
@@ -126,20 +121,14 @@ onBeforeMount(async () => {
     $app.error('No existe la oferta')
     goToParentStore()
   }
-  scrollTop()
 })
 </script>
 
 <template>
-  <div class="p-2" v-if="storeId && offer">
+  <section class="p-2" v-if="offer">
     <!-- Offer Form -->
-    <template v-if="showOfferForm">
-      <OfferForm
-        :store-id="storeId"
-        :update="offer"
-        @updated="onOfferUpdated"
-        @canceled="() => (showOfferForm = false)"
-      />
+    <template v-if="shoForm">
+      <OfferForm :update="offer" @updated="onOfferUpdated" @canceled="() => (shoForm = false)" />
     </template>
     <!-- / Offer Form -->
 
@@ -151,19 +140,6 @@ onBeforeMount(async () => {
 
     <!-- Offer Data -->
     <div v-else class="p-2">
-      <!-- Actions -->
-      <div class="flex flex-wrap justify-end">
-        <button class="btn-primary py-1" @click="onEditButtonClick">Editar</button>
-        <button
-          class="btn-negative py-1"
-          :data-modal-target="deleteModalId"
-          :data-modal-toggle="deleteModalId"
-        >
-          Eliminar
-        </button>
-      </div>
-      <!-- / Actions -->
-
       <div class="p-4 rounded-md bg-slate-100 mt-2 relative">
         <img
           :src="offer.image ?? '/images/default.png'"
@@ -188,7 +164,8 @@ onBeforeMount(async () => {
 
       <div class="mt-4 py-2 font-bold flex justify-between gap-2">
         <h2>#{{ offer.id }}</h2>
-        <h2 class="mr-4">{{ offer.views }} Vistas</h2>
+        <h2 class="mr-4" v-if="offer.views">{{ offer.views }} Vistas</h2>
+        <h2 class="mr-4" v-if="offer.rating">{{ offer.rating }} Rating</h2>
       </div>
       <h2 class="text-center text-xl mt-4 py-2 font-bold">{{ offer.name }}</h2>
 
@@ -209,34 +186,29 @@ onBeforeMount(async () => {
         </div>
       </div>
 
+      <!-- Descripcion -->
       <div class="p-2 rounded-md border mt-2 shadow-sm" v-if="offer.description">
         <h3 class="text-lg font-semibold text-center">Descripción</h3>
         <p class="text-justify">
           {{ offer.description }}
         </p>
       </div>
-
-      <div
-        class="p-2 rounded-md border mt-2 shadow-sm"
-        v-if="offer.attributes && offer.attributes.length"
-      >
-        <h3 class="text-lg font-semibold text-center">Atributos</h3>
-        <ul class="space-y-2">
-          <li v-for="(attr, attrKey) in offer.attributes" :key="`attr-${attrKey}`">
-            {{ attr.key }}:
-            <span class="font-semibold pl-2">{{ attr.value }}</span>
-          </li>
-        </ul>
-      </div>
+      <!-- / Descripcion -->
 
       <!-- Precios -->
       <div class="mt-2 p-2 border rounded-md shadow-sm">
         <h3 class="text-lg font-semibold text-center">Precios</h3>
         <ul class="space-y-2 mt-2">
-          <li>
-            Precio Producción:
+          <li v-if="offer.inversion_price">
+            Precio Inversión:
             <span class="font-semibold">{{
-              toCurrency((offer.production_price ?? 0) * cupPrice)
+              toCurrency((offer.inversion_price ?? 0) * cupPrice)
+            }}</span>
+          </li>
+          <li>
+            Precio Proveedor:
+            <span class="font-semibold">{{
+              toCurrency((offer.provider_price ?? 0) * cupPrice)
             }}</span>
           </li>
 
@@ -255,8 +227,8 @@ onBeforeMount(async () => {
             <span class="font-semibold">{{
               toCurrency(
                 (offer.discount_price
-                  ? offer.discount_price - Number(offer.production_price)
-                  : offer.sell_price - Number(offer.production_price)) * cupPrice
+                  ? offer.discount_price - Number(offer.provider_price)
+                  : offer.sell_price - Number(offer.provider_price)) * cupPrice
               )
             }}</span>
           </li>
@@ -280,6 +252,25 @@ onBeforeMount(async () => {
       </div>
       <!-- / Inventario -->
 
+      <!-- Attributes -->
+      <div
+        class="p-2 rounded-md border mt-2 shadow-sm"
+        v-if="offer.attributes && offer.attributes.length"
+      >
+        <h3 class="text-lg font-semibold text-center">Atributos</h3>
+        <ul class="space-y-2">
+          <li v-if="offer.weight">
+            Peso:
+            <span class="font-semibold pl-2">{{ offer.weight }} Lb</span>
+          </li>
+          <li v-for="(attr, attrKey) in offer.attributes" :key="`attr-${attrKey}`">
+            {{ attr.key }}:
+            <span class="font-semibold pl-2">{{ attr.value }}</span>
+          </li>
+        </ul>
+      </div>
+      <!-- / Attributes -->
+
       <!-- Extra -->
       <div class="mt-2 p-2 border rounded-md shadow-sm">
         <h3 class="text-lg font-semibold text-center">Extra</h3>
@@ -296,7 +287,25 @@ onBeforeMount(async () => {
       </div>
       <!-- / Inventario -->
     </div>
+  </section>
+
+  <!-- Float Button -->
+  <div class="fixed bottom-6 left-6 z-10" v-if="!shoForm">
+    <FloatButton v-model="showFloatMenu">
+      <FloatButtonItem
+        @click="onClickEdit"
+        label="Editar"
+        :icon="IconEdit"
+        id="edit-offer-button"
+      />
+      <FloatButtonItem
+        @click="onClickDelete"
+        label="Eliminar"
+        :icon="IconDelete"
+        id="delete-offer-button"
+      />
+    </FloatButton>
   </div>
 
-  <DeleteModal :id="deleteModalId" :offer="offer" @delete="onConfirmDelete" />
+  <!-- / Float Button -->
 </template>

@@ -3,14 +3,13 @@ import { computed, defineAsyncComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { ShopStore } from '@servimav/wings-services'
 import { setDefaultImage } from '@/helpers'
-import { useAppStore, useShopStore } from '@/stores'
+import { useShopStore } from '@/stores'
 import { ROUTE_NAME } from '@/router'
 /**
  * -----------------------------------------
  *	Components
  * -----------------------------------------
  */
-const DeleteModal = defineAsyncComponent(() => import('@/components/modals/DeleteModal.vue'))
 const StoreForm = defineAsyncComponent(() => import('@/components/forms/StoreForm.vue'))
 
 /**
@@ -18,7 +17,6 @@ const StoreForm = defineAsyncComponent(() => import('@/components/forms/StoreFor
  *	Composables
  * -----------------------------------------
  */
-const $app = useAppStore()
 const $route = useRoute()
 const $router = useRouter()
 const $shop = useShopStore()
@@ -27,7 +25,6 @@ const $shop = useShopStore()
  *	data
  * -----------------------------------------
  */
-const deleteModalId = 'store-delete-modal'
 const showForm = ref(false)
 const store = computed<ShopStore | undefined>(() => {
   const storeId = $route.params.storeId
@@ -51,12 +48,6 @@ function goToOffers() {
   })
 }
 /**
- * onDeleteStore
- */
-function onDeleteStore() {
-  $app.error('No esta permitido eliminar la tienda')
-}
-/**
  * onEditStoreClick
  */
 function onEditStoreClick() {
@@ -76,7 +67,14 @@ function onStoreUpdated(update: ShopStore) {
 </script>
 
 <template>
-  <section v-if="store">
+  <!-- Store Form -->
+  <div v-if="showForm" class="p-4 border rounded-md">
+    <StoreForm :update="store" @updated="onStoreUpdated" />
+  </div>
+  <!-- / Store Form -->
+
+  <section v-else-if="store" class="p-2">
+    <!-- Image -->
     <div class="p-4 rounded-md bg-slate-100 mt-2 relative">
       <img
         :src="store.image ?? '/images/default.png'"
@@ -98,6 +96,7 @@ function onStoreUpdated(update: ShopStore) {
         </div>
       </div>
     </div>
+    <!-- / Image -->
 
     <div class="border rounded-md p-2">
       <div class="space-y-1">
@@ -112,21 +111,10 @@ function onStoreUpdated(update: ShopStore) {
       </div>
       <div class="mt-4">
         <button class="btn-primary py-1 px-2" @click="onEditStoreClick">Editar</button>
-        <button class="btn border-primary-700 text-primary-700 py-1 px-2" @click="goToOffers">
+        <button class="btn border-primary-500 text-primary-500 py-1 px-2" @click="goToOffers">
           Ofertas
         </button>
-        <!-- <button class="btn-negative py-1 px-2" :data-modal-target="deleteModalId" :data-modal-toggle="deleteModalId">
-						Eliminar
-					</button> -->
       </div>
     </div>
   </section>
-
-  <!-- Store Form -->
-  <div v-if="showForm" class="p-4 border rounded-md">
-    <StoreForm :update="store" @updated="onStoreUpdated" />
-  </div>
-  <!-- / Store Form -->
-
-  <DeleteModal :id="deleteModalId" :store="store" @delete="onDeleteStore" />
 </template>

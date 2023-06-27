@@ -31,12 +31,12 @@ const showForm = ref(false)
  */
 
 /**
- * goToStoreOffers
+ * goToStore
  * @param storeId
  */
-function goToStoreOffers(storeId: number) {
+function goToStore(storeId: number) {
   void $router.push({
-    name: ROUTE_NAME.STORE_OFFERS,
+    name: ROUTE_NAME.STORE,
     params: { storeId }
   })
 }
@@ -67,7 +67,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="p-2">
+  <section class="p-2">
     <div v-if="showForm" class="p-4 border rounded-md">
       <StoreForm @created="onStoreCreated" />
     </div>
@@ -77,7 +77,7 @@ onBeforeMount(async () => {
         v-for="(store, storekey) in stores"
         :key="`store-${store.id}-${storekey}`"
         :data="store"
-        @click="() => goToStoreOffers(store.id)"
+        @click="() => goToStore(store.id)"
         class="cursor-pointer"
       />
     </div>
@@ -87,6 +87,5 @@ onBeforeMount(async () => {
     </div>
 
     <div v-else>No Hay datos</div>
-  </div>
-  <FloatButton @click="onClickFloatButton" v-if="!showForm" />
+  </section>
 </template>

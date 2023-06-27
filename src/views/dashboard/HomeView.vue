@@ -8,6 +8,7 @@ interface Stats {
   qty_offers: number
   count_available: number
   inversion: number
+  provider: number
   sales: number
   earn: number
 }
@@ -19,6 +20,7 @@ const stats = ref<Stats>({
   count_offers: 0,
   earn: 0,
   inversion: 0,
+  provider: 0,
   qty_offers: 0,
   sales: 0
 })
@@ -29,7 +31,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main class="p-2">
+  <section class="p-2">
     <h2 class="text-center text-gray-700 text-2xl">Datos</h2>
 
     <div class="mt-2 p-2 border border-gray-200">
@@ -38,9 +40,11 @@ onBeforeMount(async () => {
         <li>Ofertas Disponibles: {{ stats.count_available }}</li>
         <li>Inventario: {{ stats.qty_offers }}</li>
         <li>Inversion: {{ toCurrency(stats.inversion) }}</li>
+        <li>Proveedor: {{ toCurrency(stats.provider) }}</li>
         <li>Ventas: {{ toCurrency(stats.sales) }}</li>
         <li>Ganancias: {{ toCurrency(stats.earn) }}</li>
+        <li>Ganancias Proveedor: {{ toCurrency(stats.provider - stats.inversion) }}</li>
       </ul>
     </div>
-  </main>
+  </section>
 </template>

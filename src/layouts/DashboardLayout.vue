@@ -42,8 +42,8 @@ onBeforeMount(async () => {
   <div class="relative min-h-screen text-slate-700">
     <NavTop />
     <DrawerLeft />
-    <div class="p-2">
+    <main>
       <RouterView />
-    </div>
+    </main>
   </div>
 </template>

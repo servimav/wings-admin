@@ -45,7 +45,7 @@ const offersCurrentPage = ref<number>()
 const scrollHandler = () => {
   const scrollable = document.documentElement.scrollHeight - window.innerHeight
   const scrolled = window.scrollY
-  if (scrollable - scrolled === 0) {
+  if (scrollable - scrolled <= 1) {
     filterOffers()
   }
 }

@@ -1,24 +1,31 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { initModals } from 'flowbite'
-import type { ShopOffer, ShopStore } from '@servimav/wings-services'
-import { onScrollEvent } from '@/helpers'
+import { scrollTop } from '@/helpers'
 import { ROUTE_NAME } from '@/router'
 import { useServices } from '@/services'
 import { useAppStore, useShopStore } from '@/stores'
-// Components
-const DeleteModal = defineAsyncComponent(() => import('@/components/modals/DeleteModal.vue'))
+import type { ShopOffer, ShopOfferFilter, ShopStore } from '@servimav/wings-services'
+import { defineAsyncComponent, ref, onBeforeMount, onMounted, onBeforeUnmount, computed } from 'vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+/**
+ * -----------------------------------------
+ *	Components
+ * -----------------------------------------
+ */
+const BaseModal = defineAsyncComponent(() => import('@/components/modals/BaseModal.vue'))
 const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
+const FloatButtonItem = defineAsyncComponent(
+  () => import('@/components/buttons/FloatButtonItem.vue')
+)
+const IconPlus = defineAsyncComponent(() => import('@/components/icons/PlusIcon.vue'))
+const IconSearch = defineAsyncComponent(() => import('@/components/icons/MangifyGlass.vue'))
 const OfferForm = defineAsyncComponent(() => import('@/components/forms/OfferForm.vue'))
 const OfferSkeleton = defineAsyncComponent(() => import('@/components/skeleton/OfferSkeleton.vue'))
 const OfferWidget = defineAsyncComponent(() => import('@/components/widgets/OfferWidget.vue'))
 const SearchForm = defineAsyncComponent(() => import('@/components/forms/SearchForm.vue'))
-const StoreForm = defineAsyncComponent(() => import('@/components/forms/StoreForm.vue'))
 
 /**
  * -----------------------------------------
- *	composables
+ *	Composables
  * -----------------------------------------
  */
 const $app = useAppStore()
@@ -28,42 +35,24 @@ const $service = useServices()
 const $shop = useShopStore()
 /**
  * -----------------------------------------
- *	data
+ *	Data
  * -----------------------------------------
  */
-const currentOfferPage = computed<number | undefined>(() => {
-  if (storeId.value) {
-    // Check if store exists
-    const store = $shop.stores.find((s) => s.id === storeId.value)
-    return store && store.offerPage ? store.offerPage : undefined
-  }
-  return undefined
-})
-const deleteModalId = 'store-delete-modal'
+const filter = ref<ShopOfferFilter>()
 const loading = computed(() => $app.loading)
-const offers = computed<ShopOffer[] | undefined>(() => {
-  // First return search
-  if (searchResult.value) return searchResult.value
-
-  if (storeId.value) {
-    // Check if store exists
-    const store = $shop.stores.find((s) => s.id === storeId.value)
-    return store && store.offers ? store.offers : []
+const offers = ref<ShopOffer[]>([])
+const offersCurrentPage = ref<number>()
+const scrollHandler = () => {
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight
+  const scrolled = window.scrollY
+  if (scrollable - scrolled === 0) {
+    filterOffers()
   }
-  return []
-})
-const search = ref<string>()
-const searchResult = ref<ShopOffer[]>()
-const showOfferForm = ref(false)
-const showStoreForm = ref(false)
+}
+const showFloatMenu = ref(false)
+const showFilterModal = ref(false)
+const store = ref<ShopStore>()
 
-const store = computed(() => {
-  if (storeId.value) {
-    return $shop.stores.find((s) => s.id === storeId.value)
-  }
-  return undefined
-})
-const storeId = ref<number>()
 /**
  * -----------------------------------------
  *	Methods
@@ -71,114 +60,91 @@ const storeId = ref<number>()
  */
 
 /**
- * Handle on edit store button click
+ * filterOffers
+ * @param params
  */
-function onEditStoreClick() {
-  showStoreForm.value = true
+async function filterOffers() {
+  if (loading.value) return
+  $app.toggleLoading(true)
+  try {
+    console.log({ filter: filter.value })
+    const resp = (
+      await $service.shop.offer.filterAdvanced({
+        ...filter.value,
+        page: offersCurrentPage.value ? offersCurrentPage.value + 1 : undefined
+      })
+    ).data
+    offersCurrentPage.value = resp.meta.current_page
+    if (resp.data.length) {
+      // if is first search overwrite offers
+      offers.value.push(...resp.data)
+    } else {
+      // Stop event listner
+      window.removeEventListener('scroll', scrollHandler)
+    }
+  } catch (error) {
+    $app.axiosError(error)
+    window.removeEventListener('scroll', scrollHandler)
+  }
+  $app.toggleLoading(false)
 }
 
 /**
- * getOffers
+ * getStore
+ * @param id
  */
-async function getOffers() {
-  if (search.value) return
-  if (loading.value) return
-
-  if ($route.params.storeId) {
-    storeId.value = Number($route.params.storeId)
-    $app.toggleLoading(true)
+async function getStore(storeId?: number) {
+  if (storeId) {
     try {
-      const page = currentOfferPage.value ? currentOfferPage.value + 1 : undefined
-      await $shop.getStoreOffers(storeId.value, { page })
+      const resp = (await $service.shop.store.show(storeId)).data
+      // update store
+      const index = $shop.stores.findIndex((s) => s.id === storeId)
+      if (index >= 0) {
+        $shop.stores[index] = resp
+      }
+      // set current store
+      store.value = resp
     } catch (error) {
       $app.axiosError(error)
     }
-    $app.toggleLoading(false)
   }
 }
-
 /**
- * go to offer view
- * @param offerId
+ * goToOffer
+ * @param offer
  */
-function goToOffer(offerId: number) {
+function goToOffer(offer: ShopOffer) {
   $router.push({
     name: ROUTE_NAME.OFFER,
     params: {
-      storeId: storeId.value,
-      offerId
+      offerId: offer.id
     }
   })
 }
 
 /**
- * Handle on OfferForm created event
+ * onSearchOffer
+ * @param search
  */
-function onOfferCreated() {
-  showOfferForm.value = false
-  getOffers()
-}
-
-/**
- * onClickFloatButton
- */
-function onClickFloatButton() {
-  showOfferForm.value = true
-}
-
-/**
- * onSearch
- */
-async function onSearch() {
-  try {
-    const resp = (
-      await $service.shop.offer.filterAdvanced({
-        search: search.value,
-        store_id: (store.value as ShopStore).id,
-        currency: 'USD'
-      })
-    ).data
-
-    searchResult.value = resp.data
-  } catch (error) {
-    $app.axiosError(error)
-  }
-}
-
-/**
- * onStoreDelete
- */
-async function onStoreDelete() {
-  // $app.toggleLoading(false)
-  // try {
-  //   await $service.shop.store.remove(storeId.value as number)
-  //   $app.success('Tienda eliminada')
-  //   $router.push({ name: ROUTE_NAME.STORES })
-  // } catch (error) {
-  //   $app.axiosError(error)
-  // }
-  // $app.toggleLoading(true)
-  $app.error('No esta permitid eliminar la tienda')
-}
-
-/**
- * Handle when store form updated event is triggered
- * @param store
- */
-function onStoreUpdated(store: ShopStore) {
-  // Update store data in local stores
-  const storeIndex = $shop.stores.findIndex((s) => s.id === store.id)
-
-  if (storeIndex >= 0) {
-    // create a copy of store offers
-    const storeOffers = $shop.stores[storeIndex].offers
-    // update store value
-    $shop.stores[storeIndex] = store
-    // Restore store offers
-    $shop.stores[storeIndex].offers = storeOffers
-  }
-  // hide form
-  showStoreForm.value = false
+async function onSearchOffer(search: ShopOfferFilter) {
+  // Srcoll to Top
+  scrollTop()
+  // restart listener
+  window.removeEventListener('scroll', scrollHandler)
+  // close modal
+  showFilterModal.value = false
+  // init search params
+  filter.value = search
+  offersCurrentPage.value = undefined
+  offers.value = []
+  // replace route
+  void $router.replace({
+    name: ROUTE_NAME.OFFERS,
+    query: { ...search }
+  })
+  // run query
+  await Promise.all([getStore(filter.value?.store_id), filterOffers()])
+  window.addEventListener('scroll', scrollHandler)
 }
 
 /**
@@ -186,109 +152,137 @@ function onStoreUpdated(store: ShopStore) {
  *	Lifecycle
  * -----------------------------------------
  */
-
+/**
+ * onBeforeMount
+ */
 onBeforeMount(async () => {
-  await getOffers()
+  // get query from route
+  const filterQuery: ShopOfferFilter = $route.query
+  // Check if route is STORE_OFFERS or OFFERS
+  const routeName = $route.name
+  if (routeName === ROUTE_NAME.STORE_OFFERS) {
+    const storeId = Number($route.params.storeId)
+    filterQuery.store_id = storeId
+  }
+
+  // init search params
+  filter.value = filterQuery
+  offersCurrentPage.value = undefined
+  offers.value = []
+
+  await Promise.all([getStore(filter.value?.store_id), filterOffers()])
 })
 
+/**
+ * onMounted
+ */
 onMounted(() => {
-  // Listen scrolling
-  onScrollEvent({
-    bottom: 0,
-    callback: getOffers,
-    element: window
-  })
-  // init flowbite
-  setTimeout(() => {
-    initModals()
-  }, 500)
+  scrollTop()
+  // register scroll event listener
+  window.addEventListener('scroll', scrollHandler)
 })
 
+/**
+ * onBeforeUnmount
+ */
 onBeforeUnmount(() => {
-  // Listen scrolling
-  onScrollEvent({
-    bottom: 0,
-    callback: getOffers,
-    element: window,
-    remove: true
-  })
+  // unregister scroll listener
+  window.removeEventListener('scroll', scrollHandler)
+})
+
+/**
+ * onBeforeRouteUpdate
+ */
+onBeforeRouteUpdate(async ($to, $from, $next) => {
+  // get query from route
+  const filterQuery: ShopOfferFilter = $to.query
+  // Check if route is STORE_OFFERS or OFFERS
+  const routeName = $to.name
+  if (routeName === ROUTE_NAME.STORE_OFFERS) {
+    const storeId = Number($to.params.storeId)
+    filterQuery.store_id = storeId
+  }
+  // Init search params
+  filter.value = filterQuery
+  offersCurrentPage.value = undefined
+  offers.value = []
+
+  await Promise.all([getStore(filter.value?.store_id), filterOffers()])
+
+  $next($to)
 })
 </script>
 
 <template>
-  <div class="p-2">
-    <!-- Offer Form -->
-    <template v-if="showOfferForm && store">
-      <OfferForm :store-id="store.id" @created="onOfferCreated" @canceled="onOfferCreated" />
-    </template>
-    <!-- / Offer Form -->
-
-    <!-- Store Form -->
-    <div v-else-if="showStoreForm" class="p-4 border rounded-md">
-      <StoreForm :update="store" @updated="onStoreUpdated" />
-    </div>
-    <!-- / Store Form -->
-
-    <!-- Store Data -->
-    <template v-else-if="store">
-      <section class="border rounded-md p-2">
-        <div class="space-y-1">
-          <h2 class="text-xl text-center font-bold">{{ store.name }}</h2>
-          <p class="font-semibold" :class="store.available ? 'text-green-700' : 'text-slate-600'">
-            {{ store.available ? 'Abierta' : 'Cerrada' }}
-          </p>
-          <p class="font-semibold">Descripción</p>
-          <p class="text-sm text-justify">{{ store.description }}</p>
-          <p class="font-semibold">Dirección</p>
-          <p class="text-sm text-justify">{{ store.address }}</p>
-        </div>
-        <div class="mt-4">
-          <button class="btn-primary py-1 px-2" @click="onEditStoreClick">Editar</button>
-          <button
-            class="btn-negative py-1 px-2"
-            :data-modal-target="deleteModalId"
-            :data-modal-toggle="deleteModalId"
-          >
-            Eliminar
-          </button>
-        </div>
-      </section>
-      <!-- Search Form -->
-      <SearchForm
-        v-model="search"
-        class="sticky top-[4rem] z-20"
-        @search="onSearch"
-        @restart="() => (searchResult = undefined)"
+  <section class="p-2">
+    <!-- Offers Content -->
+    <div class="grid grid-cols-2 gap-2" v-if="offers.length">
+      <OfferWidget
+        v-for="(offer, offerKey) in offers"
+        :key="`offer-${offer.id}-${offerKey}`"
+        :data="offer"
+        @click="() => goToOffer(offer)"
       />
-      <!-- / Search Form -->
 
-      <div v-if="offers && offers.length" class="mt-4" id="products-list">
-        <h3 class="text-xl text-center">Productos</h3>
-
-        <div class="mt-2 grid grid-cols-2 gap-2">
-          <OfferWidget
-            v-for="(offer, offerKey) in offers"
-            :key="`offer-${offer.id}-${offerKey}`"
-            :data="offer"
-            @click="() => goToOffer(offer.id)"
-            class="cursor-pointer"
-          />
-        </div>
-      </div>
-    </template>
-    <!-- / Store Form -->
+      <OfferSkeleton :repeat="4" v-if="loading" />
+    </div>
+    <!-- / Offers Content -->
 
     <!-- Loading -->
-    <div v-else-if="loading">
-      <div class="grid grid-cols-2 gap-2">
-        <OfferSkeleton :repeat="4" />
-      </div>
+    <div class="grid grid-cols-2 gap-2" v-else-if="loading">
+      <OfferSkeleton :repeat="8" />
     </div>
     <!-- / Loading -->
 
-    <div v-else>Sin Datos que mostrar</div>
+    <!-- No content -->
+    <div class="flex items-center justify-center min-h-[32rem]" v-else>
+      <div class="font-gray-700">No hay contenido</div>
+    </div>
+    <!-- / No content -->
+  </section>
+
+  <div class="fixed bottom-6 left-6 z-10">
+    <FloatButton v-model="showFloatMenu">
+      <FloatButtonItem label="Nuevo" :icon="IconPlus" id="plus-float" />
+      <FloatButtonItem
+        @click="
+          () => {
+            showFloatMenu = false
+            showFilterModal = true
+          }
+        "
+        label="Buscar"
+        :icon="IconSearch"
+        id="search-float"
+      />
+    </FloatButton>
   </div>
 
-  <FloatButton @click="onClickFloatButton" v-if="!showOfferForm" class="z-10" />
-  <DeleteModal :id="deleteModalId" :store="store" @delete="onStoreDelete" />
+  <!-- Search Modal -->
+  <BaseModal v-if="showFilterModal" @close="() => (showFilterModal = false)">
+    <div class="flex h-full w-full justify-center items-center">
+      <div class="bg-white p-4 border rounded-xl overflow-y-auto z-30">
+        <SearchForm
+          :filter="filter"
+          @close="() => (showFilterModal = false)"
+          @search="onSearchOffer"
+        />
+      </div>
+    </div>
+  </BaseModal>
+  <!-- / Search Modal -->
+
+  <!-- New offer Modal -->
+  <BaseModal v-if="showFilterModal" @close="() => (showFilterModal = false)">
+    <div class="flex h-full w-full justify-center items-center">
+      <div class="bg-white p-4 border rounded-xl overflow-y-auto z-30">
+        <SearchForm
+          :filter="filter"
+          @close="() => (showFilterModal = false)"
+          @search="onSearchOffer"
+        />
+      </div>
+    </div>
+  </BaseModal>
+  <!-- / New offer Modal -->
 </template>

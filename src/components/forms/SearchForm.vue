@@ -1,57 +1,113 @@
 <script setup lang="ts">
+import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
+import type { ShopOfferFilter } from '@servimav/wings-services'
+import { useShopStore } from '@/stores'
+/**
+ * -----------------------------------------
+ *	Types
+ * -----------------------------------------
+ */
 export interface Emit {
-  (e: 'update:modelValue', value?: string): void
-  (e: 'search'): void
-  (e: 'restart'): void
+  (e: 'search', v: ShopOfferFilter): void
+  (e: 'close'): void
 }
-const $props = defineProps<{ modelValue?: string }>()
 
+export interface Prop {
+  filter?: ShopOfferFilter
+}
+/**
+ * -----------------------------------------
+ *	Components
+ * -----------------------------------------
+ */
+const SelectInput = defineAsyncComponent(() => import('@/components/forms/inputs/SelectInput.vue'))
+const TextInput = defineAsyncComponent(() => import('@/components/forms/inputs/TextInput.vue'))
+/**
+ * -----------------------------------------
+ *	Composables
+ * -----------------------------------------
+ */
 const $emit = defineEmits<Emit>()
+const $props = defineProps<Prop>()
+const $shop = useShopStore()
+/**
+ * -----------------------------------------
+ *	Data
+ * -----------------------------------------
+ */
 
-function onInputChange(e: Event) {
-  e.preventDefault()
-  const target = e.target as HTMLInputElement
-  $emit('update:modelValue', target.value)
-}
+const categories = computed(() => $shop.categories)
+const form = ref<ShopOfferFilter>({
+  category_id: undefined,
+  currency: 'CUP',
+  search: undefined,
+  sort: 'views',
+  store_id: undefined
+})
+const stores = computed(() => $shop.stores)
+/**
+ * -----------------------------------------
+ *	methods
+ * -----------------------------------------
+ */
 
+/**
+ * onSubmit
+ */
 function onSubmit() {
-  if ($props.modelValue) $emit('search')
-  else $emit('restart')
+  if (!form.value.category_id) form.value.category_id = undefined
+  if (!form.value.currency) form.value.currency = undefined
+  if (!form.value.search) form.value.search = undefined
+  if (!form.value.sort) form.value.sort = undefined
+  if (!form.value.store_id) form.value.store_id = undefined
+
+  $emit('search', form.value)
 }
+
+function reset() {
+  form.value = {
+    category_id: undefined,
+    currency: undefined,
+    search: undefined,
+    sort: undefined,
+    store_id: undefined
+  }
+}
+
+onBeforeMount(() => {
+  // init form
+  if ($props.filter) form.value = $props.filter
+})
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit" class="relative">
-    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-      <svg
-        aria-hidden="true"
-        class="w-5 h-5 text-gray-500 dark:text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        ></path>
-      </svg>
+  <form @submit.prevent="onSubmit">
+    <div class="p-2">
+      <div class="text-center text-lg text-gray-800">Filtrar</div>
+
+      <div class="space-y-2 mt-2">
+        <TextInput v-model="form.search" id="search_form" type="search" placeholder="Buscar" />
+
+        <SelectInput
+          v-model="form.store_id"
+          id="search_store"
+          label="Tienda"
+          :options="stores.map((s) => ({ label: s.name, value: s.id }))"
+        />
+
+        <SelectInput
+          v-model="form.category_id"
+          id="search_category"
+          label="Categoria"
+          :options="categories.map((c) => ({ label: c.name, value: c.id }))"
+        />
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn-primary py-1 px-2.5">Buscar</button>
+        <button type="reset" @click.prevent="reset" class="btn py-1 px-2.5">Reiniciar</button>
+        <button type="reset" @click="() => $emit('close')" class="btn py-1 px-2.5">Cancelar</button>
+      </div>
     </div>
-    <input
-      type="search"
-      id="default-search"
-      :value="modelValue"
-      @change="onInputChange"
-      class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-      placeholder="Buscar..."
-    />
-    <button
-      type="submit"
-      class="text-white absolute right-2.5 bottom-2.5 bg-primary-500 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-500 dark:hover:bg-primary-500 dark:focus:ring-primary-500"
-    >
-      Search
-    </button>
   </form>
 </template>

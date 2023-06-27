@@ -4,7 +4,6 @@ import {
   STOCK_TYPE,
   type Currency,
   type ShopCategory,
-  type ShopOffer,
   type ShopStore,
   type PaginationParams
 } from '@servimav/wings-services'
@@ -17,7 +16,7 @@ export const useShopStore = defineStore(STORE_NAME, () => {
   const categories = ref<ShopCategory[]>([])
   const currencies = ref<Currency[]>([])
   const stockType: STOCK_TYPE[] = [STOCK_TYPE.INFINITY, STOCK_TYPE.LIMITED, STOCK_TYPE.OUT]
-  const stores = ref<ShopStoreExtended[]>([])
+  const stores = ref<ShopStore[]>([])
 
   /**
    * -----------------------------------------
@@ -49,27 +48,6 @@ export const useShopStore = defineStore(STORE_NAME, () => {
     return stores.value
   }
 
-  /**
-   * getStoreOffers
-   * @param storeId
-   * @param params
-   */
-  async function getStoreOffers(storeId: number, params?: PaginationParams) {
-    const resp = (await $service.shop.store.offers(storeId, params)).data
-    // search store
-    const storeIndex = stores.value.findIndex((store) => store.id === storeId)
-    if (storeIndex >= 0) {
-      // update pagination meta
-      stores.value[storeIndex].offerPage = resp.meta.current_page
-      // if store has offers push
-      if (stores.value[storeIndex].offers && stores.value[storeIndex].offers?.length)
-        stores.value[storeIndex].offers?.push(...resp.data)
-      // if store has not offers assign
-      else stores.value[storeIndex].offers = resp.data
-    }
-    return resp
-  }
-
   return {
     // data
     categories,
@@ -79,12 +57,6 @@ export const useShopStore = defineStore(STORE_NAME, () => {
     // Methods
     getCategories,
     getCurrencies,
-    getMyStores,
-    getStoreOffers
+    getMyStores
   }
 })
-
-export interface ShopStoreExtended extends ShopStore {
-  offers?: ShopOffer[]
-  offerPage?: number
-}

@@ -47,6 +47,16 @@ const dashboardRoutes: RouteRecordRaw = {
       component: () => import('@/views/dashboard/OrdersView.vue')
     },
     {
+      path: 'offers',
+      name: ROUTE_NAME.OFFERS,
+      component: () => import('@/views/dashboard/OffersView.vue')
+    },
+    {
+      path: 'offers/:offerId',
+      name: ROUTE_NAME.OFFER,
+      component: () => import('@/views/dashboard/OfferView.vue')
+    },
+    {
       path: 'stores',
       name: ROUTE_NAME.STORES,
       component: () => import('@/views/dashboard/StoresView.vue')
@@ -54,17 +64,12 @@ const dashboardRoutes: RouteRecordRaw = {
     {
       path: 'stores/:storeId',
       name: ROUTE_NAME.STORE,
-      component: () => import('@/views/dashboard/StoresView.vue')
+      component: () => import('@/views/dashboard/StoreView.vue')
     },
     {
       path: 'stores/:storeId/offers',
       name: ROUTE_NAME.STORE_OFFERS,
       component: () => import('@/views/dashboard/OffersView.vue')
-    },
-    {
-      path: 'stores/:storeId/offers/:offerId',
-      name: ROUTE_NAME.OFFER,
-      component: () => import('@/views/dashboard/OfferView.vue')
     },
     {
       path: 'stores/:storeId/orders',

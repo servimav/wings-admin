@@ -53,14 +53,16 @@ export interface ShopOffer {
   available: boolean
   // price
   discount_price?: number
-  production_price?: number
+  inversion_price?: number
+  provider_price?: number
   sell_price: number
   // stock
   stock_type: STOCK_TYPE
-  stock_qty: number
+  stock_qty?: number
   // Meta
-  rating: number
-  views: number
+  rating?: number
+  views?: number
+  weight?: number
 }
 
 export interface ShopOfferCreate extends Omit<ShopOffer, 'id' | 'categories' | 'store'> {

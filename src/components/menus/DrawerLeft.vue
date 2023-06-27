@@ -7,7 +7,7 @@ import { ROUTE_NAME } from '@/router'
 const ChartBarIcon = defineAsyncComponent(() => import('@/components/icons/ChartBarIcon.vue'))
 const ChatIcon = defineAsyncComponent(() => import('@/components/icons/ChatIcon.vue'))
 const HomeIcon = defineAsyncComponent(() => import('@/components/icons/HomeIcon.vue'))
-// const OfferIcon = defineAsyncComponent(() => import('@/components/icons/OfferIcon.vue'))
+const OfferIcon = defineAsyncComponent(() => import('@/components/icons/OfferIcon.vue'))
 const SettingIcon = defineAsyncComponent(() => import('@/components/icons/SettingIcon.vue'))
 const SquaresIcon = defineAsyncComponent(() => import('@/components/icons/SquaresIcon.vue'))
 const StoreIcon = defineAsyncComponent(() => import('@/components/icons/StoreIcon.vue'))
@@ -48,11 +48,11 @@ const drawerItems: MenuItem[] = [
     label: 'Tiendas',
     to: { name: ROUTE_NAME.STORES }
   },
-  // {
-  //   icon: OfferIcon,
-  //   label: 'Mis Productos',
-  //   to: { name: ROUTE_NAME.OFFERS }
-  // },
+  {
+    icon: OfferIcon,
+    label: 'Productos',
+    to: { name: ROUTE_NAME.OFFERS }
+  },
   {
     icon: ChatIcon,
     label: 'Mensajes',

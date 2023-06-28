@@ -26,7 +26,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-    - run: yarn install
-    - run: cp .env.prod .env
-    - run: yarn build
+    - name: Copy .env
+      run: cp .env.prod .env
+    - name: Install dependencies
+      run: yarn install
+    - name: Build
+      run: yarn build
 		

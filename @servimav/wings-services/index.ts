@@ -1,8 +1,10 @@
 import axios, { type AxiosRequestHeaders } from 'axios'
 import { type TokenHandler, defaultTokenHandler } from './tokenHandler'
 import currency from './services/currency'
+import geoLocation from './services/geoLocation'
 import shopCategory from './services/shopCategory'
 import shopOffer from './services/shopOffer'
+import shopOrder from './services/shopOrder'
 import shopStore from './services/shopStore'
 import user from './services/user'
 
@@ -43,10 +45,12 @@ function setupWings({ apiUrl, tokenHandler, appSecretKey }: WingsProps) {
   return {
     api,
     currency: currency(api),
+    geoLocation: geoLocation(api),
     user: user({ api, tokenHandler }),
     shop: {
       category: shopCategory(api),
       offer: shopOffer(api),
+      order: shopOrder(api),
       store: shopStore(api)
     }
   }
@@ -60,8 +64,10 @@ export * from './const'
 export * from './tokenHandler'
 export * from './types'
 export * from './services/currency'
+export * from './services/geoLocation'
 export * from './services/shopCategory'
 export * from './services/shopOffer'
+export * from './services/shopOrder'
 export * from './services/shopStore'
 export * from './services/user'
 

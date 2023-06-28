@@ -18,17 +18,6 @@ export interface PaginatedData<T> {
   }
 }
 
-export interface GeoCoords {
-  latitude: number
-  longitude: number
-}
-
-export interface GeoLocation {
-  id: number
-  name: string
-  coords: GeoCoords
-}
-
 export interface KeyValue {
   key: string
   value: string | number

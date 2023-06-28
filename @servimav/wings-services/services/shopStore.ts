@@ -1,8 +1,9 @@
 import type { AxiosInstance } from 'axios'
-import { generateCrud } from '../crud'
+import type { GeoCoords, GeoLocation } from './geoLocation'
 import type { ShopOffer } from './shopOffer'
 import type { User } from './user'
-import type { GeoCoords, GeoLocation, PaginatedData, PaginationParams } from '../types'
+import { generateCrud } from '../crud'
+import type { PaginatedData, PaginationParams } from '../types'
 
 export default function init(api: AxiosInstance) {
   const baseUrl = '/shop/stores'

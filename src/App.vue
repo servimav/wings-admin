@@ -19,5 +19,5 @@ onBeforeMount(() => {
     <RouterView />
   </Suspense>
 
-  <NotificationContainer class="fixed z-50 bottom-0 right-0" />
+  <NotificationContainer class="fixed bottom-0 right-0 z-50" />
 </template>

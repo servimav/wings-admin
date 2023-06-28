@@ -49,20 +49,20 @@ async function onSubmit() {
 
 <template>
   <section class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <div class="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
       <a
         href="#"
-        class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+        class="mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-white"
       >
-        <img class="w-20 h-20 mr-2" src="/logo.svg" alt="Wings" />
+        <img class="mr-2 h-20 w-20" src="/logo.svg" alt="Wings" />
         Wings Deliver
       </a>
       <div
-        class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
+        class="w-full rounded-lg bg-white shadow dark:border dark:border-gray-700 dark:bg-gray-800 sm:max-w-md md:mt-0 xl:p-0"
       >
-        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <div class="space-y-4 p-6 sm:p-8 md:space-y-6">
           <h1
-            class="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
+            class="text-center text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl"
           >
             Inicia con tu cuenta
           </h1>
@@ -95,7 +95,7 @@ async function onSubmit() {
             </div>
             <button
               type="submit"
-              class="w-full text-black dark:text-white bg-primary-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-500 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              class="dark:focus:ring-primary-800 w-full rounded-lg bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-black hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-700"
             >
               Iniciar
             </button>

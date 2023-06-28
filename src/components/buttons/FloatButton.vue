@@ -14,10 +14,10 @@ defineProps<Prop>()
 </script>
 
 <template>
-  <div class="fixed right-6 bottom-6 group">
+  <div class="group fixed bottom-6 right-6">
     <div
       id="speed-dial-menu-default"
-      class="flex flex-col items-center mb-4 space-y-2"
+      class="mb-4 flex flex-col items-center space-y-2"
       :class="{ hidden: !modelValue }"
     >
       <slot />
@@ -25,10 +25,10 @@ defineProps<Prop>()
     <button
       type="button"
       @click.prevent="() => $emit('update:modelValue', !modelValue)"
-      class="flex items-center justify-center text-white bg-primary-500 rounded-full w-14 h-14 hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 focus:outline-none"
+      class="flex h-14 w-14 items-center justify-center rounded-full bg-primary-500 text-white hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300"
     >
       <DotsIcon
-        class="w-8 h-8 transition-transform"
+        class="h-8 w-8 transition-transform"
         :class="{ 'group-hover:rotate-90': modelValue }"
       />
       <span class="sr-only">Open actions menu</span>

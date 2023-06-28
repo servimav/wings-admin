@@ -47,7 +47,7 @@ function onUpdatedCategory() {
 
 <template>
   <section class="p-2">
-    <h2 class="text-2xl text-center">Categorías</h2>
+    <h2 class="text-center text-2xl">Categorías</h2>
 
     <div class="mt-4 rounded-md border p-4" v-if="showForm">
       <CategoryForm
@@ -62,7 +62,7 @@ function onUpdatedCategory() {
       <div class="flex flex-wrap gap-2">
         <div
           @click="onClickNewCategory"
-          class="py-1 px-2 text-sm rounded-full border bg-primary-100 cursor-pointer hover:bg-primary-300 hover:text-white focus:ring-4 focus:ring-primary-300"
+          class="cursor-pointer rounded-full border bg-primary-100 px-2 py-1 text-sm hover:bg-primary-300 hover:text-white focus:ring-4 focus:ring-primary-300"
         >
           Crear Nueva
         </div>
@@ -70,7 +70,7 @@ function onUpdatedCategory() {
           v-for="(category, categoryKey) in categories"
           :key="`category-${categoryKey}-${category.id}`"
           @click="() => onClickCategory(category)"
-          class="py-1 px-2 text-sm rounded-full border bg-slate-100 cursor-pointer hover:bg-primary-300 hover:text-white focus:ring-4 focus:ring-primary-300"
+          class="cursor-pointer rounded-full border bg-slate-100 px-2 py-1 text-sm hover:bg-primary-300 hover:text-white focus:ring-4 focus:ring-primary-300"
         >
           {{ category.name }}
         </div>

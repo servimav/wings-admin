@@ -32,9 +32,9 @@ onBeforeMount(async () => {
 
 <template>
   <section class="p-2">
-    <h2 class="text-center text-gray-700 text-2xl">Datos</h2>
+    <h2 class="text-center text-2xl text-gray-700">Datos</h2>
 
-    <div class="mt-2 p-2 border border-gray-200">
+    <div class="mt-2 border border-gray-200 p-2">
       <ul class="list-none space-y-2">
         <li>Ofertas: {{ stats.count_offers }}</li>
         <li>Ofertas Disponibles: {{ stats.count_available }}</li>

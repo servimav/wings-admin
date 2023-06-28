@@ -174,7 +174,7 @@ onBeforeMount(async () => {
 <template>
   <form @submit.prevent="onSubmit">
     <!-- Datos Generales -->
-    <div class="space-y-4 border rounded-md p-4">
+    <div class="space-y-4 rounded-md border p-4">
       <h4 class="text-center text-lg">Datos Generales</h4>
 
       <SelectInput
@@ -230,7 +230,7 @@ onBeforeMount(async () => {
     <!-- / Datos Generales -->
 
     <!-- Precios -->
-    <div class="space-y-4 border rounded-md p-4 mt-2">
+    <div class="mt-2 space-y-4 rounded-md border p-4">
       <h4 class="text-center text-lg">Precios</h4>
 
       <TextInput
@@ -268,7 +268,7 @@ onBeforeMount(async () => {
     <!-- / Precios -->
 
     <!-- Inventario -->
-    <div class="space-y-4 border rounded-md p-4 mt-2">
+    <div class="mt-2 space-y-4 rounded-md border p-4">
       <h4 class="text-center text-lg">Inventario</h4>
 
       <SelectInput
@@ -290,7 +290,7 @@ onBeforeMount(async () => {
     <!-- / Inventario -->
 
     <!-- Extra -->
-    <div class="space-y-4 border rounded-md p-4 mt-2">
+    <div class="mt-2 space-y-4 rounded-md border p-4">
       <h4 class="text-center text-lg">Extra</h4>
 
       <TextInput
@@ -341,7 +341,7 @@ onBeforeMount(async () => {
     </div>
     <!-- / Extra -->
 
-    <div class="mt-4 sticky bg-white p-2 bottom-0">
+    <div class="sticky bottom-0 mt-4 bg-white p-2">
       <button class="btn-primary" type="submit">Guardar</button>
       <button class="btn" type="reset" @click="() => $emit('canceled')">Cancelar</button>
     </div>

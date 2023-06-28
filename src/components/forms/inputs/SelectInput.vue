@@ -19,7 +19,7 @@ function onChange(event: Event) {
 
 <template>
   <div>
-    <label :for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+    <label :for="id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">{{
       label
     }}</label>
     <select
@@ -29,7 +29,7 @@ function onChange(event: Event) {
       :name="id"
       :required="required"
       :placeholder="placeholder"
-      class="bg-gray-50 border border-primary-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+      class="dark:border-primary-600 block w-full rounded-lg border border-primary-300 bg-gray-50 p-2.5 text-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
     >
       <option v-for="(option, key) in options" :key="`option-${key}`" :value="option.value">
         {{ option.label }}

@@ -140,7 +140,7 @@ onBeforeMount(async () => {
 
     <!-- Offer Data -->
     <div v-else class="p-2">
-      <div class="p-4 rounded-md bg-slate-100 mt-2 relative">
+      <div class="relative mt-2 rounded-md bg-slate-100 p-4">
         <img
           :src="offer.image ?? '/images/default.png'"
           :alt="offer.name"
@@ -150,11 +150,11 @@ onBeforeMount(async () => {
 
         <div class="absolute bottom-1 right-1 z-10">
           <div
-            class="rounded-full shadow-sm border p-2 text-sm"
+            class="rounded-full border p-2 text-sm shadow-sm"
             :class="
               offer.available
-                ? 'bg-green-500 text-white border-green-300'
-                : 'bg-slate-300 text-black border-slate-400'
+                ? 'border-green-300 bg-green-500 text-white'
+                : 'border-slate-400 bg-slate-300 text-black'
             "
           >
             {{ offer.available ? 'Disponible' : 'No disponible' }}
@@ -162,23 +162,23 @@ onBeforeMount(async () => {
         </div>
       </div>
 
-      <div class="mt-4 py-2 font-bold flex justify-between gap-2">
+      <div class="mt-4 flex justify-between gap-2 py-2 font-bold">
         <h2>#{{ offer.id }}</h2>
         <h2 class="mr-4" v-if="offer.views">{{ offer.views }} Vistas</h2>
         <h2 class="mr-4" v-if="offer.rating">{{ offer.rating }} Rating</h2>
       </div>
-      <h2 class="text-center text-xl mt-4 py-2 font-bold">{{ offer.name }}</h2>
+      <h2 class="mt-4 py-2 text-center text-xl font-bold">{{ offer.name }}</h2>
 
       <div
-        class="p-2 rounded-md border mt-4 shadow-sm"
+        class="mt-4 rounded-md border p-2 shadow-sm"
         v-if="offer.categories && offer.categories.length"
       >
-        <h3 class="text-lg font-semibold text-center">Categorías</h3>
-        <div class="flex-wrap flex gap-2 mt-2">
+        <h3 class="text-center text-lg font-semibold">Categorías</h3>
+        <div class="mt-2 flex flex-wrap gap-2">
           <div
             v-for="(category, catKey) in offer.categories"
             :key="`category-${catKey}`"
-            class="px-2 py-1 text-sm rounded-full border bg-slate-100"
+            class="rounded-full border bg-slate-100 px-2 py-1 text-sm"
             :class="{ 'border-primary-700': catKey == 0 }"
           >
             {{ category.name }}
@@ -187,8 +187,8 @@ onBeforeMount(async () => {
       </div>
 
       <!-- Descripcion -->
-      <div class="p-2 rounded-md border mt-2 shadow-sm" v-if="offer.description">
-        <h3 class="text-lg font-semibold text-center">Descripción</h3>
+      <div class="mt-2 rounded-md border p-2 shadow-sm" v-if="offer.description">
+        <h3 class="text-center text-lg font-semibold">Descripción</h3>
         <p class="text-justify">
           {{ offer.description }}
         </p>
@@ -196,9 +196,9 @@ onBeforeMount(async () => {
       <!-- / Descripcion -->
 
       <!-- Precios -->
-      <div class="mt-2 p-2 border rounded-md shadow-sm">
-        <h3 class="text-lg font-semibold text-center">Precios</h3>
-        <ul class="space-y-2 mt-2">
+      <div class="mt-2 rounded-md border p-2 shadow-sm">
+        <h3 class="text-center text-lg font-semibold">Precios</h3>
+        <ul class="mt-2 space-y-2">
           <li v-if="offer.inversion_price">
             Precio Inversión:
             <span class="font-semibold">{{
@@ -237,9 +237,9 @@ onBeforeMount(async () => {
       <!-- / Precios -->
 
       <!-- Inventario -->
-      <div class="mt-2 p-2 border rounded-md shadow-sm">
-        <h3 class="text-lg font-semibold text-center">Inventario</h3>
-        <ul class="space-y-2 mt-2">
+      <div class="mt-2 rounded-md border p-2 shadow-sm">
+        <h3 class="text-center text-lg font-semibold">Inventario</h3>
+        <ul class="mt-2 space-y-2">
           <li>
             Inventario:
             <span class="font-semibold">{{ offer.stock_type }}</span>
@@ -254,27 +254,27 @@ onBeforeMount(async () => {
 
       <!-- Attributes -->
       <div
-        class="p-2 rounded-md border mt-2 shadow-sm"
+        class="mt-2 rounded-md border p-2 shadow-sm"
         v-if="offer.attributes && offer.attributes.length"
       >
-        <h3 class="text-lg font-semibold text-center">Atributos</h3>
+        <h3 class="text-center text-lg font-semibold">Atributos</h3>
         <ul class="space-y-2">
           <li v-if="offer.weight">
             Peso:
-            <span class="font-semibold pl-2">{{ offer.weight }} Lb</span>
+            <span class="pl-2 font-semibold">{{ offer.weight }} Lb</span>
           </li>
           <li v-for="(attr, attrKey) in offer.attributes" :key="`attr-${attrKey}`">
             {{ attr.key }}:
-            <span class="font-semibold pl-2">{{ attr.value }}</span>
+            <span class="pl-2 font-semibold">{{ attr.value }}</span>
           </li>
         </ul>
       </div>
       <!-- / Attributes -->
 
       <!-- Extra -->
-      <div class="mt-2 p-2 border rounded-md shadow-sm">
-        <h3 class="text-lg font-semibold text-center">Extra</h3>
-        <ul class="space-y-2 mt-2">
+      <div class="mt-2 rounded-md border p-2 shadow-sm">
+        <h3 class="text-center text-lg font-semibold">Extra</h3>
+        <ul class="mt-2 space-y-2">
           <li v-if="offer.remote_url">
             Url Remota:
             <a class="font-semibold" :href="offer.remote_url" target="_blank">Acceder</a>

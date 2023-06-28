@@ -82,10 +82,10 @@ function goTo(to?: RouteLocationRaw) {
 <template>
   <aside
     :id="elementId"
-    class="fixed top-0 left-0 z-40 w-64 h-screen pt-6 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+    class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full border-r border-gray-200 bg-white pt-6 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"
     aria-label="Sidebar"
   >
-    <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+    <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
       <ul class="space-y-2 font-medium">
         <li
           v-for="(item, itemKey) in drawerItems"
@@ -93,13 +93,13 @@ function goTo(to?: RouteLocationRaw) {
           @click="() => goTo(item.to)"
           :data-drawer-target="elementId"
           :data-drawer-toggle="elementId"
-          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+          class="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
         >
-          <component :is="item.icon" class="w-6 h-6 flex-shrink-0" />
-          <span class="flex-1 ml-3 whitespace-nowrap">{{ item.label }}</span>
+          <component :is="item.icon" class="h-6 w-6 flex-shrink-0" />
+          <span class="ml-3 flex-1 whitespace-nowrap">{{ item.label }}</span>
           <span
             v-if="item.badge"
-            class="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300"
+            class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 p-3 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300"
             >{{ item.badge }}</span
           >
         </li>

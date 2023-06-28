@@ -85,7 +85,7 @@ onBeforeMount(() => {
     <div class="p-2">
       <div class="text-center text-lg text-gray-800">Filtrar</div>
 
-      <div class="space-y-2 mt-2">
+      <div class="mt-2 space-y-2">
         <TextInput v-model="form.search" id="search_form" type="search" placeholder="Buscar" />
 
         <SelectInput
@@ -104,9 +104,9 @@ onBeforeMount(() => {
       </div>
 
       <div class="mt-4">
-        <button type="submit" class="btn-primary py-1 px-2.5">Buscar</button>
-        <button type="reset" @click.prevent="reset" class="btn py-1 px-2.5">Reiniciar</button>
-        <button type="reset" @click="() => $emit('close')" class="btn py-1 px-2.5">Cancelar</button>
+        <button type="submit" class="btn-primary px-2.5 py-1">Buscar</button>
+        <button type="reset" @click.prevent="reset" class="btn px-2.5 py-1">Reiniciar</button>
+        <button type="reset" @click="() => $emit('close')" class="btn px-2.5 py-1">Cancelar</button>
       </div>
     </div>
   </form>

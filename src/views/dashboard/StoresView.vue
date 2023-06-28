@@ -68,7 +68,7 @@ onBeforeMount(async () => {
 
 <template>
   <section class="p-2">
-    <div v-if="showForm" class="p-4 border rounded-md">
+    <div v-if="showForm" class="rounded-md border p-4">
       <StoreForm @created="onStoreCreated" />
     </div>
 

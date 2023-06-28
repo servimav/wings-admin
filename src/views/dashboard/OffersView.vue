@@ -235,7 +235,7 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
     <!-- / Loading -->
 
     <!-- No content -->
-    <div class="flex items-center justify-center min-h-[32rem]" v-else>
+    <div class="flex min-h-[32rem] items-center justify-center" v-else>
       <div class="font-gray-700">No hay contenido</div>
     </div>
     <!-- / No content -->
@@ -270,8 +270,8 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
 
   <!-- Search Modal -->
   <BaseModal v-if="showFilterModal" @close="() => (showFilterModal = false)">
-    <div class="flex h-full w-full justify-center items-center">
-      <div class="bg-white p-4 border rounded-xl overflow-y-auto z-30">
+    <div class="flex h-full w-full items-center justify-center">
+      <div class="z-30 overflow-y-auto rounded-xl border bg-white p-4">
         <SearchForm
           :filter="filter"
           @close="() => (showFilterModal = false)"
@@ -284,8 +284,8 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
 
   <!-- New offer Modal -->
   <BaseModal v-if="showNewOfferModal" @close="() => (showNewOfferModal = false)">
-    <div class="flex h-full w-full justify-center items-center">
-      <div class="bg-white p-4 border rounded-xl overflow-y-auto z-30">
+    <div class="flex h-full w-full items-center justify-center">
+      <div class="z-30 overflow-y-auto rounded-xl border bg-white p-4">
         <OfferForm
           @canceled="() => (showNewOfferModal = false)"
           @created="() => (showNewOfferModal = false)"

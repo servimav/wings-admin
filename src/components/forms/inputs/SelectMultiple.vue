@@ -57,14 +57,14 @@ function onSelectUpdate(updateValue: string | number) {
 
 <template>
   <div>
-    <label :for="id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+    <label :for="id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">{{
       label
     }}</label>
     <div class="flex flex-wrap gap-2">
       <div
         v-for="(optionValue, optKey) in modelValue"
         :key="`value-${optKey}`"
-        class="px-2 py-1 text-sm rounded-full border bg-slate-100"
+        class="rounded-full border bg-slate-100 px-2 py-1 text-sm"
         :class="{ 'border-primary-500': optKey === 0 }"
         @click="() => onSelectUpdate(optionValue)"
       >

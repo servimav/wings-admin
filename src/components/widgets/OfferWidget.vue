@@ -25,9 +25,9 @@ const displayPrice = computed(() =>
 
 <template>
   <div
-    class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="w-full max-w-sm rounded-lg border border-gray-200 bg-white shadow dark:border-gray-700 dark:bg-gray-800"
   >
-    <div class="p-2 bg-slate-100 relative">
+    <div class="relative bg-slate-100 p-2">
       <img
         class="rounded-t-lg"
         :src="data.image ?? '/images/default.png'"
@@ -38,11 +38,11 @@ const displayPrice = computed(() =>
 
       <div class="absolute bottom-1 right-1 z-10">
         <div
-          class="rounded-full shadow-md border p-1 text-xs"
+          class="rounded-full border p-1 text-xs shadow-md"
           :class="
             data.available
-              ? 'bg-green-500 text-white border-green-300'
-              : 'bg-slate-300 text-black border-slate-400'
+              ? 'border-green-300 bg-green-500 text-white'
+              : 'border-slate-400 bg-slate-300 text-black'
           "
         ></div>
       </div>

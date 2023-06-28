@@ -12,7 +12,7 @@ const notifications = computed(() => appStore.notifications)
     <div
       v-for="(n, k) in notifications"
       :key="`notification-${k}`"
-      :class="`p-4 rounded-lg text-white ${n.type === 'positive' ? 'bg-green-600' : 'bg-red-500'}`"
+      :class="`rounded-lg p-4 text-white ${n.type === 'positive' ? 'bg-green-600' : 'bg-red-500'}`"
     >
       {{ n.message }}
     </div>

@@ -27,7 +27,7 @@ onMounted(() => {
 
 <template>
   <nav
-    class="sticky top-0 z-20 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+    class="sticky top-0 z-20 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
   >
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
@@ -37,11 +37,11 @@ onMounted(() => {
             :data-drawer-toggle="elementId"
             :aria-controls="elementId"
             type="button"
-            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            class="inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 sm:hidden"
           >
             <span class="sr-only">Open sidebar</span>
             <svg
-              class="w-6 h-6"
+              class="h-6 w-6"
               aria-hidden="true"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -54,34 +54,34 @@ onMounted(() => {
               ></path>
             </svg>
           </button>
-          <div class="flex ml-2 md:mr-24">
+          <div class="ml-2 flex md:mr-24">
             <span
-              class="self-center text-xl font-semibold text-slate-700 whitespace-nowrap dark:text-white"
+              class="self-center whitespace-nowrap text-xl font-semibold text-slate-700 dark:text-white"
               >Wings Admin</span
             >
           </div>
         </div>
         <div class="flex items-center" v-if="user">
-          <div class="flex items-center ml-3">
+          <div class="ml-3 flex items-center">
             <div>
               <button
                 type="button"
-                class="flex text-sm rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                class="flex rounded-full text-sm focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown-user"
               >
                 <span class="sr-only">Open user menu</span>
-                <img class="w-8 h-8 rounded-full" src="/logo.svg" alt="user photo" />
+                <img class="h-8 w-8 rounded-full" src="/logo.svg" alt="user photo" />
               </button>
             </div>
             <div
-              class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+              class="z-50 my-4 hidden list-none divide-y divide-gray-100 rounded bg-white text-base shadow dark:divide-gray-600 dark:bg-gray-700"
               id="dropdown-user"
             >
               <div class="px-4 py-3" role="none">
                 <p class="text-sm text-gray-900 dark:text-white" role="none">{{ user.name }}</p>
                 <p
-                  class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                  class="truncate text-sm font-medium text-gray-900 dark:text-gray-300"
                   role="none"
                 >
                   {{ user.email }}

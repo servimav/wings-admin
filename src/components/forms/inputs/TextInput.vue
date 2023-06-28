@@ -42,7 +42,7 @@ function onChange(event: Event) {
   <div>
     <label
       :for="id"
-      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
       v-if="label"
       >{{ label }}</label
     >
@@ -56,7 +56,7 @@ function onChange(event: Event) {
       :placeholder="placeholder"
       :rows="rows"
       :required="required"
-      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
     ></textarea>
 
     <input
@@ -68,7 +68,7 @@ function onChange(event: Event) {
       :id="id"
       :placeholder="placeholder"
       :autocomplete="noAutocomplete ? 'nofill' : undefined"
-      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
       :required="required"
       :min="min"
       :max="max"

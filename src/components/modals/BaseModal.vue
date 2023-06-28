@@ -23,7 +23,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="fixed top-0 h-screen w-screen z-20 overflow-hidden">
+  <div class="fixed top-0 z-20 h-screen w-screen overflow-hidden">
     <div
       @click="() => $emit('close')"
       class="absolute top-0 h-screen w-screen bg-gray-700 opacity-50"

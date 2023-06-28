@@ -68,14 +68,14 @@ function onStoreUpdated(update: ShopStore) {
 
 <template>
   <!-- Store Form -->
-  <div v-if="showForm" class="p-4 border rounded-md">
+  <div v-if="showForm" class="rounded-md border p-4">
     <StoreForm :update="store" @updated="onStoreUpdated" />
   </div>
   <!-- / Store Form -->
 
   <section v-else-if="store" class="p-2">
     <!-- Image -->
-    <div class="p-4 rounded-md bg-slate-100 mt-2 relative">
+    <div class="relative mt-2 rounded-md bg-slate-100 p-4">
       <img
         :src="store.image ?? '/images/default.png'"
         :alt="store.name"
@@ -85,11 +85,11 @@ function onStoreUpdated(update: ShopStore) {
 
       <div class="absolute bottom-1 right-1 z-10">
         <div
-          class="rounded-full shadow-sm border p-2 text-sm"
+          class="rounded-full border p-2 text-sm shadow-sm"
           :class="
             store.available
-              ? 'bg-green-500 text-white border-green-300'
-              : 'bg-slate-300 text-black border-slate-400'
+              ? 'border-green-300 bg-green-500 text-white'
+              : 'border-slate-400 bg-slate-300 text-black'
           "
         >
           {{ store.available ? 'Abierta' : 'Cerrada' }}
@@ -98,20 +98,20 @@ function onStoreUpdated(update: ShopStore) {
     </div>
     <!-- / Image -->
 
-    <div class="border rounded-md p-2">
+    <div class="rounded-md border p-2">
       <div class="space-y-1">
-        <h2 class="text-xl text-center font-bold">{{ store.name }}</h2>
+        <h2 class="text-center text-xl font-bold">{{ store.name }}</h2>
         <p class="font-semibold" :class="store.available ? 'text-green-700' : 'text-slate-600'">
           {{ store.available ? 'Abierta' : 'Cerrada' }}
         </p>
         <p class="font-semibold">Descripción</p>
-        <p class="text-sm text-justify">{{ store.description }}</p>
+        <p class="text-justify text-sm">{{ store.description }}</p>
         <p class="font-semibold">Dirección</p>
-        <p class="text-sm text-justify">{{ store.address }}</p>
+        <p class="text-justify text-sm">{{ store.address }}</p>
       </div>
       <div class="mt-4">
-        <button class="btn-primary py-1 px-2" @click="onEditStoreClick">Editar</button>
-        <button class="btn border-primary-500 text-primary-500 py-1 px-2" @click="goToOffers">
+        <button class="btn-primary px-2 py-1" @click="onEditStoreClick">Editar</button>
+        <button class="btn border-primary-500 px-2 py-1 text-primary-500" @click="goToOffers">
           Ofertas
         </button>
       </div>

@@ -42,12 +42,13 @@ export interface UserLogin {
   password: string
 }
 
-export interface UserRegister extends Omit<User, 'id'> {
+export interface UserRegister extends UserLogin {
+  name: string
   password: string
   password_confirmation: string
 }
 
 export interface UserAuthResponse {
   auth_token: string
-  user: User
+  data: User
 }

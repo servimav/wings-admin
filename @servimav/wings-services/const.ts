@@ -9,7 +9,8 @@ export enum ROLE_TYPE {
 export enum STOCK_TYPE {
   INFINITY = 'INFINITY',
   LIMITED = 'LIMITED',
-  OUT = 'OUT'
+  OUT = 'OUT',
+  ON_WAY = 'ON_WAY'
 }
 
 export enum STATUS {

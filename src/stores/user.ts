@@ -31,7 +31,7 @@ export const useUserStore = defineStore(STORE_NAME, () => {
    */
   async function login(params: UserLogin) {
     const resp = (await $service.user.login(params)).data
-    user.value = resp.user
+    user.value = resp.data
     auth_token.value = resp.auth_token
     saveData()
     return resp
@@ -58,7 +58,7 @@ export const useUserStore = defineStore(STORE_NAME, () => {
   function loadData() {
     const data = $storage.get()
     if (data) {
-      user.value = data.user
+      user.value = data.data
       auth_token.value = data.auth_token
     }
   }
@@ -69,7 +69,7 @@ export const useUserStore = defineStore(STORE_NAME, () => {
   function saveData() {
     $storage.set({
       auth_token: auth_token.value,
-      user: user.value
+      data: user.value
     })
   }
 

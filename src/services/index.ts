@@ -13,7 +13,7 @@ function tokenHandler(): TokenHandler {
 
       _userStorage.set({
         auth_token: token ?? undefined,
-        user: storage && storage.user ? storage.user : undefined
+        data: storage && storage.data ? storage.data : undefined
       })
     }
   }

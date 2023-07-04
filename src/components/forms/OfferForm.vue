@@ -239,6 +239,7 @@ onBeforeMount(async () => {
         v-model="form.inversion_price"
         type="currency"
       />
+      {{ toCurrency((form.inversion_price ?? 0) * cupPrice) }} CUP
 
       <TextInput
         id="offer_production_price"

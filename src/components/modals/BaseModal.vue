@@ -29,6 +29,8 @@ onBeforeUnmount(() => {
       class="absolute top-0 h-screen w-screen bg-gray-700 opacity-50"
     ></div>
 
-    <slot />
+    <div class="max-h-screen overflow-auto p-4">
+      <slot />
+    </div>
   </div>
 </template>

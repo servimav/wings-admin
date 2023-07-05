@@ -270,8 +270,8 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
 
   <!-- Search Modal -->
   <BaseModal v-if="showFilterModal" @close="() => (showFilterModal = false)">
-    <div class="flex h-full w-full items-center justify-center">
-      <div class="z-30 overflow-y-auto rounded-xl border bg-white p-4">
+    <div class="flex items-center justify-center">
+      <div class="z-30 w-full rounded-xl border bg-white p-4">
         <SearchForm
           :filter="filter"
           @close="() => (showFilterModal = false)"
@@ -284,8 +284,8 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
 
   <!-- New offer Modal -->
   <BaseModal v-if="showNewOfferModal" @close="() => (showNewOfferModal = false)">
-    <div class="flex h-full w-full items-center justify-center">
-      <div class="z-30 overflow-y-auto rounded-xl border bg-white p-4">
+    <div class="flex items-center justify-center">
+      <div class="z-30 w-full rounded-xl border bg-white">
         <OfferForm
           @canceled="() => (showNewOfferModal = false)"
           @created="() => (showNewOfferModal = false)"

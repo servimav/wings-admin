@@ -217,7 +217,7 @@ onBeforeMount(async () => {
             <span class="font-semibold">{{ toCurrency(offer.discount_price * cupPrice) }}</span>
           </li>
 
-          <li :class="{ 'line-through': offer.discount_price }">
+          <li :class="{ 'line-through': offer.discount_price && offer.discount_price > 0 }">
             Precio venta:
             <span class="font-semibold">{{ toCurrency(offer.sell_price * cupPrice) }}</span>
           </li>

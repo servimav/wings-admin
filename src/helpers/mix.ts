@@ -25,7 +25,7 @@ export function toCurrency(val: number) {
     currency: 'USD'
   })
 
-  return formatter.format(val)
+  return formatter.format(Math.ceil(val / 10) * 10)
 }
 
 /**

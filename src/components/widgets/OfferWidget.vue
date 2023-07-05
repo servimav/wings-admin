@@ -17,7 +17,7 @@ const cupPrice = computed(() => {
 })
 
 const displayPrice = computed(() =>
-  $props.data.discount_price
+  $props.data.discount_price && $props.data.discount_price > 0
     ? toCurrency($props.data.discount_price * cupPrice.value)
     : toCurrency($props.data.sell_price * cupPrice.value)
 )

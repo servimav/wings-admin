@@ -48,9 +48,10 @@ const displayPrice = computed(() =>
       </div>
     </div>
     <div class="p-2">
-      <h5 class="text-sm text-gray-900 dark:text-white">{{ data.name }}</h5>
+      <h5 class="text-sm text-gray-900 dark:text-white">(No.{{ data.id }}): {{ data.name }}</h5>
       <p class="font-bold text-gray-900 dark:text-white">
         {{ displayPrice }}
+        <span class="ml-2">({{ data.views }} Vistas)</span>
       </p>
     </div>
   </div>

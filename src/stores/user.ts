@@ -1,6 +1,11 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { UserLogin, UserAuthResponse, User } from '@servimav/wings-services'
+import {
+  type UserLogin,
+  type UserAuthResponse,
+  type User,
+  ROLE_TYPE
+} from '@servimav/wings-services'
 import { useServices } from '@/services'
 import { useStorage } from '@/helpers'
 
@@ -11,6 +16,13 @@ const $storage = useStorage<Partial<UserAuthResponse>>(STORE_NAME)
 export const useUserStore = defineStore(STORE_NAME, () => {
   const auth_token = ref<string>()
   const user = ref<User>()
+  const roles = computed(() => user.value?.roles)
+
+  const isAdmin = computed(() => roles.value?.find((role) => role.name === ROLE_TYPE.ADMIN))
+  const isDeveloper = computed(() => roles.value?.find((role) => role.name === ROLE_TYPE.DEVELOPER))
+  const isProvider = computed(() =>
+    roles.value?.find((role) => role.name === ROLE_TYPE.SHOP_PROVIDER)
+  )
 
   /**
    * -----------------------------------------
@@ -76,6 +88,10 @@ export const useUserStore = defineStore(STORE_NAME, () => {
   return {
     auth_token,
     user,
+    roles,
+    isAdmin,
+    isDeveloper,
+    isProvider,
     // Actions
     geMe,
     login,

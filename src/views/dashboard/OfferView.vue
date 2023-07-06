@@ -201,36 +201,52 @@ onBeforeMount(async () => {
         <ul class="mt-2 space-y-2">
           <li v-if="offer.inversion_price">
             Precio Inversión:
-            <span class="font-semibold">{{
-              toCurrency((offer.inversion_price ?? 0) * cupPrice)
-            }}</span>
+            <span class="font-semibold">{{ toCurrency(offer.inversion_price ?? 0, false) }}</span
+            ><span class="fml-2"
+              >({{ toCurrency((offer.inversion_price ?? 0) * cupPrice, false) }} CUP)</span
+            >
           </li>
           <li>
             Precio Proveedor:
-            <span class="font-semibold">{{
-              toCurrency((offer.provider_price ?? 0) * cupPrice)
-            }}</span>
+            <span class="font-semibold">{{ toCurrency(offer.provider_price ?? 0, false) }}</span>
+            <span class="ml-2"
+              >({{ toCurrency((offer.provider_price ?? 0) * cupPrice, false) }} CUP)</span
+            >
           </li>
 
           <li v-if="offer.discount_price">
             Precio Descuento:
-            <span class="font-semibold">{{ toCurrency(offer.discount_price * cupPrice) }}</span>
+            <span class="font-semibold">{{ toCurrency(offer.discount_price, false) }}</span>
+            <span class="ml-2">({{ toCurrency(offer.discount_price * cupPrice) }})</span>
           </li>
 
           <li :class="{ 'line-through': offer.discount_price && offer.discount_price > 0 }">
             Precio venta:
-            <span class="font-semibold">{{ toCurrency(offer.sell_price * cupPrice) }}</span>
+            <span class="font-semibold">{{ toCurrency(offer.sell_price, false) }}</span>
+            <span class="ml-2">({{ toCurrency(offer.sell_price * cupPrice) }} CUP)</span>
           </li>
 
           <li>
             Ganancia:
             <span class="font-semibold">{{
               toCurrency(
-                (offer.discount_price
+                offer.discount_price && offer.discount_price > 0
                   ? offer.discount_price - Number(offer.provider_price)
-                  : offer.sell_price - Number(offer.provider_price)) * cupPrice
+                  : offer.sell_price - Number(offer.provider_price),
+                false
               )
             }}</span>
+
+            <span class="ml-2"
+              >({{
+                toCurrency(
+                  (offer.discount_price && offer.discount_price > 0
+                    ? offer.discount_price - Number(offer.provider_price)
+                    : offer.sell_price - Number(offer.provider_price)) * cupPrice
+                )
+              }}
+              CUP)</span
+            >
           </li>
         </ul>
       </div>

@@ -13,6 +13,7 @@ export interface Props {
   max?: number
   step?: number
   noAutocomplete?: boolean
+  readonly?: boolean
 }
 
 const $props = defineProps<Props>()
@@ -56,6 +57,7 @@ function onChange(event: Event) {
       :placeholder="placeholder"
       :rows="rows"
       :required="required"
+      :readonly="readonly"
       class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
     ></textarea>
 

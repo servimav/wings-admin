@@ -6,10 +6,10 @@ import {
   type ShopOffer,
   type KeyValue
 } from '@servimav/wings-services'
-import { useShopStore } from '@/stores'
+import { useShopStore, useUserStore } from '@/stores'
 import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
-import { CUP_PRICE, toCurrency } from '@/helpers'
+import { CUP_PRICE, toCurrency, roundX10 } from '@/helpers'
 // Types
 export interface Emits {
   (e: 'canceled'): void
@@ -38,6 +38,7 @@ const $emit = defineEmits<Emits>()
 const $props = defineProps<Props>()
 const $service = useServices()
 const $shop = useShopStore()
+const $user = useUserStore()
 /**
  * -----------------------------------------
  *	Data
@@ -77,6 +78,13 @@ const form = ref<ShopOfferCreate>({
   weight: undefined
 })
 
+const isDeveloper = computed(() => $user.isDeveloper)
+
+const convertCUP = ref<{ sell: number; discount: number }>({
+  discount: 0,
+  sell: 0
+})
+
 const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
   if (type === STOCK_TYPE.INFINITY) return { label: 'Infinito', value: type }
   else if (type === STOCK_TYPE.LIMITED) return { label: 'Limitado', value: type }
@@ -95,6 +103,18 @@ const updateId = ref<number>()
  * -----------------------------------------
  */
 
+function onUpdateCupConvert(price: number | string, type: 'sell' | 'discount') {
+  const priceRounded = roundX10(Number(price))
+  if (type === 'sell') {
+    convertCUP.value.sell = priceRounded
+    // @ts-ignore
+    form.value.sell_price = (priceRounded / cupPrice.value).toFixed(2)
+  } else {
+    convertCUP.value.discount = priceRounded
+    // @ts-ignore
+    form.value.discount_price = (priceRounded / cupPrice.value).toFixed(2)
+  }
+}
 /**
  * onSubmit
  */
@@ -111,7 +131,6 @@ async function onSubmit() {
       const createResp = await $service.shop.offer.create(form.value)
       $emit('created', createResp.data)
     }
-    $app.success('Producto guardado')
   } catch (error) {
     $app.axiosError(error)
   }
@@ -167,6 +186,15 @@ onBeforeMount(async () => {
       categories: updateCategories,
       store_id: $props.update.store?.id as number
     }
+
+    convertCUP.value = {
+      discount: roundX10(Number(form.value.discount_price ?? 0 * cupPrice.value)),
+      sell: roundX10(Number(form.value.sell_price * cupPrice.value))
+    }
+
+    console.log({
+      convertCUP: convertCUP.value
+    })
   }
 })
 </script>
@@ -234,37 +262,41 @@ onBeforeMount(async () => {
       <h4 class="text-center text-lg">Precios</h4>
 
       <TextInput
-        id="offer_production_price"
+        id="offer_inversion_price"
         label="Precio Inversion"
         v-model="form.inversion_price"
         type="currency"
+        :readonly="!isDeveloper"
       />
-      {{ toCurrency((form.inversion_price ?? 0) * cupPrice) }} CUP
+      {{ toCurrency((form.inversion_price ?? 0) * cupPrice, false) }} CUP
 
       <TextInput
-        id="offer_production_price"
+        id="offer_provider_price"
         label="Precio Proveedor"
         v-model="form.provider_price"
         type="currency"
+        :readonly="!isDeveloper"
       />
-      {{ toCurrency((form.provider_price ?? 0) * cupPrice) }} CUP
+      {{ toCurrency((form.provider_price ?? 0) * cupPrice, false) }} CUP
 
       <TextInput
         id="offer_sell_price"
-        label="Precio Venta"
-        v-model="form.sell_price"
+        label="Precio Venta (CUP)"
+        :model-value="convertCUP.sell"
+        @update:model-value="(v) => onUpdateCupConvert(v, 'sell')"
         type="currency"
         required
       />
-      {{ toCurrency((form.sell_price ?? 0) * cupPrice) }} CUP
+      {{ form.sell_price ?? 0 }} USD &asymp; <b>{{ toCurrency(convertCUP.sell ?? 0) }}</b>
 
       <TextInput
         id="offer_discount_price"
-        label="Precio Descuento"
-        v-model="form.discount_price"
+        label="Precio Descuento (CUP)"
+        :model-value="convertCUP.discount"
+        @update:model-value="(v) => onUpdateCupConvert(v, 'discount')"
         type="currency"
       />
-      {{ toCurrency((form.discount_price ?? 0) * cupPrice) }} CUP
+      {{ form.discount_price ?? 0 }} USD &asymp; <b>{{ toCurrency(convertCUP.discount ?? 0) }}</b>
     </div>
     <!-- / Precios -->
 

@@ -19,13 +19,13 @@ export function useStorage<T = unknown>(key: string) {
  * @param val
  * @returns
  */
-export function toCurrency(val: number) {
+export function toCurrency(val: number, round = true) {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD'
   })
 
-  return formatter.format(Math.ceil(val / 10) * 10)
+  return round ? formatter.format(Math.round(val / 10) * 10) : formatter.format(val)
 }
 
 /**
@@ -68,4 +68,15 @@ export function onScrollEvent(params: {
 export function setDefaultImage(event: Event) {
   const target = event.target as HTMLImageElement
   target.src = '/images/default.png'
+}
+
+/**
+ * toNearTenMultiple
+ * @param val
+ * @param type
+ * @returns
+ */
+export function roundX10(val: number, type: 'round' | 'ceil' | 'roof' = 'round') {
+  if (type === 'ceil') return Math.ceil(val / 10) * 10
+  else return Math.round(val / 10) * 10
 }

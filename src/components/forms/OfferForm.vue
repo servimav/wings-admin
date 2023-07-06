@@ -188,13 +188,15 @@ onBeforeMount(async () => {
     }
 
     convertCUP.value = {
-      discount: roundX10(Number(form.value.discount_price ?? 0 * cupPrice.value)),
+      discount: roundX10(
+        Number(
+          form.value.discount_price && form.value.discount_price > 0
+            ? form.value.discount_price * cupPrice.value
+            : 0
+        )
+      ),
       sell: roundX10(Number(form.value.sell_price * cupPrice.value))
     }
-
-    console.log({
-      convertCUP: convertCUP.value
-    })
   }
 })
 </script>

@@ -40,16 +40,19 @@ export interface ShopOrder {
   delivery_price: number
   offers_price: number
   service_price: number
-  order_offers: OrderOffer[]
+  items: OrderItem[]
+  payment_type: PaymentType
 }
 
 /**
  * ShopOrderCreate
  */
 export interface ShopOrderCreate {
-  order_offers: Array<OrderOfferCreate>
+  items: Array<{ id: number; qty: number }>
   delivery_details: DeliveryDetails
   currency?: CurrencyCode
+  message?: string
+  payment_type: PaymentType
 }
 
 /**
@@ -74,17 +77,13 @@ export interface ShopOrderFilter {
 /**
  * OrderOffer
  */
-export interface OrderOfferCreate {
+export interface OrderItem {
+  id: number
   qty: number
-  offer_id: number
-}
-
-/**
- * OrderOffer
- */
-export interface OrderOffer {
-  qty: number
-  offer: ShopOffer
+  name: string
+  image: string
+  price: number
+  offer?: ShopOffer
 }
 
 /**
@@ -97,3 +96,5 @@ export interface DeliveryDetails {
   coords?: GeoCoords
   location_id: number
 }
+
+export type PaymentType = 'CASH_TOTAL' | 'TRANSFER_PARTIAL' | 'TRANSFER_TOTAL'

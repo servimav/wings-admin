@@ -5,6 +5,7 @@ import { ELEMENT_ID } from '@/helpers'
 import { ROUTE_NAME } from '@/router'
 // Components
 const ChartBarIcon = defineAsyncComponent(() => import('@/components/icons/ChartBarIcon.vue'))
+const CartIcon = defineAsyncComponent(() => import('@/components/icons/CartIcon.vue'))
 const ChatIcon = defineAsyncComponent(() => import('@/components/icons/ChatIcon.vue'))
 const HomeIcon = defineAsyncComponent(() => import('@/components/icons/HomeIcon.vue'))
 const OfferIcon = defineAsyncComponent(() => import('@/components/icons/OfferIcon.vue'))
@@ -52,6 +53,11 @@ const drawerItems: MenuItem[] = [
     icon: OfferIcon,
     label: 'Productos',
     to: { name: ROUTE_NAME.OFFERS }
+  },
+  {
+    icon: CartIcon,
+    label: 'Pedidos',
+    to: { name: ROUTE_NAME.ORDERS }
   },
   {
     icon: ChatIcon,

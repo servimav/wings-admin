@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import type { ShopOfferFilter } from '@servimav/wings-services'
+import { STOCK_TYPE, type ShopOfferFilter } from '@servimav/wings-services'
 import { useShopStore } from '@/stores'
 /**
  * -----------------------------------------
@@ -22,6 +22,7 @@ export interface Prop {
  */
 const SelectInput = defineAsyncComponent(() => import('@/components/forms/inputs/SelectInput.vue'))
 const TextInput = defineAsyncComponent(() => import('@/components/forms/inputs/TextInput.vue'))
+const ToggleInput = defineAsyncComponent(() => import('@/components/forms/inputs/ToggleInput.vue'))
 /**
  * -----------------------------------------
  *	Composables
@@ -42,15 +43,28 @@ const form = ref<ShopOfferFilter>({
   currency: 'CUP',
   search: undefined,
   sort: 'views',
-  store_id: undefined
+  store_id: undefined,
+  stock: undefined
 })
+const incomming = ref<boolean>(false)
 const stores = computed(() => $shop.stores)
 /**
  * -----------------------------------------
  *	methods
  * -----------------------------------------
  */
+/**
+ * onChangeIncomming
+ * @param v
+ */
+function onChangeIncomming(v: boolean) {
+  if (v) {
+    form.value.stock = STOCK_TYPE.INCOMMING
+    console.log('setForm', form.value.stock)
+  } else form.value.stock === undefined
 
+  incomming.value = v
+}
 /**
  * onSubmit
  */
@@ -60,6 +74,7 @@ function onSubmit() {
   if (!form.value.search) form.value.search = undefined
   if (!form.value.sort) form.value.sort = undefined
   if (!form.value.store_id) form.value.store_id = undefined
+  if (!form.value.stock) form.value.stock = undefined
 
   $emit('search', form.value)
 }
@@ -70,7 +85,8 @@ function reset() {
     currency: undefined,
     search: undefined,
     sort: undefined,
-    store_id: undefined
+    store_id: undefined,
+    stock: undefined
   }
 }
 
@@ -101,6 +117,16 @@ onBeforeMount(() => {
           label="Categoria"
           :options="categories.map((c) => ({ label: c.name, value: c.id }))"
         />
+
+        <div class="flex justify-between gap-2">
+          <ToggleInput
+            :model-value="incomming"
+            @update:model-value="onChangeIncomming"
+            label="Encargos"
+            id="encargos-form"
+            color="primary"
+          />
+        </div>
       </div>
 
       <div class="mt-4">

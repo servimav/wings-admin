@@ -15,7 +15,12 @@ const $service = useServices()
 export const useShopStore = defineStore(STORE_NAME, () => {
   const categories = ref<ShopCategory[]>([])
   const currencies = ref<Currency[]>([])
-  const stockType: STOCK_TYPE[] = [STOCK_TYPE.INFINITY, STOCK_TYPE.LIMITED, STOCK_TYPE.OUT]
+  const stockType: STOCK_TYPE[] = [
+    STOCK_TYPE.INFINITY,
+    STOCK_TYPE.LIMITED,
+    STOCK_TYPE.OUT,
+    STOCK_TYPE.INCOMMING
+  ]
   const stores = ref<ShopStore[]>([])
 
   /**

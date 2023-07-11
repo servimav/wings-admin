@@ -88,6 +88,7 @@ const convertCUP = ref<{ sell: number; discount: number }>({
 const stockOptions: { label: string; value: number | string }[] = $shop.stockType.map((type) => {
   if (type === STOCK_TYPE.INFINITY) return { label: 'Infinito', value: type }
   else if (type === STOCK_TYPE.LIMITED) return { label: 'Limitado', value: type }
+  else if (type === STOCK_TYPE.INCOMMING) return { label: 'Encargo', value: type }
   return {
     label: 'Sin Inventario',
     value: STOCK_TYPE.OUT

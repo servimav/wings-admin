@@ -139,7 +139,7 @@ onBeforeMount(async () => {
     <!-- / Offer Form -->
 
     <!-- Offer Data -->
-    <div v-else class="p-2">
+    <div v-else class="bg-white p-2">
       <div class="relative mt-2 rounded-md bg-slate-100 p-4">
         <img
           :src="offer.image ?? '/images/default.png'"

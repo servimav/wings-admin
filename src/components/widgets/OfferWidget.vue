@@ -29,7 +29,7 @@ const displayPrice = computed(() =>
   >
     <div class="relative bg-slate-100 p-2">
       <img
-        class="rounded-t-lg"
+        class="h-48 w-full rounded-lg object-cover object-center"
         :src="data.image ?? '/images/default.png'"
         :alt="data.name"
         :title="data.name"

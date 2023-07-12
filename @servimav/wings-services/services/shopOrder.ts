@@ -7,19 +7,23 @@ import { generateCrud } from '../crud'
 import type { PaginatedData } from '../types'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/shop/orders'
+  const baseURL = '/shop/orders'
 
   const crud = generateCrud<ShopOrder, ShopOrderCreate, ShopOrderUpdate>({
     api,
-    baseUrl
+    baseURL
   })
 
   return {
     ...crud,
     filter: (params: ShopOrderFilter) =>
-      api.get<PaginatedData<ShopOrder>>(`${baseUrl}/filter`, { params }),
+      api.get<PaginatedData<ShopOrder>>(`${baseURL}/filter`, { params }),
     mine: (params: Omit<ShopOrderFilter, 'customer_id' | 'location_id'>) =>
-      api.get<PaginatedData<ShopOrder>>(`${baseUrl}/mine`, { params })
+      api.get<PaginatedData<ShopOrder>>(`${baseURL}/mine`, { params }),
+    show: (id: number, params: { currency: 'CUP' }) =>
+      api.get<ShopOrder>(`${baseURL}/${id}`, { params }),
+    showClient: (id: number, params: { currency: 'CUP' }) =>
+      api.get<ShopOrder>(`${baseURL}/${id}/client`, { params })
   }
 }
 
@@ -38,6 +42,7 @@ export interface ShopOrder {
   delivery_status: STATUS
   delivery_details: DeliveryDetails
   delivery_price: number
+  delivery_date?: string
   offers_price: number
   service_price: number
   items: OrderItem[]

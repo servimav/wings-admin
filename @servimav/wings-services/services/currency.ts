@@ -2,9 +2,9 @@ import type { AxiosInstance } from 'axios'
 import { generateCrudWithoutPaginate } from '../crud'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/currency'
+  const baseURL = '/currency'
 
-  const crud = generateCrudWithoutPaginate<Currency>({ api, baseUrl })
+  const crud = generateCrudWithoutPaginate<Currency>({ api, baseURL })
 
   return {
     ...crud

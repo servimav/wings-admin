@@ -47,6 +47,11 @@ const dashboardRoutes: RouteRecordRaw = {
       component: () => import('@/views/dashboard/OrdersView.vue')
     },
     {
+      path: 'orders/:orderId',
+      name: ROUTE_NAME.ORDER,
+      component: () => import('@/views/dashboard/OrderView.vue')
+    },
+    {
       path: 'offers',
       name: ROUTE_NAME.OFFERS,
       component: () => import('@/views/dashboard/OffersView.vue')

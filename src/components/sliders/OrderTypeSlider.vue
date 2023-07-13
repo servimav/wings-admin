@@ -33,7 +33,7 @@ function statusLabel(status: STATUS) {
     case STATUS.ACCEPTED:
       return 'Pagado'
     case STATUS.ONPROGRESS:
-      return 'Progreso'
+      return 'Envio'
     case STATUS.COMPLETED:
       return 'Completado'
     case STATUS.UNKNOWN:

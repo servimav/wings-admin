@@ -3,6 +3,8 @@ import { defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMounted, ref } 
 import { STATUS, type ShopOrder } from '@servimav/wings-services'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
+import { useRouter } from 'vue-router'
+import { ROUTE_NAME } from '@/router'
 /**
  * ------------------------------------------
  *	Componens
@@ -18,6 +20,7 @@ const OrderWidget = defineAsyncComponent(() => import('@/components/widgets/Orde
  * ------------------------------------------
  */
 const $app = useAppStore()
+const $router = useRouter()
 const $service = useServices()
 
 /**
@@ -74,6 +77,19 @@ async function getOrders() {
 }
 
 /**
+ * goToOrder
+ * @param order
+ */
+function goToOrder(order: ShopOrder) {
+  $router.push({
+    name: ROUTE_NAME.ORDER,
+    params: {
+      orderId: order.id
+    }
+  })
+}
+
+/**
  * onSelectStatus
  * @param selected
  */
@@ -115,6 +131,7 @@ onBeforeUnmount(() => {
         v-for="(order, orderKey) in orders"
         :key="`order-${orderKey}-${order.id}`"
         :order="order"
+        @click="() => goToOrder(order)"
       />
     </div>
   </section>

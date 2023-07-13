@@ -184,7 +184,7 @@ function sendNotification() {
   if (order.value) {
     const phone = order.value.customer.phone
     const name = order.value.customer.name
-    const message = `Hola ${name}.\nLe notifico que su pedido con ID #${order.value.id} se encuentra en el estado "${orderStatus.value?.label}". Si desea ver más detalles puede revisar el link:\nhttps://wings.servimav.com/orders/${order.value.id}`
+    const message = `Hola ${name}.\nLe notifico que su orden con ID #${order.value.id} se encuentra en el estado "${orderStatus.value?.label}". Si desea ver más detalles puede revisar el link:\nhttps://wings.servimav.com/orders/${order.value.id}`
 
     const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
 

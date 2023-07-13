@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
-import type { ShopOrder } from '@servimav/wings-services'
+import { STATUS, type ShopOrder } from '@servimav/wings-services'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
 /**
@@ -8,6 +8,9 @@ import { useAppStore } from '@/stores'
  *	Componens
  * ------------------------------------------
  */
+const OrderStatusSlider = defineAsyncComponent(
+  () => import('@/components/sliders/OrderTypeSlider.vue')
+)
 const OrderWidget = defineAsyncComponent(() => import('@/components/widgets/OrderWidget.vue'))
 /**
  * ------------------------------------------
@@ -35,6 +38,8 @@ const scrollHandler = () => {
   }
 }
 
+const status = ref<STATUS>(STATUS.CREATED)
+
 /**
  * ------------------------------------------
  *	Methods
@@ -49,8 +54,9 @@ async function getOrders() {
 
   $app.toggleLoading(true)
   try {
-    const { data } = await $service.shop.order.list({
-      page: page.value ? page.value + 1 : undefined
+    const { data } = await $service.shop.order.filter({
+      page: page.value ? page.value + 1 : undefined,
+      status: status.value
     })
     page.value = data.meta.current_page
     if (data.data.length) {
@@ -65,6 +71,17 @@ async function getOrders() {
     window.removeEventListener('scroll', scrollHandler)
   }
   $app.toggleLoading(false)
+}
+
+/**
+ * onSelectStatus
+ * @param selected
+ */
+async function onSelectStatus(selected: STATUS) {
+  orders.value = []
+  page.value = undefined
+  status.value = selected
+  await getOrders()
 }
 
 /**
@@ -89,7 +106,11 @@ onBeforeUnmount(() => {
 
 <template>
   <section id="orders-section">
-    <div class="space-y-2 bg-slate-200 p-2">
+    <div class="sticky top-14 bg-white pt-1">
+      <OrderStatusSlider :model-value="status" @update:model-value="onSelectStatus" />
+    </div>
+
+    <div class="space-y-2 bg-slate-200 p-2" v-if="orders.length">
       <OrderWidget
         v-for="(order, orderKey) in orders"
         :key="`order-${orderKey}-${order.id}`"

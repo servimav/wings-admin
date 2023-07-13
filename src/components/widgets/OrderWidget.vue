@@ -34,10 +34,22 @@ const totalPrice = computed(
     <div class="mt-2 text-sm">
       <ul class="list-none">
         <li>
-          Envio: {{ toCurrency(order.delivery_price * cupPrice) }}
+          Envio:
+          {{ order.delivery_price > 0 ? toCurrency(order.delivery_price * cupPrice) : 'Gratis' }}
           {{ order.delivery_details.address }}
         </li>
       </ul>
+    </div>
+
+    <div class="mt-2 text-sm">
+      <p>
+        Pago:
+        {{
+          order.payment_type === 'TRANSFER_PARTIAL'
+            ? toCurrency((totalPrice * cupPrice) / 2)
+            : toCurrency(totalPrice * cupPrice)
+        }}
+      </p>
     </div>
 
     <div class="mt-2 rounded-sm border border-slate-200 bg-slate-100 p-2 text-sm">

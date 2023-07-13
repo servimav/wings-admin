@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { STATUS, type ShopOrder } from '@servimav/wings-services'
+import { useRoute, useRouter } from 'vue-router'
+import { STATUS, type OrderItem, type ShopOrder } from '@servimav/wings-services'
 import { toCurrency } from '@/helpers'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
+import { ROUTE_NAME } from '@/router'
 
 interface OrderStatus {
   label: string
@@ -34,6 +35,7 @@ const OrderForm = defineAsyncComponent(() => import('@/components/forms/OrderFor
  */
 const $app = useAppStore()
 const $route = useRoute()
+const $router = useRouter()
 const $service = useServices()
 /**
  * ------------------------------------------
@@ -97,6 +99,22 @@ const totalPrice = computed(
  *	Methods
  * ------------------------------------------
  */
+
+/**
+ * contact
+ */
+function contact() {
+  if (order.value) {
+    const phone = order.value.customer.phone
+    const name = order.value.customer.name
+    const message = `Hola ${name}`
+
+    const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+
+    window.location.assign(whatsappLink)
+  }
+}
+
 /**
  * getOrder
  */
@@ -118,6 +136,20 @@ async function getOrder() {
     $app.axiosError(error)
   }
   $app.toggleLoading(false)
+}
+
+/**
+ * goToOffer
+ * @param item
+ */
+function goToOffer(item: OrderItem) {
+  console.log({ item })
+  void $router.push({
+    name: ROUTE_NAME.OFFER,
+    params: {
+      offerId: item.id
+    }
+  })
 }
 /**
  * onCancelUpdate
@@ -143,6 +175,21 @@ function onOrderUpdate(updated: ShopOrder) {
   order.value = updated
   showFloatMenu.value = false
   showForm.value = false
+}
+
+/**
+ * sendNotification
+ */
+function sendNotification() {
+  if (order.value) {
+    const phone = order.value.customer.phone
+    const name = order.value.customer.name
+    const message = `Hola ${name}.\nLe notifico que su pedido con ID #${order.value.id} se encuentra en el estado "${orderStatus.value?.label}". Si desea ver más detalles puede revisar el link:\nhttps://wings.servimav.com/orders/${order.value.id}`
+
+    const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+
+    window.location.assign(whatsappLink)
+  }
 }
 
 onBeforeMount(() => {
@@ -176,6 +223,9 @@ onBeforeMount(() => {
         <div class="border p-4">
           <ul class="list-none space-y-1">
             <li :class="orderStatus?.class">Estado: {{ orderStatus?.label }}</li>
+            <li :class="orderStatus?.class">
+              Tipo de pago: {{ order.payment_type === 'TRANSFER_PARTIAL' ? 'Parcial' : 'Total' }}
+            </li>
             <li v-if="order.delivery_date">
               Entrega:
               {{
@@ -217,6 +267,7 @@ onBeforeMount(() => {
             v-for="(item, itemKey) in order.items"
             :key="`item-order-${itemKey}-${item.id}`"
             :item="item"
+            @click-image="() => goToOffer(item)"
             readonly
             to-cup
           />
@@ -235,8 +286,18 @@ onBeforeMount(() => {
         id="edit-order-button"
         @click="onClickEdit"
       />
-      <FloatButtonItem label="Notificar" :icon="BellIcon" id="notify-client-button" />
-      <FloatButtonItem label="Contactar" :icon="ChatIcon" id="contact-client-button" />
+      <FloatButtonItem
+        label="Notificar"
+        :icon="BellIcon"
+        id="notify-client-button"
+        @click="sendNotification"
+      />
+      <FloatButtonItem
+        label="Contactar"
+        :icon="ChatIcon"
+        id="contact-client-button"
+        @click="contact"
+      />
     </FloatButton>
   </div>
   <!-- / Float Button -->

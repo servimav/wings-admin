@@ -15,6 +15,12 @@ const $service = useServices()
 export const useShopStore = defineStore(STORE_NAME, () => {
   const categories = ref<ShopCategory[]>([])
   const currencies = ref<Currency[]>([])
+
+  const orderCounter = ref<OrderCounter>({
+    accepted: 0,
+    created: 0,
+    onprogress: 0
+  })
   const stockType: STOCK_TYPE[] = [
     STOCK_TYPE.INFINITY,
     STOCK_TYPE.LIMITED,
@@ -57,6 +63,7 @@ export const useShopStore = defineStore(STORE_NAME, () => {
     // data
     categories,
     currencies,
+    orderCounter,
     stockType,
     stores,
     // Methods
@@ -65,3 +72,9 @@ export const useShopStore = defineStore(STORE_NAME, () => {
     getMyStores
   }
 })
+
+export interface OrderCounter {
+  created: number
+  accepted: number
+  onprogress: number
+}

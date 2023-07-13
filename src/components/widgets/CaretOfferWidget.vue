@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 import { CUP_PRICE, setDefaultImage, toCurrency } from '@/helpers'
 import type { OrderItem } from '@servimav/wings-services'
 import { useShopStore } from '@/stores'
@@ -26,9 +26,6 @@ interface Props {
  *	Components
  * -----------------------------------------
  */
-
-const PlusIcon = defineAsyncComponent(() => import('@/components/icons/PlusIcon.vue'))
-const MinusIcon = defineAsyncComponent(() => import('@/components/icons/MinusIcon.vue'))
 
 /**
  * -----------------------------------------
@@ -80,12 +77,6 @@ const offer = computed(() => $props.item.offer)
 
     <div class="ml-8 mr-3 flex items-center justify-center gap-2" v-if="readonly">
       <div class="w-5 text-center text-sm text-gray-800">x{{ item.qty }}</div>
-    </div>
-
-    <div class="ml-8 mr-3 flex items-center justify-center gap-2" v-else>
-      <MinusIcon @click="() => $emit('decrease')" class="h-3 w-3 cursor-pointer text-gray-800" />
-      <div class="w-5 text-center text-sm text-gray-800">{{ item.qty }}</div>
-      <PlusIcon @click="() => $emit('increase')" class="h-3 w-3 cursor-pointer text-gray-800" />
     </div>
   </div>
 </template>

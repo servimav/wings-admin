@@ -2,17 +2,17 @@ import type { AxiosInstance } from 'axios'
 import type { TokenHandler } from '../tokenHandler'
 
 export default function init({ api, tokenHandler }: InitProps) {
-  const baseUrl = '/users'
+  const baseURL = '/users'
 
   return {
     login: async (params: UserLogin) => {
-      const resp = await api.post<UserAuthResponse>(`${baseUrl}/login`, params)
+      const resp = await api.post<UserAuthResponse>(`${baseURL}/login`, params)
       tokenHandler.setToken(resp.data.auth_token)
       return resp
     },
-    me: () => api.get<User>(`${baseUrl}/me`),
+    me: () => api.get<User>(`${baseURL}/me`),
     register: async (params: UserRegister) => {
-      const resp = await api.post<UserAuthResponse>(`${baseUrl}/register`, params)
+      const resp = await api.post<UserAuthResponse>(`${baseURL}/register`, params)
       tokenHandler.setToken(resp.data.auth_token)
       return resp
     }

@@ -2,11 +2,11 @@ import type { AxiosInstance } from 'axios'
 import { generateCrud } from '../crud'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/location'
+  const baseURL = '/location'
 
   const crud = generateCrud<GeoLocation, GeoLocationCreate>({
     api,
-    baseUrl
+    baseURL
   })
 
   return {
@@ -28,9 +28,12 @@ export interface GeoCoords {
 export interface GeoLocation {
   id: number
   name: string
+  description?: string
   coords?: GeoCoords
   parent?: GeoLocation
   children?: GeoLocation[]
+  type: string
+  deliverable: boolean
   delivery_price?: number
 }
 export interface GeoLocationCreate extends Omit<GeoLocation, 'id' | 'parent' | 'children'> {

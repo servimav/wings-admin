@@ -23,3 +23,14 @@
     @apply mb-2 mr-2 rounded-lg bg-yellow-400 px-5 py-2.5 font-medium text-white hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-900;
   }
 }
+
+@layer responsive {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

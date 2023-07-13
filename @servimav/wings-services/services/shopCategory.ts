@@ -3,17 +3,17 @@ import { generateCrudWithoutPaginate } from '../crud'
 import type { PaginatedData } from '../types'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/shop/categories'
+  const baseURL = '/shop/categories'
 
   const crud = generateCrudWithoutPaginate<ShopCategory, ShopCategoryCreate>({
     api,
-    baseUrl
+    baseURL
   })
 
   return {
     ...crud,
     offers: (id: number, params: { currency?: string }) =>
-      api.get<PaginatedData<ShopCategory>>(`${baseUrl}/${id}/offers`, { params })
+      api.get<PaginatedData<ShopCategory>>(`${baseURL}/${id}/offers`, { params })
   }
 }
 

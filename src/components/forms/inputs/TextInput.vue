@@ -3,7 +3,16 @@ import { computed } from 'vue'
 
 export interface Props {
   modelValue?: string | number
-  type: 'text' | 'number' | 'email' | 'tel' | 'password' | 'textarea' | 'currency' | 'search'
+  type:
+    | 'text'
+    | 'number'
+    | 'email'
+    | 'tel'
+    | 'password'
+    | 'textarea'
+    | 'currency'
+    | 'search'
+    | 'date'
   required?: boolean
   id: string
   label?: string

@@ -6,21 +6,21 @@ import { generateCrud } from '../crud'
 import type { PaginatedData, PaginationParams } from '../types'
 
 export default function init(api: AxiosInstance) {
-  const baseUrl = '/shop/stores'
+  const baseURL = '/shop/stores'
 
   const crud = generateCrud<ShopStore, ShopStoreCreate>({
     api,
-    baseUrl
+    baseURL
   })
 
   return {
     ...crud,
     mine: (params?: PaginationParams) =>
-      api.get<PaginatedData<ShopStore>>(`${baseUrl}/mine`, { params }),
+      api.get<PaginatedData<ShopStore>>(`${baseURL}/mine`, { params }),
     offers: (storeId: number, params?: PaginationParams) =>
-      api.get<PaginatedData<ShopOffer>>(`${baseUrl}/${storeId}/offers`, { params }),
+      api.get<PaginatedData<ShopOffer>>(`${baseURL}/${storeId}/offers`, { params }),
     orders: (storeId: number, params?: PaginationParams) =>
-      api.get<PaginatedData<ShopStore>>(`${baseUrl}/${storeId}/orders`, { params })
+      api.get<PaginatedData<ShopStore>>(`${baseURL}/${storeId}/orders`, { params })
   }
 }
 

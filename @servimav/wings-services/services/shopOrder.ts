@@ -85,6 +85,7 @@ export interface ShopOrderFilter {
  */
 export interface OrderItem {
   id: number
+  store_id: number
   qty: number
   name: string
   image: string

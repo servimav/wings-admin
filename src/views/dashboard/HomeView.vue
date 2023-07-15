@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue'
 import { useServices } from '@/services'
-import { useAppStore, useShopStore } from '@/stores'
+import { useAppStore } from '@/stores'
 
 interface Stats {
   offers: {
@@ -28,7 +28,6 @@ interface Stats {
 
 const { api } = useServices()
 const $app = useAppStore()
-const $shop = useShopStore()
 /**
  * ------------------------------------------
  *	Data
@@ -66,7 +65,7 @@ onBeforeMount(async () => {
   <section class="p-2">
     <h2 class="text-center text-2xl text-gray-700">Datos</h2>
 
-    <div class="mt-2 border border-gray-200 p-4">
+    <div class="mt-2 rounded-md border border-gray-200 bg-white p-4">
       <ul class="list-none space-y-2">
         <li>Usuarios: {{ stats.users.counter }}</li>
         <li>Tiendas: {{ stats.stores.counter }}</li>

@@ -220,7 +220,7 @@ onBeforeMount(() => {
 
       <div class="mt-2 space-y-2">
         <!-- Status -->
-        <div class="border p-4">
+        <div class="rounded-md border bg-white p-4">
           <ul class="list-none space-y-1">
             <li :class="orderStatus?.class">Estado: {{ orderStatus?.label }}</li>
             <li :class="orderStatus?.class">
@@ -245,7 +245,7 @@ onBeforeMount(() => {
         <!-- / Status -->
 
         <!-- Prices -->
-        <div class="border p-4">
+        <div class="rounded-md border bg-white p-4">
           <ul class="list-none space-y-1">
             <li>Precio de Productos: {{ toCurrency(order.offers_price) }}</li>
             <li>

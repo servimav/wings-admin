@@ -13,7 +13,7 @@ defineProps<Props>()
   <div
     class="w-full max-w-sm rounded-lg border border-gray-200 bg-white shadow dark:border-gray-700 dark:bg-gray-800"
   >
-    <div class="relative bg-slate-100 p-2">
+    <div class="relative bg-slate-50 p-2">
       <img
         class="rounded-t-lg"
         :src="data.image ?? '/images/default.png'"

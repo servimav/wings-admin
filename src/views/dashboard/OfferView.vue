@@ -139,8 +139,8 @@ onBeforeMount(async () => {
     <!-- / Offer Form -->
 
     <!-- Offer Data -->
-    <div v-else class="p-2">
-      <div class="relative mt-2 rounded-md bg-slate-100 p-4">
+    <template v-else>
+      <div class="relative mt-2 min-h-[16rem] rounded-md bg-slate-50 p-4">
         <img
           :src="offer.image ?? '/images/default.png'"
           :alt="offer.name"
@@ -162,15 +162,15 @@ onBeforeMount(async () => {
         </div>
       </div>
 
-      <div class="mt-4 flex justify-between gap-2 py-2 font-bold">
+      <div class="mt-2 flex justify-between gap-2 rounded-md bg-white p-4 font-bold">
         <h2>#{{ offer.id }}</h2>
         <h2 class="mr-4" v-if="offer.views">{{ offer.views }} Vistas</h2>
         <h2 class="mr-4" v-if="offer.rating">{{ offer.rating }} Rating</h2>
       </div>
-      <h2 class="mt-4 py-2 text-center text-xl font-bold">{{ offer.name }}</h2>
+      <h2 class="mt-2 rounded-md bg-white py-2 text-center text-xl font-bold">{{ offer.name }}</h2>
 
       <div
-        class="mt-4 rounded-md border p-2 shadow-sm"
+        class="mt-2 rounded-md border bg-white p-2 shadow-sm"
         v-if="offer.categories && offer.categories.length"
       >
         <h3 class="text-center text-lg font-semibold">Categorías</h3>
@@ -187,7 +187,7 @@ onBeforeMount(async () => {
       </div>
 
       <!-- Descripcion -->
-      <div class="mt-2 rounded-md border p-2 shadow-sm" v-if="offer.description">
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm" v-if="offer.description">
         <h3 class="text-center text-lg font-semibold">Descripción</h3>
         <p class="text-justify">
           {{ offer.description }}
@@ -196,7 +196,7 @@ onBeforeMount(async () => {
       <!-- / Descripcion -->
 
       <!-- Precios -->
-      <div class="mt-2 rounded-md border p-2 shadow-sm">
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
         <h3 class="text-center text-lg font-semibold">Precios</h3>
         <ul class="mt-2 space-y-2">
           <li v-if="offer.inversion_price">
@@ -253,7 +253,7 @@ onBeforeMount(async () => {
       <!-- / Precios -->
 
       <!-- Inventario -->
-      <div class="mt-2 rounded-md border p-2 shadow-sm">
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
         <h3 class="text-center text-lg font-semibold">Inventario</h3>
         <ul class="mt-2 space-y-2">
           <li>
@@ -270,7 +270,7 @@ onBeforeMount(async () => {
 
       <!-- Attributes -->
       <div
-        class="mt-2 rounded-md border p-2 shadow-sm"
+        class="mt-2 rounded-md border bg-white p-4 shadow-sm"
         v-if="offer.attributes && offer.attributes.length"
       >
         <h3 class="text-center text-lg font-semibold">Atributos</h3>
@@ -288,7 +288,7 @@ onBeforeMount(async () => {
       <!-- / Attributes -->
 
       <!-- Extra -->
-      <div class="mt-2 rounded-md border p-2 shadow-sm">
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
         <h3 class="text-center text-lg font-semibold">Extra</h3>
         <ul class="mt-2 space-y-2">
           <li v-if="offer.remote_url">
@@ -302,7 +302,7 @@ onBeforeMount(async () => {
         </ul>
       </div>
       <!-- / Inventario -->
-    </div>
+    </template>
   </section>
 
   <!-- Float Button -->

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
-import { STATUS, type ShopOrder, type ShopOrderUpdate } from '@servimav/wings-services'
+import { ALL_STATUS, readableStatus } from '@servimav/wings-services'
+import type { ShopOrder, ShopOrderUpdate } from '@servimav/wings-services'
 import { useAppStore } from '@/stores'
 import { useServices } from '@/services'
 
@@ -35,33 +36,6 @@ const $service = useServices()
  * ------------------------------------------
  */
 
-const status: LabelValue[] = [
-  {
-    value: STATUS.CREATED,
-    label: 'Creado'
-  },
-  {
-    value: STATUS.ACCEPTED,
-    label: 'Pagado'
-  },
-  {
-    value: STATUS.CANCELED_BY_PROVIDER,
-    label: 'Cancelado'
-  },
-  {
-    value: STATUS.ONPROGRESS,
-    label: 'En Camino'
-  },
-  {
-    value: STATUS.COMPLETED,
-    label: 'Completado'
-  },
-  {
-    value: STATUS.UNKNOWN,
-    label: 'Desconocido'
-  }
-]
-
 const form = ref<ShopOrderUpdate>({
   currency: 'CUP',
   delivery_date: undefined,
@@ -69,6 +43,7 @@ const form = ref<ShopOrderUpdate>({
 })
 
 const loading = computed(() => $app.loading)
+
 /**
  * ------------------------------------------
  *	Methods
@@ -115,26 +90,37 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit">
-    <div class="space-y-4 rounded-md border p-4">
+  <form @submit.prevent="onSubmit" class="rounded-md bg-white p-4">
+    <div class="space-y-4">
+      <!-- Status -->
       <SelectInput
         v-model="form.delivery_status"
-        :options="status"
+        :options="
+          ALL_STATUS.map((status) => ({
+            label: readableStatus(status),
+            value: status
+          }))
+        "
         label="Estado"
         id="status-order"
       />
+      <!-- / Status -->
 
+      <!-- Delivery date -->
       <TextInput
         v-model="form.delivery_date"
         id="delivery-date"
         type="date"
         label="Fecha de Entrega"
       />
+      <!-- / Delivery date -->
     </div>
 
-    <div class="sticky bottom-0 mt-4 bg-white p-2">
-      <button class="btn-primary" type="submit">Guardar</button>
-      <button class="btn" type="reset" @click="() => $emit('canceled')">Cancelar</button>
+    <div class="sticky bottom-0 mt-4">
+      <button class="btn-primary px-2 py-1.5" type="submit">Guardar</button>
+      <button class="btn px-2 py-1.5" type="reset" @click="() => $emit('canceled')">
+        Cancelar
+      </button>
     </div>
   </form>
 </template>

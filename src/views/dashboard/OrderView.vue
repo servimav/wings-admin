@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { STATUS, type OrderItem, type ShopOrder } from '@servimav/wings-services'
+import { readableStatus } from '@servimav/wings-services'
+import type { OrderItem, ShopOrder } from '@servimav/wings-services'
 import { toCurrency } from '@/helpers'
+import { ROUTE_NAME } from '@/router'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
-import { ROUTE_NAME } from '@/router'
 
-interface OrderStatus {
-  label: string
-  class: string
-}
 /**
  * ------------------------------------------
  *	Components
@@ -45,44 +42,6 @@ const $service = useServices()
 const loading = computed(() => $app.loading)
 
 const order = ref<ShopOrder>()
-
-const orderStatus = computed<OrderStatus | undefined>(() => {
-  if (order.value) {
-    switch (order.value.delivery_status) {
-      case STATUS.ACCEPTED:
-        return {
-          class: '',
-          label: 'Pagada y En Espera de Envío'
-        }
-      case STATUS.CANCELED_BY_CLIENT:
-        return {
-          class: '',
-          label: 'Cancelada'
-        }
-      case STATUS.CANCELED_BY_PROVIDER:
-        return {
-          class: '',
-          label: 'Cancelada'
-        }
-      case STATUS.COMPLETED:
-        return {
-          class: '',
-          label: 'Completada'
-        }
-      case STATUS.CREATED:
-        return {
-          class: '',
-          label: 'En espera de Pago'
-        }
-      case STATUS.ONPROGRESS:
-        return {
-          class: '',
-          label: 'En Envio'
-        }
-    }
-  }
-  return undefined
-})
 
 const showFloatMenu = ref(false)
 const showForm = ref(false)
@@ -184,7 +143,13 @@ function sendNotification() {
   if (order.value) {
     const phone = order.value.customer.phone
     const name = order.value.customer.name
-    const message = `Hola ${name}.\nLe notifico que su orden con ID #${order.value.id} se encuentra en el estado "${orderStatus.value?.label}". Si desea ver más detalles puede revisar el link:\nhttps://wings.servimav.com/orders/${order.value.id}`
+    const message = `Hola ${name}.\nLe notifico que su orden con ID #${
+      order.value.id
+    } se encuentra en el estado "${readableStatus(
+      order.value.delivery_status
+    )}". Si desea ver más detalles puede revisar el link:\nhttps://wings.servimav.com/orders/${
+      order.value.id
+    }`
 
     const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
 
@@ -216,14 +181,14 @@ onBeforeMount(() => {
 
     <!-- / Offer Form -->
     <template v-else-if="order">
-      <div class="text-right font-thin">Orden #{{ order.id }}</div>
+      <div class="text-right font-thin">Pedido #{{ order.id }}</div>
 
       <div class="mt-2 space-y-2">
         <!-- Status -->
         <div class="rounded-md border bg-white p-4">
           <ul class="list-none space-y-1">
-            <li :class="orderStatus?.class">Estado: {{ orderStatus?.label }}</li>
-            <li :class="orderStatus?.class">
+            <li>Estado: {{ readableStatus(order.delivery_status) }}</li>
+            <li>
               Tipo de pago: {{ order.payment_type === 'TRANSFER_PARTIAL' ? 'Parcial' : 'Total' }}
             </li>
             <li v-if="order.delivery_date">

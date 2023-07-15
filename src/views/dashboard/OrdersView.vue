@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section id="orders-section">
-    <div class="sticky top-14 bg-white pt-1">
+    <div class="sticky top-14 bg-white">
       <OrderStatusSlider :model-value="status" @update:model-value="onSelectStatus" />
     </div>
 

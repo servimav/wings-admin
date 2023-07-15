@@ -1,10 +1,17 @@
 import type { AxiosInstance } from 'axios'
 import type { TokenHandler } from '../tokenHandler'
+import { generateCrud } from '../crud'
 
 export default function init({ api, tokenHandler }: InitProps) {
   const baseURL = '/users'
 
+  const crud = generateCrud<User>({
+    api,
+    baseURL
+  })
+
   return {
+    ...crud,
     login: async (params: UserLogin) => {
       const resp = await api.post<UserAuthResponse>(`${baseURL}/login`, params)
       tokenHandler.setToken(resp.data.auth_token)
@@ -29,6 +36,7 @@ export interface User {
   name: string
   email?: string
   phone: string
+  phone_verified_at?: string
   roles: UserRole[]
 }
 

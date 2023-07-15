@@ -4,7 +4,6 @@ import { useAppStore, useShopStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { ROUTE_NAME } from '@/router'
 // Components
-const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
 const StoreForm = defineAsyncComponent(() => import('@/components/forms/StoreForm.vue'))
 const StoreSkeleton = defineAsyncComponent(() => import('@/components/skeleton/OfferSkeleton.vue'))
 const StoreWidget = defineAsyncComponent(() => import('@/components/widgets/StoreWidget.vue'))
@@ -39,13 +38,6 @@ function goToStore(storeId: number) {
     name: ROUTE_NAME.STORE,
     params: { storeId }
   })
-}
-
-/**
- * onClickFloatButton
- */
-function onClickFloatButton() {
-  showForm.value = true
 }
 
 /**

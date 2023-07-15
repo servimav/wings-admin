@@ -1,35 +1,28 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
-import { STATUS, type ShopOrder } from '@servimav/wings-services'
-import { useServices } from '@/services'
+import type { User } from '@servimav/wings-services'
 import { useAppStore } from '@/stores'
-import { useRouter } from 'vue-router'
-import { ROUTE_NAME } from '@/router'
+import { useServices } from '@/services'
+
 /**
  * ------------------------------------------
- *	Componens
+ *	Components
  * ------------------------------------------
  */
-const OrderStatusSlider = defineAsyncComponent(
-  () => import('@/components/sliders/OrderTypeSlider.vue')
-)
-const OrderWidget = defineAsyncComponent(() => import('@/components/widgets/OrderWidget.vue'))
+
+const UserWidget = defineAsyncComponent(() => import('@/components/widgets/UserWidget.vue'))
 /**
  * ------------------------------------------
  *	Composable
  * ------------------------------------------
  */
 const $app = useAppStore()
-const $router = useRouter()
 const $service = useServices()
-
 /**
  * ------------------------------------------
- *	Data
+ *	data
  * ------------------------------------------
  */
-
-const orders = ref<ShopOrder[]>([])
 
 const page = ref<number>()
 
@@ -37,11 +30,11 @@ const scrollHandler = () => {
   const scrollable = document.documentElement.scrollHeight - window.innerHeight
   const scrolled = window.scrollY
   if (scrollable - scrolled <= 1) {
-    getOrders()
+    getUsers()
   }
 }
 
-const status = ref<STATUS>(STATUS.CREATED)
+const users = ref<User[]>([])
 
 /**
  * ------------------------------------------
@@ -50,21 +43,20 @@ const status = ref<STATUS>(STATUS.CREATED)
  */
 
 /**
- * getOrders
+ * getUsers
  */
-async function getOrders() {
+async function getUsers() {
   if ($app.loading) return
 
   $app.toggleLoading(true)
   try {
-    const { data } = await $service.shop.order.filter({
-      page: page.value ? page.value + 1 : undefined,
-      status: status.value
+    const { data } = await $service.user.list({
+      page: page.value ? page.value + 1 : undefined
     })
     page.value = data.meta.current_page
     if (data.data.length) {
       // if is first search overwrite offers
-      orders.value.push(...data.data)
+      users.value.push(...data.data)
     } else {
       // Stop event listner
       window.removeEventListener('scroll', scrollHandler)
@@ -77,38 +69,15 @@ async function getOrders() {
 }
 
 /**
- * goToOrder
- * @param order
- */
-function goToOrder(order: ShopOrder) {
-  $router.push({
-    name: ROUTE_NAME.ORDER,
-    params: {
-      orderId: order.id
-    }
-  })
-}
-
-/**
- * onSelectStatus
- * @param selected
- */
-async function onSelectStatus(selected: STATUS) {
-  orders.value = []
-  page.value = undefined
-  status.value = selected
-  await getOrders()
-}
-
-/**
  * ------------------------------------------
  *	Lifecycle
  * ------------------------------------------
  */
 
 onBeforeMount(() => {
-  orders.value = []
-  getOrders()
+  users.value = []
+  page.value = undefined
+  getUsers()
 })
 
 onMounted(() => {
@@ -121,18 +90,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section id="orders-section">
-    <div class="sticky top-14 bg-white">
-      <OrderStatusSlider :model-value="status" @update:model-value="onSelectStatus" />
-    </div>
-
-    <div class="space-y-2 bg-slate-200 p-2" v-if="orders.length">
-      <OrderWidget
-        v-for="(order, orderKey) in orders"
-        :key="`order-${orderKey}-${order.id}`"
-        :order="order"
-        @click="() => goToOrder(order)"
-      />
+  <section class="p-2">
+    <div class="space-y-2">
+      <UserWidget v-for="(user, key) in users" :key="`user-${key}-${user.id}`" :user="user" />
     </div>
   </section>
 </template>

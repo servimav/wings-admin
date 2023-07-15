@@ -34,6 +34,7 @@ const realType = computed(() => ($props.type === 'currency' ? 'number' : $props.
  * @param val
  */
 function validate(val: string | number) {
+  console.log({ val })
   return true
 }
 

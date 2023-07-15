@@ -12,6 +12,7 @@ const OfferIcon = defineAsyncComponent(() => import('@/components/icons/OfferIco
 const SettingIcon = defineAsyncComponent(() => import('@/components/icons/SettingIcon.vue'))
 const SquaresIcon = defineAsyncComponent(() => import('@/components/icons/SquaresIcon.vue'))
 const StoreIcon = defineAsyncComponent(() => import('@/components/icons/StoreIcon.vue'))
+const UserIcon = defineAsyncComponent(() => import('@/components/icons/UserOutline.vue'))
 
 const elementId = ELEMENT_ID.DRAWER_LEFT
 
@@ -58,6 +59,11 @@ const drawerItems: MenuItem[] = [
     icon: CartIcon,
     label: 'Pedidos',
     to: { name: ROUTE_NAME.ORDERS }
+  },
+  {
+    icon: UserIcon,
+    label: 'Usuarios',
+    to: { name: ROUTE_NAME.USERS }
   },
   {
     icon: ChatIcon,

@@ -9,8 +9,9 @@
 		"build-only": "vite build",
 		"type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
 		"lint": "eslint ./src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-		"format": "prettier --write src/",
-		"format:package": "prettier --write @servimav/"
+		"format": "prettier --write src/ && prettier --write @servimav/",
+		"format:package": "prettier --write @servimav/",
+		"format:src": "prettier --write src/"
 	},
 	"dependencies": {
 		"axios": "^1.4.0",

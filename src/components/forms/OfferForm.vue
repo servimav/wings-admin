@@ -69,7 +69,7 @@ const form = ref<ShopOfferCreate>({
   stock_type: STOCK_TYPE.LIMITED,
   store_id: 0,
   remote_url: undefined,
-  gallery: undefined,
+  gallery: [],
   attributes: undefined,
   min_delivery_days: 14,
   categories: undefined,
@@ -77,6 +77,8 @@ const form = ref<ShopOfferCreate>({
   views: undefined,
   weight: undefined
 })
+
+const galleryString = ref('')
 
 const isDeveloper = computed(() => $user.isDeveloper)
 
@@ -124,6 +126,7 @@ async function onSubmit() {
   try {
     // Transform attrs
     if (attributes.value) form.value.attributes = transformAttrs() as KeyValue[]
+    transformGallery(true)
     // Check if update
     if (updateId.value) {
       const updateResp = await $service.shop.offer.update(updateId.value, form.value)
@@ -164,6 +167,28 @@ function transformAttrs(keyValues?: KeyValue[]): string | KeyValue[] {
   }
   return resp
 }
+
+/**
+ * transformAttrs
+ * @param keyValues
+ */
+function transformGallery(toArray = true) {
+  if (toArray) {
+    const gallery: string[] = []
+    galleryString.value.split('\n').forEach((image) => {
+      gallery.push(image)
+    })
+    form.value.gallery = gallery
+  } else {
+    if (form.value.gallery && form.value.gallery.length) {
+      form.value.gallery.forEach((img) => {
+        galleryString.value += img + '\n'
+      })
+    } else {
+      galleryString.value = ''
+    }
+  }
+}
 /**
  * -----------------------------------------
  *	Lifecycle
@@ -187,6 +212,8 @@ onBeforeMount(async () => {
       categories: updateCategories,
       store_id: $props.update.store?.id as number
     }
+
+    transformGallery(false)
 
     convertCUP.value = {
       discount: roundX10(
@@ -256,6 +283,16 @@ onBeforeMount(async () => {
         v-model="form.image"
         type="text"
         no-autocomplete
+      />
+
+      <TextInput
+        id="offer_gallery"
+        label="Galeria"
+        placeholder=""
+        v-model="galleryString"
+        type="textarea"
+        no-autocomplete
+        :rows="5"
       />
     </div>
     <!-- / Datos Generales -->

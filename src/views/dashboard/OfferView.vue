@@ -162,6 +162,12 @@ onBeforeMount(async () => {
         </div>
       </div>
 
+      <div class="grid grid-cols-3 gap-2" v-if="offer.gallery && offer.gallery.length">
+        <div class="" v-for="(img, key) in offer.gallery" :key="`gallery-${key}`">
+          <img :src="img" class="w-full" />
+        </div>
+      </div>
+
       <div class="mt-2 flex justify-between gap-2 rounded-md bg-white p-4 font-bold">
         <h2>#{{ offer.id }}</h2>
         <h2 class="mr-4" v-if="offer.views">{{ offer.views }} Vistas</h2>

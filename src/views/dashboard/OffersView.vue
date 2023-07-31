@@ -72,6 +72,7 @@ async function filterOffers() {
     const resp = (
       await $service.shop.offer.filterAdvanced({
         ...filter.value,
+        sort: 'id',
         page: offersCurrentPage.value ? offersCurrentPage.value + 1 : undefined
       })
     ).data

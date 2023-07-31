@@ -49,7 +49,7 @@ function onUpdatedCategory() {
   <section class="p-2">
     <h2 class="text-center text-2xl">Categorías</h2>
 
-    <div class="mt-4 rounded-md border p-4" v-if="showForm">
+    <div class="mt-4 rounded-md border bg-white p-4" v-if="showForm">
       <CategoryForm
         :update="selectedCategory?.id"
         @canceled="onCreatedCategory"

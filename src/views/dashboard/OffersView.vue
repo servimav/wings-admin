@@ -124,6 +124,20 @@ function goToOffer(offer: ShopOffer) {
 }
 
 /**
+ * onCreateOffer
+ * @param offer
+ */
+function onCreateOffer(offer: ShopOffer) {
+  showNewOfferModal.value = false
+  $router.push({
+    name: ROUTE_NAME.OFFER,
+    params: {
+      offerId: offer.id
+    }
+  })
+}
+
+/**
  * onSearchOffer
  * @param search
  */
@@ -286,10 +300,7 @@ onBeforeRouteUpdate(async ($to, $from, $next) => {
   <BaseModal v-if="showNewOfferModal" @close="() => (showNewOfferModal = false)">
     <div class="flex items-center justify-center">
       <div class="z-30 w-full rounded-xl border bg-white">
-        <OfferForm
-          @canceled="() => (showNewOfferModal = false)"
-          @created="() => (showNewOfferModal = false)"
-        />
+        <OfferForm @canceled="() => (showNewOfferModal = false)" @created="onCreateOffer" />
       </div>
     </div>
   </BaseModal>

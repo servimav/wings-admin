@@ -13,8 +13,8 @@ import { CUP_PRICE, toCurrency, roundX10 } from '@/helpers'
 // Types
 export interface Emits {
   (e: 'canceled'): void
-  (e: 'created', store: ShopOffer): void
-  (e: 'updated', store: ShopOffer): void
+  (e: 'created', offer: ShopOffer): void
+  (e: 'updated', offer: ShopOffer): void
 }
 export interface Props {
   update?: ShopOffer

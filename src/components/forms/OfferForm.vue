@@ -184,9 +184,8 @@ function transformGallery(toArray = true) {
       form.value.gallery.forEach((img) => {
         galleryString.value += img + '\n'
       })
-    } else {
-      galleryString.value = ''
     }
+    if (galleryString.value === 'null') galleryString.value = ''
   }
 }
 /**

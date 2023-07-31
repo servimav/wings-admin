@@ -97,7 +97,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit" class="bg-white">
     <div class="p-2">
       <div class="text-center text-lg text-gray-800">Filtrar</div>
 

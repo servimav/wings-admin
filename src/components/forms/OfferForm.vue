@@ -203,7 +203,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit" class="bg-white">
     <!-- Datos Generales -->
     <div class="space-y-4 rounded-md border p-4">
       <h4 class="text-center text-lg">Datos Generales</h4>

@@ -115,7 +115,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit" class="bg-white">
     <div class="space-y-4">
       <ToggleInput
         id="store_available"

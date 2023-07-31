@@ -108,7 +108,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit" class="space-y-2">
+  <form @submit.prevent="onSubmit" class="space-y-2 bg-white">
     <TextInput id="category_name" v-model="form.name" required label="Nombre" type="text" />
 
     <TextInput id="category_image" v-model="form.image" label="Imagen" type="text" />

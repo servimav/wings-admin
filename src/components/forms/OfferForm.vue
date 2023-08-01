@@ -65,7 +65,7 @@ const form = ref<ShopOfferCreate>({
   provider_price: undefined,
   inversion_price: undefined,
   // inventary
-  stock_qty: undefined,
+  stock_qty: 1,
   stock_type: STOCK_TYPE.LIMITED,
   store_id: 0,
   remote_url: undefined,

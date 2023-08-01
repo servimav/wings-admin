@@ -314,6 +314,9 @@ onBeforeMount(async () => {
       <div v-if="form.weight">
         Total
         {{ toCurrency((Number(form.inversion_price) + form.weight * 6) * cupPrice, false) }} CUP
+        <b class="ml-1"
+          >&asymp;{{ toCurrency(Number(form.inversion_price) + form.weight * 6, false) }} USD</b
+        >
       </div>
 
       <TextInput

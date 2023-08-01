@@ -307,7 +307,14 @@ onBeforeMount(async () => {
         type="currency"
         :readonly="!isDeveloper"
       />
-      {{ toCurrency((form.inversion_price ?? 0) * cupPrice, false) }} CUP
+      <span> {{ toCurrency((form.inversion_price ?? 0) * cupPrice, false) }} CUP </span>
+      <span v-if="form.weight" class="ml-2">
+        Peso {{ toCurrency((form.weight * 6 ?? 0) * cupPrice, false) }} CUP
+      </span>
+      <div v-if="form.weight">
+        Total
+        {{ toCurrency((Number(form.inversion_price) + form.weight * 6) * cupPrice, false) }} CUP
+      </div>
 
       <TextInput
         id="offer_provider_price"

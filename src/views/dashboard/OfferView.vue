@@ -207,23 +207,44 @@ onBeforeMount(async () => {
         <ul class="mt-2 space-y-2">
           <li v-if="offer.inversion_price">
             Precio Inversión:
-            <span class="font-semibold">{{ toCurrency(offer.inversion_price ?? 0, false) }}</span
-            ><span class="fml-2"
-              >({{ toCurrency((offer.inversion_price ?? 0) * cupPrice, false) }} CUP)</span
-            >
+            <!-- Inversion + Weight -->
+            <template v-if="offer.weight">
+              <span class="font-semibold">
+                {{ toCurrency(Number(offer.inversion_price) + offer.weight * 6, false) }}
+              </span>
+              <span class="ml-2"
+                >(
+                {{
+                  toCurrency((Number(offer.inversion_price) + offer.weight * 6) * cupPrice, true)
+                }}
+                CUP )</span
+              >
+            </template>
+            <!-- / Inversion + Weight -->
+
+            <!-- Only inversion -->
+            <template v-else>
+              <span class="font-semibold">
+                {{ toCurrency(offer.inversion_price ?? 0, false) }}
+              </span>
+              <span class="ml-2"
+                >({{ toCurrency((offer.inversion_price ?? 0) * cupPrice, true) }} CUP)</span
+              >
+            </template>
+            <!-- / Only inversion -->
           </li>
           <li>
             Precio Proveedor:
             <span class="font-semibold">{{ toCurrency(offer.provider_price ?? 0, false) }}</span>
             <span class="ml-2"
-              >({{ toCurrency((offer.provider_price ?? 0) * cupPrice, false) }} CUP)</span
+              >({{ toCurrency((offer.provider_price ?? 0) * cupPrice, true) }} CUP)</span
             >
           </li>
 
           <li v-if="offer.discount_price">
             Precio Descuento:
             <span class="font-semibold">{{ toCurrency(offer.discount_price, false) }}</span>
-            <span class="ml-2">({{ toCurrency(offer.discount_price * cupPrice) }})</span>
+            <span class="ml-2">({{ toCurrency(offer.discount_price * cupPrice) }} CUP)</span>
           </li>
 
           <li :class="{ 'line-through': offer.discount_price && offer.discount_price > 0 }">

@@ -14,7 +14,7 @@ import { ROUTE_NAME } from '@/router'
  */
 const FloatButton = defineAsyncComponent(() => import('@/components/buttons/FloatButton.vue'))
 const FloatButtonItem = defineAsyncComponent(
-	() => import('@/components/buttons/FloatButtonItem.vue')
+  () => import('@/components/buttons/FloatButtonItem.vue')
 )
 const IconEdit = defineAsyncComponent(() => import('@/components/icons/EditPencilOutline.vue'))
 const IconDelete = defineAsyncComponent(() => import('@/components/icons/TrashOutline.vue'))
@@ -39,8 +39,8 @@ const $shop = useShopStore()
  */
 
 const cupPrice = computed(() => {
-	const cupCurrency = $shop.currencies.find((c) => c.code === 'CUP')
-	return cupCurrency ? cupCurrency.price : CUP_PRICE
+  const cupCurrency = $shop.currencies.find((c) => c.code === 'CUP')
+  return cupCurrency ? cupCurrency.price : CUP_PRICE
 })
 const loading = computed(() => $app.loading)
 const offer = ref<ShopOffer>()
@@ -57,45 +57,45 @@ const showFloatMenu = ref(false)
  * load offer data from servers
  */
 async function getOffer(offerId: number) {
-	$app.toggleLoading(true)
-	try {
-		offer.value = (
-			await $service.shop.offer.show(offerId, {
-				currency: 'USD'
-			})
-		).data
-	} catch (error) {
-		$app.axiosError(error)
-	}
-	$app.toggleLoading(false)
+  $app.toggleLoading(true)
+  try {
+    offer.value = (
+      await $service.shop.offer.show(offerId, {
+        currency: 'USD'
+      })
+    ).data
+  } catch (error) {
+    $app.axiosError(error)
+  }
+  $app.toggleLoading(false)
 }
 
 /**
  * Navigate to store
  */
 function goToParentStore() {
-	$router.push({
-		name: ROUTE_NAME.STORE,
-		params: {
-			storeId: offer.value?.store?.id
-		}
-	})
+  $router.push({
+    name: ROUTE_NAME.STORE,
+    params: {
+      storeId: offer.value?.store?.id
+    }
+  })
 }
 
 /**
  * onClickDelete
  */
 async function onClickDelete() {
-	$app.error('No esta permitido eliminar la oferta')
-	showFloatMenu.value = false
+  $app.error('No esta permitido eliminar la oferta')
+  showFloatMenu.value = false
 }
 
 /**
  * Handle edit button onClick event
  */
 function onClickEdit() {
-	shoForm.value = true
-	showFloatMenu.value = false
+  shoForm.value = true
+  showFloatMenu.value = false
 }
 
 /**
@@ -103,215 +103,252 @@ function onClickEdit() {
  * @param offer
  */
 function onOfferUpdated(updatedOffer: ShopOffer) {
-	offer.value = updatedOffer
-	shoForm.value = false
-	scrollTop()
+  offer.value = updatedOffer
+  shoForm.value = false
+  scrollTop()
 }
 
 onBeforeMount(async () => {
-	scrollTop()
-	const offerId = Number($route.params.offerId)
-	await getOffer(offerId)
+  scrollTop()
+  const offerId = Number($route.params.offerId)
+  await getOffer(offerId)
 
-	if (offer.value) {
-		setTimeout(() => {
-			initModals()
-		}, 500)
-	} else {
-		$app.error('No existe la oferta')
-		goToParentStore()
-	}
+  if (offer.value) {
+    setTimeout(() => {
+      initModals()
+    }, 500)
+  } else {
+    $app.error('No existe la oferta')
+    goToParentStore()
+  }
 })
 </script>
 
 <template>
-	<section class="p-2" v-if="offer">
-		<!-- Offer Form -->
-		<template v-if="shoForm">
-			<OfferForm :update="offer" @updated="onOfferUpdated" @canceled="() => (shoForm = false)" />
-		</template>
-		<!-- / Offer Form -->
+  <section class="p-2" v-if="offer">
+    <!-- Offer Form -->
+    <template v-if="shoForm">
+      <OfferForm :update="offer" @updated="onOfferUpdated" @canceled="() => (shoForm = false)" />
+    </template>
+    <!-- / Offer Form -->
 
-		<!-- Loading -->
-		<div v-else-if="loading">
-			<OfferSkeleton :repeat="1" />
-		</div>
-		<!-- / Offer Form -->
+    <!-- Loading -->
+    <div v-else-if="loading">
+      <OfferSkeleton :repeat="1" />
+    </div>
+    <!-- / Offer Form -->
 
-		<!-- Offer Data -->
-		<template v-else>
-			<div class="relative mt-2 min-h-[16rem] rounded-md bg-slate-50 p-4">
-				<img :src="offer.image ?? '/images/default.png'" :alt="offer.name" :title="offer.name" @error="setDefaultImage" />
+    <!-- Offer Data -->
+    <template v-else>
+      <div class="relative mt-2 min-h-[16rem] rounded-md bg-slate-50 p-4">
+        <img
+          :src="offer.image ?? '/images/default.png'"
+          :alt="offer.name"
+          :title="offer.name"
+          @error="setDefaultImage"
+        />
 
-				<div class="absolute bottom-1 right-1 z-10">
-					<div class="rounded-full border p-2 text-sm shadow-sm" :class="offer.available
-							? 'border-green-300 bg-green-500 text-white'
-							: 'border-slate-400 bg-slate-300 text-black'
-						">
-						{{ offer.available ? 'Disponible' : 'No disponible' }}
-					</div>
-				</div>
-			</div>
+        <div class="absolute bottom-1 right-1 z-10">
+          <div
+            class="rounded-full border p-2 text-sm shadow-sm"
+            :class="
+              offer.available
+                ? 'border-green-300 bg-green-500 text-white'
+                : 'border-slate-400 bg-slate-300 text-black'
+            "
+          >
+            {{ offer.available ? 'Disponible' : 'No disponible' }}
+          </div>
+        </div>
+      </div>
 
-			<div class="grid grid-cols-3 gap-2" v-if="offer.gallery && offer.gallery.length">
-				<div class="" v-for="(img, key) in offer.gallery" :key="`gallery-${key}`">
-					<img :src="img" class="w-full" />
-				</div>
-			</div>
+      <div class="grid grid-cols-3 gap-2" v-if="offer.gallery && offer.gallery.length">
+        <div class="" v-for="(img, key) in offer.gallery" :key="`gallery-${key}`">
+          <img :src="img" class="w-full" />
+        </div>
+      </div>
 
-			<div class="mt-2 flex justify-between gap-2 rounded-md bg-white p-4 font-bold">
-				<h2>#{{ offer.id }}</h2>
-				<h2 class="mr-4" v-if="offer.views">{{ offer.views }} Vistas</h2>
-				<h2 class="mr-4" v-if="offer.rating">{{ offer.rating }} Rating</h2>
-			</div>
-			<h2 class="mt-2 rounded-md bg-white py-2 text-center text-xl font-bold">{{ offer.name }}</h2>
+      <div class="mt-2 flex justify-between gap-2 rounded-md bg-white p-4 font-bold">
+        <h2>#{{ offer.id }}</h2>
+        <h2 class="mr-4" v-if="offer.views">{{ offer.views }} Vistas</h2>
+        <h2 class="mr-4" v-if="offer.rating">{{ offer.rating }} Rating</h2>
+      </div>
+      <h2 class="mt-2 rounded-md bg-white py-2 text-center text-xl font-bold">{{ offer.name }}</h2>
 
-			<div class="mt-2 rounded-md border bg-white p-2 shadow-sm" v-if="offer.categories && offer.categories.length">
-				<h3 class="text-center text-lg font-semibold">Categorías</h3>
-				<div class="mt-2 flex flex-wrap gap-2">
-					<div v-for="(category, catKey) in offer.categories" :key="`category-${catKey}`"
-						class="rounded-full border bg-slate-100 px-2 py-1 text-sm" :class="{ 'border-primary-700': catKey == 0 }">
-						{{ category.name }}
-					</div>
-				</div>
-			</div>
+      <div
+        class="mt-2 rounded-md border bg-white p-2 shadow-sm"
+        v-if="offer.categories && offer.categories.length"
+      >
+        <h3 class="text-center text-lg font-semibold">Categorías</h3>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <div
+            v-for="(category, catKey) in offer.categories"
+            :key="`category-${catKey}`"
+            class="rounded-full border bg-slate-100 px-2 py-1 text-sm"
+            :class="{ 'border-primary-700': catKey == 0 }"
+          >
+            {{ category.name }}
+          </div>
+        </div>
+      </div>
 
-			<!-- Descripcion -->
-			<div class="mt-2 rounded-md border bg-white p-4 shadow-sm" v-if="offer.description">
-				<h3 class="text-center text-lg font-semibold">Descripción</h3>
-				<p class="text-justify">
-					{{ offer.description }}
-				</p>
-			</div>
-			<!-- / Descripcion -->
+      <!-- Descripcion -->
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm" v-if="offer.description">
+        <h3 class="text-center text-lg font-semibold">Descripción</h3>
+        <p class="text-justify">
+          {{ offer.description }}
+        </p>
+      </div>
+      <!-- / Descripcion -->
 
-			<!-- Precios -->
-			<div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
-				<h3 class="text-center text-lg font-semibold">Precios</h3>
-				<ul class="mt-2 space-y-2">
-					<li v-if="offer.inversion_price">
-						Precio Inversión:
-						<!-- Inversion + Weight -->
-						<template v-if="offer.weight">
-							<span class="font-semibold">
-								{{ toCurrency(Number(offer.inversion_price) + offer.weight * 6, false) }}
-							</span>
-							<span class="ml-2">(
-								{{
-									toCurrency((Number(offer.inversion_price) + offer.weight * 6) * cupPrice, false)
-								}}
-								CUP )</span>
-						</template>
-						<!-- / Inversion + Weight -->
+      <!-- Precios -->
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
+        <h3 class="text-center text-lg font-semibold">Precios</h3>
+        <ul class="mt-2 space-y-2">
+          <li v-if="offer.inversion_price">
+            Precio Inversión:
+            <!-- Inversion + Weight -->
+            <template v-if="offer.weight">
+              <span class="font-semibold">
+                {{ toCurrency(Number(offer.inversion_price) + offer.weight * 6, false) }}
+              </span>
+              <span class="ml-2"
+                >(
+                {{
+                  toCurrency((Number(offer.inversion_price) + offer.weight * 6) * cupPrice, false)
+                }}
+                CUP )</span
+              >
+            </template>
+            <!-- / Inversion + Weight -->
 
-						<!-- Only inversion -->
-						<template v-else>
-							<span class="font-semibold">
-								{{ toCurrency(offer.inversion_price ?? 0, false) }}
-							</span>
-							<span class="ml-2">({{ toCurrency((offer.inversion_price ?? 0) * cupPrice, false) }} CUP)</span>
-						</template>
-						<!-- / Only inversion -->
-					</li>
-					<li>
-						Precio Proveedor:
-						<span class="font-semibold">{{ toCurrency(offer.provider_price ?? 0, false) }}</span>
-						<span class="ml-2">({{ toCurrency((offer.provider_price ?? 0) * cupPrice, true) }} CUP)</span>
-					</li>
+            <!-- Only inversion -->
+            <template v-else>
+              <span class="font-semibold">
+                {{ toCurrency(offer.inversion_price ?? 0, false) }}
+              </span>
+              <span class="ml-2"
+                >({{ toCurrency((offer.inversion_price ?? 0) * cupPrice, false) }} CUP)</span
+              >
+            </template>
+            <!-- / Only inversion -->
+          </li>
+          <li>
+            Precio Proveedor:
+            <span class="font-semibold">{{ toCurrency(offer.provider_price ?? 0, false) }}</span>
+            <span class="ml-2"
+              >({{ toCurrency((offer.provider_price ?? 0) * cupPrice, true) }} CUP)</span
+            >
+          </li>
 
-					<li v-if="offer.discount_price">
-						Precio Descuento:
-						<span class="font-semibold">{{ toCurrency(offer.discount_price, false) }}</span>
-						<span class="ml-2">({{ toCurrency(offer.discount_price * cupPrice) }} CUP)</span>
-					</li>
+          <li v-if="offer.discount_price">
+            Precio Descuento:
+            <span class="font-semibold">{{ toCurrency(offer.discount_price, false) }}</span>
+            <span class="ml-2">({{ toCurrency(offer.discount_price * cupPrice) }} CUP)</span>
+          </li>
 
-					<li :class="{ 'line-through': offer.discount_price && offer.discount_price > 0 }">
-						Precio venta:
-						<span class="font-semibold">{{ toCurrency(offer.sell_price, false) }}</span>
-						<span class="ml-2">({{ toCurrency(offer.sell_price * cupPrice) }} CUP)</span>
-					</li>
+          <li :class="{ 'line-through': offer.discount_price && offer.discount_price > 0 }">
+            Precio venta:
+            <span class="font-semibold">{{ toCurrency(offer.sell_price, false) }}</span>
+            <span class="ml-2">({{ toCurrency(offer.sell_price * cupPrice) }} CUP)</span>
+          </li>
 
-					<li>
-						Ganancia:
-						<span class="font-semibold">{{
-							toCurrency(
-								offer.discount_price && offer.discount_price > 0
-									? offer.discount_price - Number(offer.provider_price)
-									: offer.sell_price - Number(offer.provider_price),
-								false
-							)
-						}}</span>
+          <li>
+            Ganancia:
+            <span class="font-semibold">{{
+              toCurrency(
+                offer.discount_price && offer.discount_price > 0
+                  ? offer.discount_price - Number(offer.provider_price)
+                  : offer.sell_price - Number(offer.provider_price),
+                false
+              )
+            }}</span>
 
-						<span class="ml-2">({{
-							toCurrency(
-								(offer.discount_price && offer.discount_price > 0
-									? offer.discount_price - Number(offer.provider_price)
-									: offer.sell_price - Number(offer.provider_price)) * cupPrice
-							)
-						}}
-							CUP)</span>
-					</li>
-				</ul>
-			</div>
-			<!-- / Precios -->
+            <span class="ml-2"
+              >({{
+                toCurrency(
+                  (offer.discount_price && offer.discount_price > 0
+                    ? offer.discount_price - Number(offer.provider_price)
+                    : offer.sell_price - Number(offer.provider_price)) * cupPrice
+                )
+              }}
+              CUP)</span
+            >
+          </li>
+        </ul>
+      </div>
+      <!-- / Precios -->
 
-			<!-- Inventario -->
-			<div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
-				<h3 class="text-center text-lg font-semibold">Inventario</h3>
-				<ul class="mt-2 space-y-2">
-					<li>
-						Inventario:
-						<span class="font-semibold">{{ offer.stock_type }}</span>
-					</li>
-					<li v-if="offer.stock_type === STOCK_TYPE.LIMITED">
-						Cantidad:
-						<span class="font-semibold">{{ offer.stock_qty }}</span>
-					</li>
-				</ul>
-			</div>
-			<!-- / Inventario -->
+      <!-- Inventario -->
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
+        <h3 class="text-center text-lg font-semibold">Inventario</h3>
+        <ul class="mt-2 space-y-2">
+          <li>
+            Inventario:
+            <span class="font-semibold">{{ offer.stock_type }}</span>
+          </li>
+          <li v-if="offer.stock_type === STOCK_TYPE.LIMITED">
+            Cantidad:
+            <span class="font-semibold">{{ offer.stock_qty }}</span>
+          </li>
+        </ul>
+      </div>
+      <!-- / Inventario -->
 
-			<!-- Attributes -->
-			<div class="mt-2 rounded-md border bg-white p-4 shadow-sm" v-if="offer.attributes && offer.attributes.length">
-				<h3 class="text-center text-lg font-semibold">Atributos</h3>
-				<ul class="space-y-2">
-					<li v-if="offer.weight">
-						Peso:
-						<span class="pl-2 font-semibold">{{ offer.weight }} Lb</span>
-					</li>
-					<li v-for="(attr, attrKey) in offer.attributes" :key="`attr-${attrKey}`">
-						{{ attr.key }}:
-						<span class="pl-2 font-semibold">{{ attr.value }}</span>
-					</li>
-				</ul>
-			</div>
-			<!-- / Attributes -->
+      <!-- Attributes -->
+      <div
+        class="mt-2 rounded-md border bg-white p-4 shadow-sm"
+        v-if="offer.attributes && offer.attributes.length"
+      >
+        <h3 class="text-center text-lg font-semibold">Atributos</h3>
+        <ul class="space-y-2">
+          <li v-if="offer.weight">
+            Peso:
+            <span class="pl-2 font-semibold">{{ offer.weight }} Lb</span>
+          </li>
+          <li v-for="(attr, attrKey) in offer.attributes" :key="`attr-${attrKey}`">
+            {{ attr.key }}:
+            <span class="pl-2 font-semibold">{{ attr.value }}</span>
+          </li>
+        </ul>
+      </div>
+      <!-- / Attributes -->
 
-			<!-- Extra -->
-			<div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
-				<h3 class="text-center text-lg font-semibold">Extra</h3>
-				<ul class="mt-2 space-y-2">
-					<li v-if="offer.remote_url">
-						Url Remota:
-						<a class="font-semibold" :href="offer.remote_url" target="_blank">Acceder</a>
-					</li>
-					<li v-if="offer.min_delivery_days">
-						Demora de Envío Mínima:
-						<span class="font-semibold">{{ offer.min_delivery_days }} días</span>
-					</li>
-				</ul>
-			</div>
-			<!-- / Inventario -->
-		</template>
-	</section>
+      <!-- Extra -->
+      <div class="mt-2 rounded-md border bg-white p-4 shadow-sm">
+        <h3 class="text-center text-lg font-semibold">Extra</h3>
+        <ul class="mt-2 space-y-2">
+          <li v-if="offer.remote_url">
+            Url Remota:
+            <a class="font-semibold" :href="offer.remote_url" target="_blank">Acceder</a>
+          </li>
+          <li v-if="offer.min_delivery_days">
+            Demora de Envío Mínima:
+            <span class="font-semibold">{{ offer.min_delivery_days }} días</span>
+          </li>
+        </ul>
+      </div>
+      <!-- / Inventario -->
+    </template>
+  </section>
 
-	<!-- Float Button -->
-	<div class="fixed bottom-6 left-6 z-10" v-if="!shoForm">
-		<FloatButton v-model="showFloatMenu">
-			<FloatButtonItem @click="onClickEdit" label="Editar" :icon="IconEdit" id="edit-offer-button" />
-			<FloatButtonItem @click="onClickDelete" label="Eliminar" :icon="IconDelete" id="delete-offer-button" />
-		</FloatButton>
-	</div>
+  <!-- Float Button -->
+  <div class="fixed bottom-6 left-6 z-10" v-if="!shoForm">
+    <FloatButton v-model="showFloatMenu">
+      <FloatButtonItem
+        @click="onClickEdit"
+        label="Editar"
+        :icon="IconEdit"
+        id="edit-offer-button"
+      />
+      <FloatButtonItem
+        @click="onClickDelete"
+        label="Eliminar"
+        :icon="IconDelete"
+        id="delete-offer-button"
+      />
+    </FloatButton>
+  </div>
 
-	<!-- / Float Button -->
+  <!-- / Float Button -->
 </template>

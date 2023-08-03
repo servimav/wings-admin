@@ -78,7 +78,7 @@ const form = ref<ShopOfferCreate>({
   weight: undefined
 })
 
-const galleryString = ref('')
+const galleryString = ref<string>('')
 
 const isDeveloper = computed(() => $user.isDeveloper)
 
@@ -127,6 +127,10 @@ async function onSubmit() {
     // Transform attrs
     if (attributes.value) form.value.attributes = transformAttrs() as KeyValue[]
     transformGallery(true)
+    console.log({
+      gallery: form.value.gallery
+    })
+
     // Check if update
     if (updateId.value) {
       const updateResp = await $service.shop.offer.update(updateId.value, form.value)
@@ -173,19 +177,18 @@ function transformAttrs(keyValues?: KeyValue[]): string | KeyValue[] {
  * @param keyValues
  */
 function transformGallery(toArray = true) {
-  if (toArray) {
+  if (toArray && galleryString.value) {
     const gallery: string[] = []
     galleryString.value.split('\n').forEach((image) => {
-      gallery.push(image)
+      if (image && image != 'null') gallery.push(image)
     })
-    form.value.gallery = gallery
+    if (gallery.length) form.value.gallery = gallery
   } else {
     if (form.value.gallery && form.value.gallery.length) {
       form.value.gallery.forEach((img) => {
         galleryString.value += img + '\n'
       })
-    }
-    if (galleryString.value === 'null') galleryString.value = ''
+    } else galleryString.value = ''
   }
 }
 /**

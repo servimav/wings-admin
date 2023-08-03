@@ -68,7 +68,7 @@ function contact() {
     const message = `Hola ${name}`
     sendWhatsappMessage({
       message,
-      phone
+      phone: `+53${phone}`
     })
   }
 }
@@ -150,7 +150,7 @@ function sendNotification() {
 
     sendWhatsappMessage({
       message,
-      phone
+      phone: `+53${phone}`
     })
   }
 }

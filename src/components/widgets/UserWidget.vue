@@ -24,7 +24,7 @@ function contact() {
   const { name, phone } = $props.user
   sendWhatsappMessage({
     message: `Hola ${name}`,
-    phone: `+53${phone}`
+    phone: `53${phone}`
   })
 }
 </script>

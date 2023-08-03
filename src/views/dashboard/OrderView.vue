@@ -3,7 +3,7 @@ import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { readableStatus } from '@servimav/wings-services'
 import type { OrderItem, ShopOrder } from '@servimav/wings-services'
-import { toCurrency } from '@/helpers'
+import { toCurrency, sendWhatsappMessage } from '@/helpers'
 import { ROUTE_NAME } from '@/router'
 import { useServices } from '@/services'
 import { useAppStore } from '@/stores'
@@ -64,13 +64,12 @@ const totalPrice = computed(
  */
 function contact() {
   if (order.value) {
-    const phone = order.value.customer.phone
-    const name = order.value.customer.name
+    const { name, phone } = order.value.customer
     const message = `Hola ${name}`
-
-    const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
-
-    window.location.assign(whatsappLink)
+    sendWhatsappMessage({
+      message,
+      phone
+    })
   }
 }
 
@@ -102,7 +101,6 @@ async function getOrder() {
  * @param item
  */
 function goToOffer(item: OrderItem) {
-  console.log({ item })
   void $router.push({
     name: ROUTE_NAME.OFFER,
     params: {
@@ -141,8 +139,7 @@ function onOrderUpdate(updated: ShopOrder) {
  */
 function sendNotification() {
   if (order.value) {
-    const phone = order.value.customer.phone
-    const name = order.value.customer.name
+    const { name, phone } = order.value.customer
     const message = `Hola ${name}.\nLe notifico que su orden con ID #${
       order.value.id
     } se encuentra en el estado "${readableStatus(
@@ -151,9 +148,10 @@ function sendNotification() {
       order.value.id
     }`
 
-    const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
-
-    window.location.assign(whatsappLink)
+    sendWhatsappMessage({
+      message,
+      phone
+    })
   }
 }
 
@@ -187,6 +185,8 @@ onBeforeMount(() => {
         <!-- Status -->
         <div class="rounded-md border bg-white p-4">
           <ul class="list-none space-y-1">
+            <li>Cliente: {{ order.customer.name }}</li>
+            <li>Telefono:{{ order.customer.phone }}</li>
             <li>Estado: {{ readableStatus(order.delivery_status) }}</li>
             <li>
               Tipo de pago: {{ order.payment_type === 'TRANSFER_PARTIAL' ? 'Parcial' : 'Total' }}

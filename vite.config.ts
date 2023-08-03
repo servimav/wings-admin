@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
+// import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import { VitePWA } from "vite-plugin-pwa"
 import viteCompression from "vite-plugin-compression"
@@ -10,7 +10,7 @@ import viteCompression from "vite-plugin-compression"
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		vue(), vueJsx(),
+		vue(),
 		viteCompression(),
 		VitePWA({
 			registerType: "autoUpdate",

@@ -1,19 +1,32 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
 import type { User } from '@servimav/wings-services'
+import { sendWhatsappMessage } from '@/helpers'
 
 const CheckIcon = defineAsyncComponent(() => import('@/components/icons/CheckCircle.vue'))
 const ExclamationIcon = defineAsyncComponent(
   () => import('@/components/icons/ExclamationCircle.vue')
 )
-const PhoneIcon = defineAsyncComponent(() => import('@/components/icons/PhoneOutline.vue'))
+// const PhoneIcon = defineAsyncComponent(() => import('@/components/icons/PhoneOutline.vue'))
 const UserIcon = defineAsyncComponent(() => import('@/components/icons/UserOutline.vue'))
+const WhatsappIcon = defineAsyncComponent(() => import('@/components/icons/WhatsApp.vue'))
 
 interface Prop {
   user: User
 }
 
-defineProps<Prop>()
+const $props = defineProps<Prop>()
+
+/**
+ * contact
+ */
+function contact() {
+  const { name, phone } = $props.user
+  sendWhatsappMessage({
+    message: `Hola ${name}`,
+    phone: phone
+  })
+}
 </script>
 
 <template>
@@ -24,7 +37,7 @@ defineProps<Prop>()
         {{ user.name }}
       </li>
       <li class="flex items-center gap-2">
-        <PhoneIcon class="h-5 w-5" />
+        <WhatsappIcon @click="contact" class="h-5 w-5 cursor-pointer text-green-600" />
         {{ user.phone }}
       </li>
     </ul>

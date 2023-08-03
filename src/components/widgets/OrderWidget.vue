@@ -32,7 +32,13 @@ const totalPrice = computed(
       <b>Total: {{ toCurrency(totalPrice * cupPrice) }}</b>
     </div>
     <div class="mt-2 text-sm">
-      <ul class="list-none">
+      <ul class="space-y-2 rounded-md">
+        <li>
+          Cliente: <span class="font-semibold">{{ order.customer.name }}</span>
+        </li>
+        <li>
+          Telefono: <span class="font-semibold">{{ order.customer.phone }}</span>
+        </li>
         <li>
           Envio:
           {{ order.delivery_price > 0 ? toCurrency(order.delivery_price * cupPrice) : 'Gratis' }}
@@ -56,6 +62,7 @@ const totalPrice = computed(
       <ul class="list-none">
         <li v-for="(item, itemKey) in order.items" :key="`item-${itemKey}-${item.id}-${order.id}`">
           {{ toCurrency(item.price * cupPrice) }} x{{ item.qty }} - {{ item.name }}
+          <span v-if="item.incomming" class="ml-1 font-semibold">Encargo</span>
         </li>
       </ul>
     </div>

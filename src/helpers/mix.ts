@@ -80,3 +80,22 @@ export function roundX10(val: number, type: 'round' | 'ceil' | 'roof' = 'round')
   if (type === 'ceil') return Math.ceil(val / 10) * 10
   else return Math.round(val / 10) * 10
 }
+
+/**
+ * sendWhatsappMessage
+ * @param param WhatsappMessage
+ */
+export function sendWhatsappMessage({ message, phone }: WhatsappMessage) {
+  const whatsapp = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+  window.location.assign(whatsapp)
+}
+/**
+ * ------------------------------------------
+ *	Types
+ * ------------------------------------------
+ */
+
+export interface WhatsappMessage {
+  message: string
+  phone?: string
+}

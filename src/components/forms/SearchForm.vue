@@ -39,10 +39,11 @@ const $shop = useShopStore()
 
 const categories = computed(() => $shop.categories)
 const form = ref<ShopOfferFilter>({
+  available: undefined,
   category_id: undefined,
   currency: 'CUP',
   search: undefined,
-  sort: 'views',
+  sort: 'id',
   store_id: undefined,
   stock: undefined
 })
@@ -75,16 +76,16 @@ function onSubmit() {
   if (!form.value.sort) form.value.sort = undefined
   if (!form.value.store_id) form.value.store_id = undefined
   if (!form.value.stock) form.value.stock = undefined
-
   $emit('search', form.value)
 }
 
 function reset() {
   form.value = {
+    available: true,
     category_id: undefined,
     currency: undefined,
     search: undefined,
-    sort: undefined,
+    sort: 'id',
     store_id: undefined,
     stock: undefined
   }
@@ -124,6 +125,13 @@ onBeforeMount(() => {
             @update:model-value="onChangeIncomming"
             label="Encargos"
             id="encargos-form"
+            color="primary"
+          />
+
+          <ToggleInput
+            v-model="form.available"
+            label="Disponibles"
+            id="available-form"
             color="primary"
           />
         </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 export interface Props {
-  modelValue: boolean
+  modelValue?: boolean
   color: string
   label: string
   id: string

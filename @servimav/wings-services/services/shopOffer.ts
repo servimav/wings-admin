@@ -71,6 +71,7 @@ export interface ShopOfferCreate extends Omit<ShopOffer, 'id' | 'categories' | '
 }
 
 export interface ShopOfferFilter {
+  available?: boolean
   search?: string
   store_id?: number
   currency?: CurrencyCode
